@@ -7,6 +7,7 @@ It's hard for students to keep track of all their materials for one course. Laun
 * Databases (Room)
 * Kotlin
 * APIs
+* Google ARCore
 * Machine learning (maybe Clarifai)
 * Camera
 
