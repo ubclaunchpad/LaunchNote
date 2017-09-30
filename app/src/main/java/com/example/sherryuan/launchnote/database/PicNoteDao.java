@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Data Access Object for PicNote
+ * PicNote is the name of the table
  */
 @Dao
 public interface PicNoteDao {
