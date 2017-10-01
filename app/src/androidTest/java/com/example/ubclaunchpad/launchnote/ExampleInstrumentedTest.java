@@ -1,4 +1,4 @@
-package com.example.sherryuan.launchnote;
+package com.example.ubclaunchpad.launchnote;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

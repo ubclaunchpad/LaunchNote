@@ -1,4 +1,4 @@
-package com.example.sherryuan.launchnote;
+package com.example.ubclaunchpad.launchnote;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

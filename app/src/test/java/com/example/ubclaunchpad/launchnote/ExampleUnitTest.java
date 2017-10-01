@@ -1,4 +1,4 @@
-package com.example.sherryuan.launchnote;
+package com.example.ubclaunchpad.launchnote;
 
 import org.junit.Test;
 
