@@ -16,7 +16,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_take_photo);
     }
 
-    private void takePhoto(View view) {
+    public void takePhoto(View view) {
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePhotoIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePhotoIntent, TAKE_PHOTO_REQUEST_CODE);
