@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 
 public class TakePhotoActivity extends AppCompatActivity {
 
@@ -15,7 +16,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_take_photo);
     }
 
-    private void takePhoto() {
+    private void takePhoto(View view) {
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePhotoIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePhotoIntent, TAKE_PHOTO_REQUEST_CODE);
