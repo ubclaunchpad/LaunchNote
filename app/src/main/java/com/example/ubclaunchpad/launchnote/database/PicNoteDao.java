@@ -1,4 +1,4 @@
-package com.example.sherryuan.launchnote.database;
+package com.example.ubclaunchpad.launchnote.database;
 
 
 import android.arch.persistence.room.Dao;
@@ -7,7 +7,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import com.example.sherryuan.launchnote.models.PicNote;
+import com.example.ubclaunchpad.launchnote.models.PicNote;
 
 import java.util.List;
 

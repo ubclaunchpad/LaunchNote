@@ -1,8 +1,9 @@
-package com.example.sherryuan.launchnote.database
+package com.example.ubclaunchpad.launchnote.database
 
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.Database
-import com.example.sherryuan.launchnote.models.PicNote
+import com.example.ubclaunchpad.launchnote.database.PicNoteDao
+import com.example.ubclaunchpad.launchnote.models.PicNote
 
 /**
  * Database for PicNote

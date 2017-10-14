@@ -1,4 +1,4 @@
-package com.example.sherryuan.launchnote.models
+package com.example.ubclaunchpad.launchnote.models
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore

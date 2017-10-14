@@ -1,11 +1,11 @@
-package com.example.sherryuan.launchnote;
+package com.example.ubclaunchpad.launchnote;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
-import com.example.sherryuan.launchnote.database.PicNoteDao;
-import com.example.sherryuan.launchnote.database.PicNoteDatabase;
-import com.example.sherryuan.launchnote.models.PicNote;
+import com.example.ubclaunchpad.launchnote.database.PicNoteDao;
+import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase;
+import com.example.ubclaunchpad.launchnote.models.PicNote;
 
 import org.junit.After;
 import org.junit.Assert;
