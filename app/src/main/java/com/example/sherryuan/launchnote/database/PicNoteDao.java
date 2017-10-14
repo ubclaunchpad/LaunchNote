@@ -18,18 +18,26 @@ import java.util.List;
 @Dao
 public interface PicNoteDao {
 
+    // find by ID query
+    // retrieve the PicNote with the correct ID from the database
     @Query("SELECT * FROM PicNote WHERE id = :id")
     List<PicNote> findById(String id);
 
+    // insert any number of PicNotes into the database
+    // if any IDs conflict with a previously inserted PicNote, replace it
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(PicNote... picNotes);
 
+    // insert a single PicNote into the database
+    // if the ID conflicts with a previously inserted PicNote, replace it
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(PicNote picNote);
 
+    // delete a PicNote from the database
     @Delete
     void delete(PicNote picNote);
 
+    // retrieve all PicNotes from the database
     @Query("SELECT * FROM PicNote")
     List<PicNote> loadAll();
 }
