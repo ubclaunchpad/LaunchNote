@@ -10,10 +10,11 @@ import android.graphics.Bitmap
  */
 @Entity
 data class PicNote(
-        @PrimaryKey
-        var id: String = "",
         var imageUri: String = "",
         var description: String = "",
         @Ignore
         var image: Bitmap? = null
-)
+) {
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
+}
