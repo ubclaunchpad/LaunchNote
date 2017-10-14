@@ -62,7 +62,7 @@ public class GalleryActivity extends Activity {
                     });
 
         } else {
-            Toast.makeText(this, "You haven't picked Image", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "You haven't picked an image", Toast.LENGTH_LONG).show();
 
         }
     }
