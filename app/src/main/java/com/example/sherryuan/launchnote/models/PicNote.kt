@@ -9,11 +9,11 @@ import android.graphics.Bitmap
  * Model class for representing one photo
  */
 @Entity
-class PicNote (
-    @PrimaryKey
-    val id: String,
-    val imageUri: String,
-    var description: String,
-    @Ignore
-    var image: Bitmap? = null
+data class PicNote(
+        @PrimaryKey
+        var id: String = "",
+        var imageUri: String = "",
+        var description: String = "",
+        @Ignore
+        var image: Bitmap? = null
 )
