@@ -51,7 +51,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         // First, create file name
         String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String fileName = "JPEG_" + timestamp;
-        // Directory where the file will be stored
+        // Directory where the file will be stored (check file_paths.xml)
         File dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         // Create file
         File image = File.createTempFile(fileName, ".jpg",  dir);
