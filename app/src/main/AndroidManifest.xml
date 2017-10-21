@@ -2,9 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ubclaunchpad.launchnote">
 
-    <!-- PERMISSIONS -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <!-- TakePhotoActivity -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
@@ -20,12 +17,12 @@
         <!-- TakePhotoActivity -->
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.example.sherryuan.launchnote.fileprovider"
+            android:authorities="com.example.ubclaunchpad.launchnote.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
 
         <activity android:name=".MainActivity">

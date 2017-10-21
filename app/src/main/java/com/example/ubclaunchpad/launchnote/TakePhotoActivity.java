@@ -1,4 +1,4 @@
-package com.example.sherryuan.launchnote;
+package com.example.ubclaunchpad.launchnote;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +17,7 @@ import java.util.Date;
 public class TakePhotoActivity extends AppCompatActivity {
 
     static final int TAKE_PHOTO_REQUEST_CODE = 1;
+    static final String DATE_FORMAT = "yyyyMMdd_HHmmss";
     String currentImagePath;
 
     @Override
@@ -40,7 +41,7 @@ public class TakePhotoActivity extends AppCompatActivity {
             // If the image file was created with no problems ...
             if (imageFile != null) {
                 // Get URI from file and pass it as an extra to the intent, then start intent
-                Uri imageURI = FileProvider.getUriForFile(this, "com.example.sherryuan.launchnote.fileprovider", imageFile);
+                Uri imageURI = FileProvider.getUriForFile(this, "com.example.ubclaunchpad.launchnote.FileProvider", imageFile);
                 takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageURI);
                 startActivityForResult(takePhotoIntent, TAKE_PHOTO_REQUEST_CODE);
             }
@@ -49,7 +50,7 @@ public class TakePhotoActivity extends AppCompatActivity {
 
     private File createImageFile() throws IOException {
         // First, create file name
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timestamp = new SimpleDateFormat(DATE_FORMAT).format(new Date());
         String fileName = "JPEG_" + timestamp;
         // Directory where the file will be stored (check file_paths.xml)
         File dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
