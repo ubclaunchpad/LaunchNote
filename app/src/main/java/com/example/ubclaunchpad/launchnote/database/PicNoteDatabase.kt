@@ -14,6 +14,8 @@ abstract class PicNoteDatabase : RoomDatabase() {
 
     abstract fun picNoteDao(): PicNoteDao
 
+    // in Kotlin, there is no static keyword.
+    // If you want something to be an instance of a class, put it in the companion object block
     companion object {
         private var INSTANCE: PicNoteDatabase? = null
         const val DB_NAME = "PICNOTE_DB"
@@ -21,9 +23,6 @@ abstract class PicNoteDatabase : RoomDatabase() {
         fun getDatabase(context: Context): PicNoteDatabase? {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder<PicNoteDatabase>(context.applicationContext, PicNoteDatabase::class.java, DB_NAME)
-                        // To simplify the codelab, allow queries on the main thread.
-                        // Don't do this on a real app! See PersistenceBasicSample for an example.
-                        .allowMainThreadQueries()
                         .build()
             }
             return INSTANCE
