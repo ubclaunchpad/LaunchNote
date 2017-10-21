@@ -21,12 +21,20 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
 
+        loadImages()
+    }
+
+    /**
+     * load all images from database
+     */
+    private fun loadImages() {
         PicNoteDatabase.getDatabase(this)?.let {
             it.picNoteDao().loadAll()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { picNotes ->
                         for (next in picNotes) {
+                            // TODO: display it in RecyclerView
                             Toast.makeText(this, "${next.id} ${next.imageUri}", Toast.LENGTH_SHORT).show()
                         }
                     }

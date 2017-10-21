@@ -37,13 +37,12 @@ class GalleryActivity : Activity() {
         setContentView(R.layout.activity_gallery)
         photoView = findViewById(R.id.imgView)
         ButterKnife.bind(this)
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // when an Image is picked
-        if (requestCode == RESULT_LOAD_IMG && resultCode == Activity.RESULT_OK && null != data) {
+        if (requestCode == RESULT_LOAD_IMG && resultCode == Activity.RESULT_OK && data != null) {
             // get Image from data
             photoUri = data.data
             // load Bitmap using Glide
@@ -58,7 +57,6 @@ class GalleryActivity : Activity() {
                             photoBitmap = resource
                         }
                     })
-
         } else {
             Toast.makeText(this, "You haven't picked an image", Toast.LENGTH_LONG).show()
 
