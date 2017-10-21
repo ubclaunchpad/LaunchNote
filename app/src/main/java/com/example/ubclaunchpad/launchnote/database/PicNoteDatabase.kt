@@ -20,6 +20,7 @@ abstract class PicNoteDatabase : RoomDatabase() {
         private var INSTANCE: PicNoteDatabase? = null
         const val DB_NAME = "PICNOTE_DB"
 
+        // database is a singleton
         fun getDatabase(context: Context): PicNoteDatabase? {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder<PicNoteDatabase>(context.applicationContext, PicNoteDatabase::class.java, DB_NAME)
