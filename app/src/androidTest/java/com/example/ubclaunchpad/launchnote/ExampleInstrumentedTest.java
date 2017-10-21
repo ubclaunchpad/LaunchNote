@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.sherryuan.launchnote", appContext.getPackageName());
+        assertEquals("com.example.ubclaunchpad.launchnote", appContext.getPackageName());
     }
 }
