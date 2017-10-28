@@ -11,6 +11,8 @@ import com.example.ubclaunchpad.launchnote.models.PicNote;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
+
 /**
  * Data Access Object for PicNote
  * PicNote is the name of the table
@@ -21,7 +23,7 @@ public interface PicNoteDao {
     // find by ID query
     // retrieve the PicNote with the correct ID from the database
     @Query("SELECT * FROM PicNote WHERE id = :id")
-    List<PicNote> findById(String id);
+    Flowable<List<PicNote>> findById(String id);
 
     // insert any number of PicNotes into the database
     // if any IDs conflict with a previously inserted PicNote, replace it
@@ -39,5 +41,5 @@ public interface PicNoteDao {
 
     // retrieve all PicNotes from the database
     @Query("SELECT * FROM PicNote")
-    List<PicNote> loadAll();
+    Flowable<List<PicNote>> loadAll();
 }

@@ -43,38 +43,36 @@ public class PicNoteTableTest {
     @Test
     public void testPicNoteDaoQueries() throws Exception {
         // create first picNote with dummy values
-        PicNote picNote1 = new PicNote("1", "../test/uri1.png", "test picNote1", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888));
+        PicNote picNote1 = new PicNote("../test/uri1.png", "test picNote1", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888));
         picNoteDao.insert(picNote1);
 
         // create second picNote with dummy values
-        PicNote picNote2 = new PicNote("2", "../test/uri2.png", "test picNote2", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888));
+        PicNote picNote2 = new PicNote("../test/uri2.png", "test picNote2", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888));
         picNoteDao.insert(picNote2);
 
         // create second picNote with dummy values
-        PicNote picNote3 = new PicNote("3", "../test/uri3.png", "test picNote3", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888));
+        PicNote picNote3 = new PicNote("../test/uri3.png", "test picNote3", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888));
         picNoteDao.insert(picNote3);
 
         // test that we can find the first PicNote
-        List<PicNote> picNoteById1 = picNoteDao.findById("1");
-        Assert.assertEquals(picNoteById1.get(0).getId(), picNote1.getId());
+        List<PicNote> picNoteById1 = picNoteDao.findById("1").blockingFirst();
         Assert.assertEquals(picNoteById1.get(0).getImageUri(), picNote1.getImageUri());
         Assert.assertEquals(picNoteById1.get(0).getDescription(), picNote1.getDescription());
 
         Assert.assertEquals(picNoteById1.size(), 1);
 
         // test that we can find the third PicNote
-        List<PicNote> picNoteById3 = picNoteDao.findById("3");
-        Assert.assertEquals(picNoteById3.get(0).getId(), picNote3.getId());
+        List<PicNote> picNoteById3 = picNoteDao.findById("3").blockingFirst();
         Assert.assertEquals(picNoteById3.get(0).getImageUri(), picNote3.getImageUri());
         Assert.assertEquals(picNoteById3.get(0).getDescription(), picNote3.getDescription());
 
         Assert.assertEquals(picNoteById3.size(), 1);
 
         // test that we can get all the PicNotes
-        List<PicNote> allPicNotes = picNoteDao.loadAll();
-        Assert.assertEquals(allPicNotes.get(0).getId(), picNote1.getId());
-        Assert.assertEquals(allPicNotes.get(1).getId(), picNote2.getId());
-        Assert.assertEquals(allPicNotes.get(2).getId(), picNote3.getId());
+        List<PicNote> allPicNotes = picNoteDao.loadAll().blockingFirst();
+        Assert.assertEquals(allPicNotes.get(0).getDescription(), picNote1.getDescription());
+        Assert.assertEquals(allPicNotes.get(1).getDescription(), picNote2.getDescription());
+        Assert.assertEquals(allPicNotes.get(2).getDescription(), picNote3.getDescription());
 
         Assert.assertEquals(allPicNotes.size(), 3);
     }
