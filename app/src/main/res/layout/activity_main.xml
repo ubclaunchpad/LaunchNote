@@ -22,4 +22,11 @@
         android:onClick="launchGalleryActivity"
         android:text="Upload photo from gallery"/>
 
+    <Button
+        android:id="@+id/buttonTakePhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="launchTakePhotoActivity"
+        android:text="Take Photo"/>
+
 </android.support.constraint.ConstraintLayout>
