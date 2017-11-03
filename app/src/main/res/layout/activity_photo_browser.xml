@@ -40,17 +40,20 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="0px"
+        android:layout_height="200dp"
+        android:layout_marginBottom="20dp"
         android:layout_weight="1"
         app:layout_constraintTop_toBottomOf="@id/tabs" />
 
-    <Button
-        android:id="@+id/buttonUploadFromGallery"
-        android:layout_width="wrap_content"
+    <include
+        layout="@layout/element_bottom_navigation"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="launchGalleryActivity"
-        android:text="Upload photo from gallery"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:layout_gravity="bottom"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="396dp"
+        app:layout_constraintTop_toBottomOf="@id/view_pager"/>
+
 
     <Button
         android:id="@+id/buttonTakePhoto"

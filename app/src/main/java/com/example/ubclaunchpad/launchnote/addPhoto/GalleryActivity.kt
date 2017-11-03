@@ -19,6 +19,7 @@ import com.example.ubclaunchpad.launchnote.models.PicNote
 
 import butterknife.ButterKnife
 import butterknife.OnClick
+import com.example.ubclaunchpad.launchnote.BaseActivity
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -26,7 +27,8 @@ import io.reactivex.schedulers.Schedulers
 /**
  * Activity for selecting an image from photo gallery
  */
-class GalleryActivity : Activity() {
+class GalleryActivity : BaseActivity() {
+
     lateinit var photoView: ImageView
     var photoBitmap: Bitmap? = null
     var photoUri: Uri? = null
@@ -34,9 +36,12 @@ class GalleryActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_gallery)
         photoView = findViewById(R.id.imgView)
         ButterKnife.bind(this)
+    }
+
+    override fun getContentViewId(): Int {
+        return R.layout.activity_gallery
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/add_menu_item"
+        android:enabled="true"
+        android:title="add"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/scan_menu_item"
+        android:enabled="true"
+        android:title="scan"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/browse_menu_item"
+        android:enabled="true"
+        android:title="browse"
+        app:showAsAction="ifRoom" />
+</menu>

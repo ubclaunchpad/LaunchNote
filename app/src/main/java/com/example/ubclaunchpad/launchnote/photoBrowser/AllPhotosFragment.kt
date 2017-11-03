@@ -1,4 +1,4 @@
-package com.example.ubclaunchpad.launchnote.galleries
+package com.example.ubclaunchpad.launchnote.photoBrowser
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
