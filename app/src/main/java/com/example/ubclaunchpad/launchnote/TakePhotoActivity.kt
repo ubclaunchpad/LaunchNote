@@ -69,7 +69,7 @@ class TakePhotoActivity : AppCompatActivity() {
                  */
                 currentImageFile.delete()
                 /* Should something currentImagePath and currentImageUri be nulled
-                 or just in case???
+                 just in case???
                  */
             }
         }
