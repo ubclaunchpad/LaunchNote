@@ -48,7 +48,7 @@ class TakePhotoActivity : AppCompatActivity() {
             // If the image file was created with no problems ...
             if (imageFile != null) {
                 // Get URI from file and pass it as an extra to the intent, then start intent
-                val imageURI = FileProvider.getUriForFile(this, "com.example.ubclaunchpad.launchnote.FileProvider", imageFile)
+                val imageURI = FileProvider.getUriForFile(this, AUTHORITY , imageFile)
                 currentImageUri = imageURI;
                 takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageURI)
                 startActivityForResult(takePhotoIntent, TAKE_PHOTO_REQUEST_CODE)
@@ -56,7 +56,7 @@ class TakePhotoActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == TAKE_PHOTO_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 /* If the picture was taken and saved to internal storage successfully,
@@ -95,11 +95,11 @@ class TakePhotoActivity : AppCompatActivity() {
     private fun createImageFile(): File {
         // First, create file name
         val timestamp = SimpleDateFormat(DATE_FORMAT).format(Date())
-        val fileName = "JPEG_" + timestamp
+        val fileName = JPEG + timestamp
         // Directory where the file will be stored (check file_paths.xml)
         val dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         // Create file
-        val image = File.createTempFile(fileName, ".jpg", dir)
+        val image = File.createTempFile(fileName, IMAGE_EXTENSION, dir)
         currentImagePath = image.absolutePath
         currentImageFile = image
         return image
@@ -109,6 +109,9 @@ class TakePhotoActivity : AppCompatActivity() {
 
         internal val TAKE_PHOTO_REQUEST_CODE = 1
         internal val DATE_FORMAT = "yyyyMMdd_HHmmss"
+        internal val AUTHORITY = "com.example.ubclaunchpad.launchnote.FileProvider"
+        internal val JPEG = "JPEG_"
+        internal val IMAGE_EXTENSION = ".jpg"
     }
 
 }
