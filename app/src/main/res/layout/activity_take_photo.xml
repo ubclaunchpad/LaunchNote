@@ -26,7 +26,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="396dp" />
 </android.support.constraint.ConstraintLayout>
