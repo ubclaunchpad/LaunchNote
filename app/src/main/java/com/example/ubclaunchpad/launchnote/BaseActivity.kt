@@ -10,7 +10,9 @@ import com.example.ubclaunchpad.launchnote.addPhoto.GalleryActivity
 import com.example.ubclaunchpad.launchnote.addPhoto.TakePhotoActivity
 import com.example.ubclaunchpad.launchnote.photoBrowser.PhotoBrowserActivity
 
-
+/**
+ * A base Activity that will set up the bottom navigation bar for any Activities extending it
+ */
 abstract class BaseActivity : AppCompatActivity() {
 
     lateinit var bottomNavigation: BottomNavigationView
@@ -18,15 +20,18 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(getContentViewId())
+        setupBottomNavigation()
+    }
 
+    fun setupBottomNavigation() {
         bottomNavigation = findViewById(R.id.bottom_navigation)
+        // set up the buttons in the bottom navigation bar
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.add_menu_item -> {
                     onAddPhotoClick()
                 }
                 R.id.scan_menu_item -> {
-
                 }
                 R.id.browse_menu_item -> {
                     val photoBrowserActivityIntent = Intent(applicationContext, PhotoBrowserActivity::class.java)

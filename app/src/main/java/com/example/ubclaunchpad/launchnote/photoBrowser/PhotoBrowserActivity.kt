@@ -1,19 +1,17 @@
 package com.example.ubclaunchpad.launchnote.photoBrowser
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.view.View
 import butterknife.ButterKnife
-import butterknife.OnClick
 import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.R
-import com.example.ubclaunchpad.launchnote.addPhoto.GalleryActivity
 import kotlinx.android.synthetic.main.activity_photo_browser.*
 
-
+/**
+ * Activity for browsing photos in different folders
+ */
 class PhotoBrowserActivity : BaseActivity() {
 
     lateinit var customPagerAdapter: CustomPagerAdapter
@@ -23,12 +21,15 @@ class PhotoBrowserActivity : BaseActivity() {
         ButterKnife.bind(this)
 
         // set up ViewPager
+        // this lets us swipe between the three different ways of browsing photos:
+        // by Class, by Project, or by All photos
+        // each of them is represented by a fragment
         customPagerAdapter = CustomPagerAdapter(supportFragmentManager)
 
         view_pager.adapter = customPagerAdapter
         view_pager.currentItem = ALL_FRAGMENT
 
-        // Watch for button clicks
+        // Watch for button clicks. When a button is clicked, go to the correct fragment
         class_button.setOnClickListener { view_pager.currentItem = CLASS_FRAGMENT }
         project_button.setOnClickListener { view_pager.currentItem = PROJECT_FRAGMENT }
         all_button.setOnClickListener { view_pager.currentItem = ALL_FRAGMENT }
@@ -37,10 +38,6 @@ class PhotoBrowserActivity : BaseActivity() {
     override fun getContentViewId(): Int {
         return R.layout.activity_photo_browser
     }
-
-    @OnClick(R.id.buttonLoadPicture)
-    fun launchGalleryActivity(view: View) =
-            startActivity(Intent(this, GalleryActivity::class.java))
 
     /**
      * FragmentPagerAdapter class
@@ -54,6 +51,7 @@ class PhotoBrowserActivity : BaseActivity() {
         }
 
         override fun getItem(position: Int): Fragment {
+            // TODO: once the other fragments are implemented, return the correct one
             return AllPhotosFragment()
         }
     }

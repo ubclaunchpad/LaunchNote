@@ -11,7 +11,9 @@ import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-
+/**
+ * Fragment displaying all photos in a grid format
+ */
 class AllPhotosFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
