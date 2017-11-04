@@ -44,4 +44,8 @@ class MainActivity : AppCompatActivity() {
     @OnClick(R.id.buttonUploadFromGallery)
     fun launchGalleryActivity(view: View) =
             startActivity(Intent(this, GalleryActivity::class.java))
+
+    @OnClick(R.id.buttonTakePhoto)
+    fun launchTakePhotoActivity(view: View) =
+            startActivity(Intent(this, TakePhotoActivity::class.java))
 }

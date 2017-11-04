@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.example.ubclaunchpad.launchnote"
         minSdkVersion 19
@@ -45,6 +45,8 @@ dependencies {
     // unit tests
     testCompile 'junit:junit:4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    // for Google Mobile Vision Text API
+    compile 'com.google.android.gms:play-services-vision:11.0.4'
 }
 repositories {
     mavenCentral()
