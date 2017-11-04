@@ -1,4 +1,4 @@
-package com.example.ubclaunchpad.launchnote
+package com.example.ubclaunchpad.launchnote.addPhoto
 
 import android.app.Activity
 import android.content.Intent
@@ -9,6 +9,7 @@ import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.example.ubclaunchpad.launchnote.R
 
 import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
@@ -48,7 +49,7 @@ class TakePhotoActivity : AppCompatActivity() {
             // If the image file was created with no problems ...
             if (imageFile != null) {
                 // Get URI from file and pass it as an extra to the intent, then start intent
-                val imageURI = FileProvider.getUriForFile(this, AUTHORITY , imageFile)
+                val imageURI = FileProvider.getUriForFile(this, AUTHORITY, imageFile)
                 currentImageUri = imageURI;
                 takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageURI)
                 startActivityForResult(takePhotoIntent, TAKE_PHOTO_REQUEST_CODE)
@@ -107,11 +108,11 @@ class TakePhotoActivity : AppCompatActivity() {
 
     companion object {
 
-        internal val TAKE_PHOTO_REQUEST_CODE = 1
-        internal val DATE_FORMAT = "yyyyMMdd_HHmmss"
-        internal val AUTHORITY = "com.example.ubclaunchpad.launchnote.FileProvider"
-        internal val JPEG = "JPEG_"
-        internal val IMAGE_EXTENSION = ".jpg"
+        internal const val TAKE_PHOTO_REQUEST_CODE = 1
+        internal const val DATE_FORMAT = "yyyyMMdd_HHmmss"
+        internal const val AUTHORITY = "com.example.ubclaunchpad.launchnote.FileProvider"
+        internal const val JPEG = "JPEG_"
+        internal const val IMAGE_EXTENSION = ".jpg"
     }
 
 }
