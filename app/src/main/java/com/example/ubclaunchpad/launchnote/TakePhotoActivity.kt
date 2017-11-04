@@ -24,6 +24,7 @@ import java.util.Date
 class TakePhotoActivity : AppCompatActivity() {
     internal lateinit var currentImagePath: String
     internal lateinit var currentImageFile: File
+    internal lateinit var currentImageUri: Uri
     var picNoteToSave: PicNote? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +49,7 @@ class TakePhotoActivity : AppCompatActivity() {
             if (imageFile != null) {
                 // Get URI from file and pass it as an extra to the intent, then start intent
                 val imageURI = FileProvider.getUriForFile(this, "com.example.ubclaunchpad.launchnote.FileProvider", imageFile)
+                currentImageUri = imageURI;
                 takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageURI)
                 startActivityForResult(takePhotoIntent, TAKE_PHOTO_REQUEST_CODE)
             }
@@ -55,19 +57,20 @@ class TakePhotoActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == TAKE_PHOTO_REQUEST_CODE && resultCode == Activity.RESULT_CANCELED) {
+        if (requestCode == TAKE_PHOTO_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                /* if the picture was taken and saved to internal storage successfully,
+                /* If the picture was taken and saved to internal storage successfully,
                 let's save its URI to the database
                  */
-                val extras = data.extras
-                val imageURI = extras!!.get(MediaStore.EXTRA_OUTPUT) as Uri
-                saveImgToDB(imageURI)
+                saveImgToDB(currentImageUri)
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                /* if the picture was not taken or not saved to internal storage, delete
+                /* I the picture was not taken or not saved to internal storage, delete
                  the file that had been created (where the picture was supposed to go)
                  */
                 currentImageFile.delete()
+                /* Should something currentImagePath and currentImageUri be nulled
+                 or just in case???
+                 */
             }
         }
     }
