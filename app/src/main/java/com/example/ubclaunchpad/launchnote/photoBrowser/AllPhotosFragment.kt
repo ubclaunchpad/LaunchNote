@@ -10,6 +10,7 @@ import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 /**
  * Fragment displaying all photos in a grid format
@@ -28,6 +29,7 @@ class AllPhotosFragment : Fragment() {
     private fun loadImages() {
         PicNoteDatabase.getDatabase(activity)?.let {
             it.picNoteDao().loadAll()
+                    .take(10, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { picNotes ->
