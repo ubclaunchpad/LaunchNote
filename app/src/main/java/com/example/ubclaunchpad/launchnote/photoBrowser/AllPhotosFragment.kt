@@ -1,5 +1,6 @@
 package com.example.ubclaunchpad.launchnote.photoBrowser
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase
+import com.example.ubclaunchpad.launchnote.recyclerView.RecyclerViewActivity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
@@ -23,7 +25,8 @@ class AllPhotosFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        loadImages()
+        startActivity(Intent(this.context, RecyclerViewActivity::class.java))
+        // loadImages()
     }
 
     private fun loadImages() {
