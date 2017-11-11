@@ -55,9 +55,11 @@ class AllPhotosFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            initViews(3) // 3 columns while straight
+            var NUM_COLUMNS_PORTRAIT: Int = 3;
+            initViews(NUM_COLUMNS_PORTRAIT) // 3 columns while straight
         } else {
-            initViews(4) // 4 columns while rotated
+            var NUM_COLUMNS_LANDSCAPE: Int = 4;
+            initViews(NUM_COLUMNS_LANDSCAPE) // 4 columns while rotated
         }
     }
 
@@ -69,7 +71,6 @@ class AllPhotosFragment : Fragment() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { picNotes ->
                         for (next in picNotes) {
-                            // TODO: display it in RecyclerView
                             Toast.makeText(activity, "${next.id} ${next.imageUri}", Toast.LENGTH_SHORT).show()
                         }
                     }
