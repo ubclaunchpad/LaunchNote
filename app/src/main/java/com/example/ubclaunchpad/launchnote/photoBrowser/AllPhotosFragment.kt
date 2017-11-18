@@ -1,6 +1,5 @@
 package com.example.ubclaunchpad.launchnote.photoBrowser
 
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -12,7 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase
-import com.example.ubclaunchpad.launchnote.recyclerView.AndroidVersion
+import com.example.ubclaunchpad.launchnote.recyclerView.DisplayImage
 import com.example.ubclaunchpad.launchnote.recyclerView.DataAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -77,12 +76,10 @@ class AllPhotosFragment : Fragment() {
         }
     }
 
-    private fun prepareData(): ArrayList<AndroidVersion> {
-        val android_version = ArrayList<AndroidVersion>()
+    private fun prepareData(): ArrayList<DisplayImage> {
+        val android_version = ArrayList<DisplayImage>()
         for (i in 0 until android_version_names.size) {
-            val androidVersion = AndroidVersion()
-            androidVersion.android_version_name = android_version_names[i]
-            androidVersion.android_image_url = android_image_urls[i]
+            val androidVersion = DisplayImage(android_version_names[i], android_image_urls[i])
             android_version.add(androidVersion)
         }
         return android_version
