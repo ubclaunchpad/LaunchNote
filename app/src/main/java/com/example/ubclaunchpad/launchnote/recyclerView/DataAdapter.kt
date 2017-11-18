@@ -35,7 +35,7 @@ class DataAdapter(private val context: Context, private val pictures: ArrayList<
         Glide.with(context)
                 // .asBitmap()
                 .load(pictures[i].imageUri)
-                .apply(RequestOptions().override(600, 200))
+                .apply(RequestOptions().override(600, 400))
                 .into(viewHolder.image)
 
         viewHolder.image.setOnClickListener({

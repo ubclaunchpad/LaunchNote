@@ -41,7 +41,7 @@ class ExpandPhotoActivity : AppCompatActivity() {
     fun fullScreen() {
         val uiOptions = window.decorView.systemUiVisibility
         var newUiOptions = uiOptions
-        val isImmersiveModeEnabled = isImmersiveModeEnabled()   // built-in 
+        val isImmersiveModeEnabled = isImmersiveModeEnabled()   // built-in
 
         if (isImmersiveModeEnabled) {
             Log.i("TEST", "Turning immersive mode mode off. ")
