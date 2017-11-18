@@ -9,6 +9,7 @@ import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.R
 
 import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase
@@ -22,16 +23,20 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class TakePhotoActivity : AppCompatActivity() {
+class TakePhotoActivity : BaseActivity() {
+    override fun getContentViewId(): Int {
+        return R.layout.activity_take_photo
+    }
+
     internal lateinit var currentImagePath: String
     internal lateinit var currentImageFile: File
     internal lateinit var currentImageUri: Uri
     var picNoteToSave: PicNote? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_take_photo)
-    }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContentView(R.layout.activity_take_photo)
+//    }
 
     fun takePhoto(view: View) {
         // Intent to open up Android's camera

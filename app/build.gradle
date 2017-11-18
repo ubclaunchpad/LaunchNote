@@ -49,6 +49,8 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     // for Google Mobile Vision Text API
     compile 'com.google.android.gms:play-services-vision:11.0.4'
+
+    compile 'com.squareup.picasso:picasso:2.5.2'
 }
 repositories {
     mavenCentral()
