@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase
-import com.example.ubclaunchpad.launchnote.recyclerView.DisplayImage
+import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.recyclerView.DataAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -76,13 +76,13 @@ class AllPhotosFragment : Fragment() {
         }
     }
 
-    private fun prepareData(): ArrayList<DisplayImage> {
-        val android_version = ArrayList<DisplayImage>()
+    private fun prepareData(): ArrayList<PicNote> {
+        val picNotes = ArrayList<PicNote>()
         for (i in 0 until android_version_names.size) {
-            val androidVersion = DisplayImage(android_version_names[i], android_image_urls[i])
-            android_version.add(androidVersion)
+            val picNote = PicNote(android_image_urls[i], android_version_names[i])
+            picNotes.add(picNote)
         }
-        return android_version
+        return picNotes
     }
 
     private fun initViews(numColumn: Int) {

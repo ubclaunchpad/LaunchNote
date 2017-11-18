@@ -11,16 +11,17 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.ubclaunchpad.launchnote.R;
+import com.example.ubclaunchpad.launchnote.models.PicNote;
 
 import java.util.ArrayList;
 
 public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
-    private ArrayList<DisplayImage> androidVersion;
+    private ArrayList<PicNote> pictures;
     private Context context;
 
 
-    public DataAdapter(Context context, ArrayList<DisplayImage> android) {
-        this.androidVersion = android;
+    public DataAdapter(Context context, ArrayList<PicNote> android) {
+        this.pictures = android;
         this.context = context;
     }
 
@@ -33,15 +34,15 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(DataAdapter.ViewHolder viewHolder, int i) {
 
-        viewHolder.tv_android.setText(androidVersion.get(i).getImageText());
+        viewHolder.tv_picnote.setText(pictures.get(i).getDescription());
 
         Glide.with(context)
                 // .asBitmap()
-                .load(androidVersion.get(i).getImageUrl())
+                .load(pictures.get(i).getImageUri())
                 .apply(new RequestOptions().override(600,200))
-                .into(viewHolder.img_android);
+                .into(viewHolder.img_picnote);
 
-        // Picasso.with(context).load(androidVersion.get(i).getImageUrl()).resize(240,220).into(viewHolder.img_android);
+        // Picasso.with(context).load(pictures.get(i).getImageUrl()).resize(240,220).into(viewHolder.img_picnote);
 
     }
     // changed dimensions to be more square, taking into account of size of text box
@@ -52,17 +53,17 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return androidVersion.size();
+        return pictures.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        private TextView tv_android;
-        private ImageView img_android;
+        private TextView tv_picnote;
+        private ImageView img_picnote;
         public ViewHolder(View view) {
             super(view);
 
-            tv_android = (TextView)view.findViewById(R.id.tv_android);
-            img_android = (ImageView) view.findViewById(R.id.img_android);
+            tv_picnote = (TextView)view.findViewById(R.id.tv_android);
+            img_picnote = (ImageView) view.findViewById(R.id.img_android);
         }
     }
 
