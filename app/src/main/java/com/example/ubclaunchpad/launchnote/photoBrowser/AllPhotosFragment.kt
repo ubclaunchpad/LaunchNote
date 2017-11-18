@@ -8,20 +8,22 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
-import com.example.ubclaunchpad.launchnote.recyclerView.DataAdapter
+import com.example.ubclaunchpad.launchnote.recyclerView.AllPhotosAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import java.util.ArrayList
-import java.util.concurrent.TimeUnit
+import java.util.*
 
 /**
  * Fragment displaying all photos in a grid format
  */
 class AllPhotosFragment : Fragment() {
+
+    private var picNotes: MutableList<PicNote> = mutableListOf()
+
+    lateinit var adapter: AllPhotosAdapter
 
     private val android_version_names = arrayOf(
         "Unit 1",
@@ -47,6 +49,11 @@ class AllPhotosFragment : Fragment() {
         "https://lh3.googleusercontent.com/qVIQyBzvkn6UPtWMVzfD3zIxcNjQq6_xnw1-pAbo9qxbSe-if_7376eT2FWUJWoXVhVVXuTLIb3dRvSP4J37Z1LJmrd1TV0ItKwUbBJUzyuEs1Fx4Ec-qjWVCv5Sj4ELChLCOnGzSmbXMz_duQmgz-iQfLtD2NKWcyUBDijZOSp16owkxr04a6Uc4N-xSzRTq4C-xZi-iFvksdGjJuBFLvScjNkt3DCWQigUF9frzEzneB5tmjhD2YfSi9SPFg4HA5_ZDBL7jh5XXOLlcb6bfCebA55V1YX_IXMdcWMe5-TcEjMtHPAFaqx69jPwgLxiQ_yAYkK7G_lQ-fzIYq3oqOZLJQkxxfp7n--zqpYyrlLWfa-zRcrtIT1fH3KOczwDpnBX-DcyK6ygptoHW1JiRAxHFW3gD2aBBNjcSoJpM6y8xfNNrM3MPlRNeu_2Sl5cnZ-okSlJ0K9eEG3zyHQADk_LaGWUUmq5q1zkDSu1bhquynEu8hQ54kkNYn6GBtyisDRNMcV6MD-aZlmQgj8zVTIyfj7Rb_43D84RF1hYeVhdeR9T5veAH9ETHgcrt5t7ALi9wX4N1vfiVf1FdB2zfRpHArgJ7anzcv11GfixOQ=w693-h923-no"
     )
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        loadImages()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_all_photos, null)
     }
@@ -54,10 +61,8 @@ class AllPhotosFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            var NUM_COLUMNS_PORTRAIT: Int = 3;
             initViews(NUM_COLUMNS_PORTRAIT) // 3 columns while straight
         } else {
-            var NUM_COLUMNS_LANDSCAPE: Int = 4;
             initViews(NUM_COLUMNS_LANDSCAPE) // 4 columns while rotated
         }
     }
@@ -65,12 +70,13 @@ class AllPhotosFragment : Fragment() {
     private fun loadImages() {
         PicNoteDatabase.getDatabase(activity)?.let {
             it.picNoteDao().loadAll()
-                    .take(10, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { picNotes ->
-                        for (next in picNotes) {
-                            Toast.makeText(activity, "${next.id} ${next.imageUri}", Toast.LENGTH_SHORT).show()
+                    .subscribe { dbPicNotes ->
+                        picNotes.clear()
+                        for (next in dbPicNotes) {
+                            picNotes.add(next)
+                            adapter.notifyDataSetChanged()
                         }
                     }
         }
@@ -86,15 +92,17 @@ class AllPhotosFragment : Fragment() {
     }
 
     private fun initViews(numColumn: Int) {
-        // thing?.hi == if (thing != null) thing.hi else return null
-
-        val recyclerView = getView()!!.findViewById<RecyclerView>(R.id.card_recycler_view)
+        val recyclerView = view!!.findViewById<RecyclerView>(R.id.card_recycler_view)
         recyclerView.setHasFixedSize(true)
-        val layoutManager = GridLayoutManager(getActivity(), numColumn)
+        val layoutManager = GridLayoutManager(activity, numColumn)
         recyclerView.layoutManager = layoutManager
 
-        val androidVersions = prepareData()
-        val adapter = DataAdapter(getActivity(), androidVersions)
+        adapter = AllPhotosAdapter(activity, picNotes)
         recyclerView.adapter = adapter
+    }
+
+    companion object {
+        const val NUM_COLUMNS_PORTRAIT = 3
+        const val NUM_COLUMNS_LANDSCAPE = 4
     }
 }
