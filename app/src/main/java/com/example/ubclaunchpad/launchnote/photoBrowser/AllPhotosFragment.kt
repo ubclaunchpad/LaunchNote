@@ -19,6 +19,8 @@ import io.reactivex.schedulers.Schedulers
  */
 class AllPhotosFragment : Fragment() {
 
+    // a MutableList in Kotlin is the same as a List in Java
+    // Kotlin also has a List class, but it's immutable and doesn't let you add/remove items
     private var picNotes: MutableList<PicNote> = mutableListOf()
 
     lateinit var adapter: AllPhotosAdapter

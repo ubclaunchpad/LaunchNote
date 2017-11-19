@@ -15,12 +15,17 @@ import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.models.PicNote
 
 
+// For reference: https://developer.android.com/reference/android/support/v7/widget/RecyclerView.ViewHolder.html
 class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
 
     private lateinit var picNotes: List<PicNote>
     private lateinit var context: Context
 
-
+    /**
+     * The secondary constructor
+     * It'll call the constructor inherited from RecyclerView.Adapter
+     * and also set the picNotes and context fields
+     */
     constructor(context: Context, picNotes: List<PicNote>) : this() {
         this.picNotes = picNotes
         this.context = context
