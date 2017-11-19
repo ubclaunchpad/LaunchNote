@@ -1,6 +1,7 @@
 package com.example.ubclaunchpad.launchnote.photoBrowser
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -33,7 +34,7 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val picNote = picNotes[position]
-        holder.label.text = picNote.description
+        holder.description.text = picNote.description
 
         // get Bitmap from the picNote's URI and show it in an ImageView
         Glide.with(context)
@@ -41,9 +42,17 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
                 .load(picNote.imageUri)
                 .into(object : SimpleTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
+                        // set the image
                         holder.image.setImageBitmap(resource)
                         // TODO: replace with real description
-                        holder.label.text = "fake description"
+                        // set the text
+                        holder.description.text = "fake description"
+
+                        holder.image.setOnClickListener {
+                            val intent = Intent(context, ExpandPhotoActivity::class.java)
+                            intent.putExtra("INTENT_IMAGE_URI", picNote.imageUri)  // pass in 1 imageuri to ExpandPhotoActivity
+                            context.startActivity(intent)
+                        }
                     }
                 })
     }
@@ -60,7 +69,7 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         // our ViewHolder has two Views: an Imageview displaying the actual photo,
         // and a TextView displaying the description
-        var label: TextView = view.findViewById<View>(R.id.label) as TextView
+        var description: TextView = view.findViewById<View>(R.id.description) as TextView
         var image: ImageView = view.findViewById<View>(R.id.image) as ImageView
 
     }
