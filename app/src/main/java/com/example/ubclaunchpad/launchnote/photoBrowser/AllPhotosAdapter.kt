@@ -1,9 +1,8 @@
-package com.example.ubclaunchpad.launchnote.recyclerView
+package com.example.ubclaunchpad.launchnote.photoBrowser
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,13 +30,15 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
         val picNote = picNotes[position]
         holder.label.text = picNote.description
 
+        // get Bitmap from the picNote's URI and show it in an ImageView
         Glide.with(context)
                 .asBitmap()
                 .load(picNote.imageUri)
                 .into(object : SimpleTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
-                        // set photoBitmap to the loaded Bitmap
                         holder.image.setImageBitmap(resource)
+                        // TODO: replace with real description
+                        holder.label.text = "fake description"
                     }
                 })
     }
@@ -52,6 +53,8 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        // our ViewHolder has two Views: an Imageview displaying the actual photo,
+        // and a TextView displaying the description
         var label: TextView = view.findViewById<View>(R.id.label) as TextView
         var image: ImageView = view.findViewById<View>(R.id.image) as ImageView
 
