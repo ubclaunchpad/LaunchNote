@@ -71,6 +71,9 @@ class AllPhotosFragment : Fragment() {
     }
 
     companion object {
+        // declaring a const val in a Kotlin class's companion object is equivalent to
+        // declaring a static final variable in Java
+        // Kotlin doesn't have the static keyword, so companion objects are where you put static things
         const val NUM_COLUMNS_PORTRAIT = 3
         const val NUM_COLUMNS_LANDSCAPE = 4
     }
