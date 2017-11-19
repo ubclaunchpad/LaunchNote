@@ -1,21 +1,17 @@
 package com.example.ubclaunchpad.launchnote.photoBrowser
 
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
-import com.example.ubclaunchpad.launchnote.R
 import android.R.attr.uiOptions
+import android.graphics.Bitmap
+import android.os.Build
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-import android.os.Build
-import android.support.annotation.Nullable
-import android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
-import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.github.chrisbanes.photoview.OnPhotoTapListener
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
+import com.example.ubclaunchpad.launchnote.R
 import com.github.chrisbanes.photoview.PhotoView
-
 
 
 class ExpandPhotoActivity : AppCompatActivity() {
@@ -25,15 +21,16 @@ class ExpandPhotoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_expand_photo)
 
         val photoView = findViewById<PhotoView>(R.id.photo_view)
-        val imageUri = intent.getStringExtra("INTENT_IMAGE_URI")  // receives image uri
+        val imageUri = intent.getStringExtra(EXTRA_INTENT_IMAGE_URI)  // receives image uri
         Glide.with(this)
+                .asBitmap()
                 .load(imageUri)
-                .into(photoView)
-        photoView.setOnPhotoTapListener(object : OnPhotoTapListener {
-            override fun onPhotoTap(view: ImageView, x: Float, y: Float) {
-                //fullScreen();
-            }
-        })
+                .into<SimpleTarget<Bitmap>>(object : SimpleTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
+                        // have photoView display the loaded Bitmap
+                        photoView.setImageBitmap(resource)
+                    }
+                })
         fullScreen()
 
     }
@@ -69,4 +66,7 @@ class ExpandPhotoActivity : AppCompatActivity() {
 
     }
 
+    companion object {
+        const val EXTRA_INTENT_IMAGE_URI = "INTENT_IMAGE_URI"
+    }
 }

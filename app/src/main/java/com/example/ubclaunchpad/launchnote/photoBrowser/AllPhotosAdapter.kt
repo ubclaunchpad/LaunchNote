@@ -50,7 +50,7 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
 
                         holder.image.setOnClickListener {
                             val intent = Intent(context, ExpandPhotoActivity::class.java)
-                            intent.putExtra("INTENT_IMAGE_URI", picNote.imageUri)  // pass in 1 imageuri to ExpandPhotoActivity
+                            intent.putExtra(ExpandPhotoActivity.EXTRA_INTENT_IMAGE_URI, picNote.imageUri)  // pass in 1 imageuri to ExpandPhotoActivity
                             context.startActivity(intent)
                         }
                     }
