@@ -11,6 +11,7 @@ import android.graphics.Bitmap
 @Entity
 data class PicNote(
         var imageUri: String = "",
+        var title: String = "",
         var description: String = "",
         @Ignore
         var image: Bitmap? = null

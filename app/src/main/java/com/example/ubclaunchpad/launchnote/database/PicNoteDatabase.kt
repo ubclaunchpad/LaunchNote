@@ -9,7 +9,7 @@ import com.example.ubclaunchpad.launchnote.models.PicNote
 /**
  * Database for PicNote
  */
-@Database(entities = arrayOf(PicNote::class), version = 1)
+@Database(entities = arrayOf(PicNote::class), version = 2)
 abstract class PicNoteDatabase : RoomDatabase() {
 
     abstract fun picNoteDao(): PicNoteDao

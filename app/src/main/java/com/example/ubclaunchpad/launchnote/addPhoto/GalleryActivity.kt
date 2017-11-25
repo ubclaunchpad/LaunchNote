@@ -80,7 +80,7 @@ class GalleryActivity : BaseActivity() {
         if (photoUri != null && photoBitmap != null) {
             // TODO: parse out the description
             // passing in empty string for now
-            picNoteToSave = PicNote(photoUri.toString(), "", photoBitmap)
+            picNoteToSave = PicNote(photoUri.toString(), "", "", photoBitmap)
 
             // insert image into database on a different thread
             PicNoteDatabase.getDatabase(this)?.let {

@@ -64,6 +64,10 @@ class TakePhotoActivity : BaseActivity() {
                 let's save its URI to the database
                  */
                 saveImgToDB(currentImageUri)
+                /*val fragment = PhotoInfoFragment.newInstance()
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.take_photo_container, fragment).commit()*/
+
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 /* I the picture was not taken or not saved to internal storage, delete
                  the file that had been created (where the picture was supposed to go)
@@ -79,7 +83,7 @@ class TakePhotoActivity : BaseActivity() {
     private fun saveImgToDB(imageURI: Uri) {
         // TODO: parse out the description
         // passing in empty string for now
-        picNoteToSave = PicNote(imageURI.toString(), "", null)
+        picNoteToSave = PicNote(imageURI.toString(), "", "")
 
         // insert image into database on a different thread
         PicNoteDatabase.getDatabase(this)?.let {
