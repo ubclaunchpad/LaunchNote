@@ -17,4 +17,7 @@ data class PicNote(
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
+
+    var classId: Int = 0
+    var projectId: Int = 0
 }

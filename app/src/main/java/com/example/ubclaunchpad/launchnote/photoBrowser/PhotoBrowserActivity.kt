@@ -22,7 +22,7 @@ class PhotoBrowserActivity : BaseActivity() {
 
         // set up ViewPager
         // this lets us swipe between the three different ways of browsing photos:
-        // by Class, by Project, or by All photos
+        // by LaunchNoteClass, by Project, or by All photos
         // each of them is represented by a fragment
         customPagerAdapter = CustomPagerAdapter(supportFragmentManager)
 

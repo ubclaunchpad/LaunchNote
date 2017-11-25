@@ -6,13 +6,11 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
 import android.view.View
 import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.R
 
-import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase
+import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -82,7 +80,7 @@ class TakePhotoActivity : BaseActivity() {
         picNoteToSave = PicNote(imageURI.toString(), "", null)
 
         // insert image into database on a different thread
-        PicNoteDatabase.getDatabase(this)?.let {
+        LaunchNoteDatabase.getDatabase(this)?.let {
             Observable.fromCallable { it.picNoteDao().insert(picNoteToSave) }
                         .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

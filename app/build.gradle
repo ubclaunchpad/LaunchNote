@@ -40,6 +40,9 @@ dependencies {
     // RxJava
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile "io.reactivex.rxjava2:rxjava:2.1.5"
+
+    // Gson, a library for converting between Java objects and JSON
+    compile 'com.google.code.gson:gson:2.8.2'
     // Espresso tests
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
