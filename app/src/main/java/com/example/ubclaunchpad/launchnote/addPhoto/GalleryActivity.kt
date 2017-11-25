@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.ubclaunchpad.launchnote.R
-import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase
+import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
 
 import butterknife.ButterKnife
@@ -83,7 +83,7 @@ class GalleryActivity : BaseActivity() {
             picNoteToSave = PicNote(photoUri.toString(), "", photoBitmap)
 
             // insert image into database on a different thread
-            PicNoteDatabase.getDatabase(this)?.let {
+            LaunchNoteDatabase.getDatabase(this)?.let {
                 Observable.fromCallable { it.picNoteDao().insert(picNoteToSave) }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

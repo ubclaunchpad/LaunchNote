@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.ubclaunchpad.launchnote.R
-import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase
+import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -44,7 +44,7 @@ class AllPhotosFragment : Fragment() {
     }
 
     private fun loadImages() {
-        PicNoteDatabase.getDatabase(activity)?.let {
+        LaunchNoteDatabase.getDatabase(activity)?.let {
             it.picNoteDao().loadAll()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

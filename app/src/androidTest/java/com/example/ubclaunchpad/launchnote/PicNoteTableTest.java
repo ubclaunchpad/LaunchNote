@@ -4,7 +4,7 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 
 import com.example.ubclaunchpad.launchnote.database.PicNoteDao;
-import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase;
+import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase;
 import com.example.ubclaunchpad.launchnote.models.PicNote;
 
 import org.junit.After;
@@ -26,12 +26,12 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class PicNoteTableTest {
     private PicNoteDao picNoteDao;
-    private PicNoteDatabase testDatabase;
+    private LaunchNoteDatabase testDatabase;
 
     @Before
     public void createDb() {
         Context context = InstrumentationRegistry.getTargetContext();
-        testDatabase = Room.inMemoryDatabaseBuilder(context, PicNoteDatabase.class).build();
+        testDatabase = Room.inMemoryDatabaseBuilder(context, LaunchNoteDatabase.class).build();
         picNoteDao = testDatabase.picNoteDao();
     }
 
