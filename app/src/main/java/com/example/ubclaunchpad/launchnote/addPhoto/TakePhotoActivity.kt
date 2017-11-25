@@ -33,11 +33,6 @@ class TakePhotoActivity : BaseActivity() {
     internal lateinit var currentImageUri: Uri
     var picNoteToSave: PicNote? = null
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_take_photo)
-//    }
-
     fun takePhoto(view: View) {
         // Intent to open up Android's camera
         val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
