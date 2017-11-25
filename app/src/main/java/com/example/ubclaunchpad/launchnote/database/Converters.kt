@@ -4,6 +4,9 @@ import android.arch.persistence.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
+/**
+ * Helper class for converting between Java objects and things that can be stored in SQL
+ */
 class Converters {
     // convert from String to list of Ints
     @TypeConverter
