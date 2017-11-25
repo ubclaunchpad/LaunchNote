@@ -1,7 +1,7 @@
 package com.example.ubclaunchpad.launchnote
 
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+import android.content.Intent.*
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
@@ -15,7 +15,7 @@ import com.example.ubclaunchpad.launchnote.photoBrowser.PhotoBrowserActivity
  */
 abstract class BaseActivity : AppCompatActivity() {
 
-    lateinit var bottomNavigation: BottomNavigationView
+    internal lateinit var bottomNavigation: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +23,7 @@ abstract class BaseActivity : AppCompatActivity() {
         setupBottomNavigation()
     }
 
-    fun setupBottomNavigation() {
+    private fun setupBottomNavigation() {
         bottomNavigation = findViewById(R.id.bottom_navigation)
         // set up the buttons in the bottom navigation bar
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
@@ -32,10 +32,12 @@ abstract class BaseActivity : AppCompatActivity() {
                     onAddPhotoClick()
                 }
                 R.id.scan_menu_item -> {
+                    // TODO: create an Activity to handle scanning and move bottom nav selection there
+                    bottomNavigation.menu.getItem(SCAN_MENU_ITEM).isChecked = true
                 }
                 R.id.browse_menu_item -> {
                     val photoBrowserActivityIntent = Intent(applicationContext, PhotoBrowserActivity::class.java)
-                            .apply { flags = FLAG_ACTIVITY_NEW_TASK }
+                            .apply { flags = FLAG_ACTIVITY_REORDER_TO_FRONT }
                     startActivity(photoBrowserActivityIntent)
                 }
             }
@@ -47,7 +49,7 @@ abstract class BaseActivity : AppCompatActivity() {
      * When "Add Photo" is clicked, show menu allowing users to choose between
      * uploading from gallery and taking a photo
      */
-    fun onAddPhotoClick() =
+    private fun onAddPhotoClick() =
             PopupMenu(applicationContext, bottomNavigation).apply {
                 //Inflating the Popup using xml file
                 menuInflater.inflate(R.menu.add_photo, this.menu)
@@ -56,11 +58,11 @@ abstract class BaseActivity : AppCompatActivity() {
                 setOnMenuItemClickListener { item ->
                     if (item.itemId == R.id.take_photo_item) {
                         val takePhotoActivityIntent = Intent(applicationContext, TakePhotoActivity::class.java)
-                                .apply { flags = FLAG_ACTIVITY_NEW_TASK }
+                                .apply { flags = FLAG_ACTIVITY_REORDER_TO_FRONT }
                         startActivity(takePhotoActivityIntent)
                     } else if (item.itemId == R.id.add_from_library_item) {
                         val galleryActivityIntent = Intent(applicationContext, GalleryActivity::class.java)
-                                .apply { flags = FLAG_ACTIVITY_NEW_TASK }
+                                .apply { flags = FLAG_ACTIVITY_REORDER_TO_FRONT }
                         startActivity(galleryActivityIntent)
                     }
                     true
@@ -69,4 +71,10 @@ abstract class BaseActivity : AppCompatActivity() {
             }
 
     abstract fun getContentViewId(): Int
+
+    companion object {
+        const val ADD_MENU_ITEM = 0
+        const val SCAN_MENU_ITEM = 1
+        const val BROWSE_MENU_ITEM = 2
+    }
 }
