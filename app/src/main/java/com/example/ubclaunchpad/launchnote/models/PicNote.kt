@@ -12,11 +12,12 @@ import android.graphics.Bitmap
 data class PicNote(
         var imageUri: String = "",
         var description: String = "",
-        var classId: Int = 0,
-        var projectId: Int = 0,
         @Ignore
         var image: Bitmap? = null
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
+
+    var classId: Int = 0
+    var projectId: Int = 0
 }

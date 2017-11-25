@@ -5,8 +5,8 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.TypeConverters;
 
-import com.example.ubclaunchpad.launchnote.models.Class;
 import com.example.ubclaunchpad.launchnote.models.Project;
 
 import java.util.List;
