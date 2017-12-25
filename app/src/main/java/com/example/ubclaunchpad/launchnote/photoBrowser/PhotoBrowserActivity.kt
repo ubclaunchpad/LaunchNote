@@ -73,9 +73,9 @@ class PhotoBrowserActivity : BaseActivity() {
     }
 
     private fun updateButtons(fragmentId: Int) {
-        class_button.setTextColor(resources.getColor(R.color.material_grey_850))
-        project_button.setTextColor(resources.getColor(R.color.material_grey_850))
-        all_button.setTextColor(resources.getColor(R.color.material_grey_850))
+        class_button.setTextColor(resources.getColor(R.color.darkGreyText))
+        project_button.setTextColor(resources.getColor(R.color.darkGreyText))
+        all_button.setTextColor(resources.getColor(R.color.darkGreyText))
 
         when (fragmentId) {
             CLASS_FRAGMENT -> class_button.setTextColor(resources.getColor(R.color.colorAccent))
