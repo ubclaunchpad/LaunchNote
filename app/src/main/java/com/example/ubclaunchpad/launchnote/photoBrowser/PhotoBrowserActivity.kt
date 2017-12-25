@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.ViewPager
 import butterknife.ButterKnife
 import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.R
@@ -28,6 +29,22 @@ class PhotoBrowserActivity : BaseActivity() {
 
         view_pager.adapter = customPagerAdapter
         view_pager.currentItem = ALL_FRAGMENT
+        // add listener to view_pager that will update buttons when user scrolls to new page
+        view_pager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+                // do nothing
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                // do nothing
+            }
+
+            override fun onPageSelected(position: Int) {
+                // when new page is selected, update button
+                updateButtons(position)
+            }
+
+        })
         updateButtons(ALL_FRAGMENT)
 
         // Watch for button clicks. When a button is clicked, go to the correct fragment
