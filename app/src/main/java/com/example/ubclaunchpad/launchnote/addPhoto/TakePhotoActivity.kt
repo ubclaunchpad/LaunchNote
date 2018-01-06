@@ -3,6 +3,7 @@ package com.example.ubclaunchpad.launchnote.addPhoto
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
@@ -22,6 +23,12 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 class TakePhotoActivity : BaseActivity() {
+
+    override fun onResume() {
+        super.onResume()
+        bottomNavigation.menu.getItem(ADD_MENU_ITEM).isChecked = true
+    }
+
     override fun getContentViewId(): Int {
         return R.layout.activity_take_photo
     }

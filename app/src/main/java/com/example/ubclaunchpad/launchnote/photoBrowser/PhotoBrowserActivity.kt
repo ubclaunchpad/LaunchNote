@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.ViewPager
 import butterknife.ButterKnife
 import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.R
@@ -28,15 +29,59 @@ class PhotoBrowserActivity : BaseActivity() {
 
         view_pager.adapter = customPagerAdapter
         view_pager.currentItem = ALL_FRAGMENT
+        // add listener to view_pager that will update buttons when user scrolls to new page
+        view_pager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+                // do nothing
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                // do nothing
+            }
+
+            override fun onPageSelected(position: Int) {
+                // when new page is selected, update button
+                updateButtons(position)
+            }
+
+        })
+        updateButtons(ALL_FRAGMENT)
 
         // Watch for button clicks. When a button is clicked, go to the correct fragment
-        class_button.setOnClickListener { view_pager.currentItem = CLASS_FRAGMENT }
-        project_button.setOnClickListener { view_pager.currentItem = PROJECT_FRAGMENT }
-        all_button.setOnClickListener { view_pager.currentItem = ALL_FRAGMENT }
+        class_button.setOnClickListener {
+            view_pager.currentItem = CLASS_FRAGMENT
+            updateButtons(CLASS_FRAGMENT)
+
+        }
+        project_button.setOnClickListener {
+            view_pager.currentItem = PROJECT_FRAGMENT
+            updateButtons(PROJECT_FRAGMENT)
+        }
+        all_button.setOnClickListener {
+            view_pager.currentItem = ALL_FRAGMENT
+            updateButtons(ALL_FRAGMENT)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        bottomNavigation.menu.getItem(BROWSE_MENU_ITEM).isChecked = true
     }
 
     override fun getContentViewId(): Int {
         return R.layout.activity_photo_browser
+    }
+
+    private fun updateButtons(fragmentId: Int) {
+        class_button.setTextColor(resources.getColor(R.color.darkGreyText))
+        project_button.setTextColor(resources.getColor(R.color.darkGreyText))
+        all_button.setTextColor(resources.getColor(R.color.darkGreyText))
+
+        when (fragmentId) {
+            CLASS_FRAGMENT -> class_button.setTextColor(resources.getColor(R.color.colorAccent))
+            PROJECT_FRAGMENT -> project_button.setTextColor(resources.getColor(R.color.colorAccent))
+            ALL_FRAGMENT -> all_button.setTextColor(resources.getColor(R.color.colorAccent))
+        }
     }
 
     /**
