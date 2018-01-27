@@ -1,12 +1,12 @@
-package com.example.ubclaunchpad.launchnote.photoBrowser
+package com.example.ubclaunchpad.launchnote.photoBrowser.projects
 
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
@@ -14,11 +14,14 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.models.PicNote
+import com.example.ubclaunchpad.launchnote.photoBrowser.ExpandPhotoActivity
 
 
-// For reference: https://developer.android.com/reference/android/support/v7/widget/RecyclerView.ViewHolder.html
-class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
+/**
+ * Created by sherryuan on 2018-01-09.
+ */
 
+class ProjectHorizontalAdapter() : RecyclerView.Adapter<ProjectHorizontalAdapter.ViewHolder>() {
     private lateinit var picNotes: List<PicNote>
     private lateinit var context: Context
 
@@ -30,6 +33,13 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
     constructor(context: Context, picNotes: List<PicNote>) : this() {
         this.picNotes = picNotes
         this.context = context
+    }
+
+    fun setPicNotes(newPicNotes: List<PicNote>) {
+        if (picNotes !== newPicNotes) {
+            picNotes = newPicNotes
+            notifyDataSetChanged()
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {

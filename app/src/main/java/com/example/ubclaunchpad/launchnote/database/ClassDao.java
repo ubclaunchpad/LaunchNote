@@ -19,7 +19,7 @@ public interface ClassDao {
     // find by ID query
     // retrieve the LaunchNoteClass with the correct ID from the database
     @Query("SELECT * FROM LaunchNoteClass WHERE id = :id")
-    Flowable<List<LaunchNoteClass>> findById(String id);
+    Flowable<List<LaunchNoteClass>> findById(Integer id);
 
     // insert any number of Classes into the database
     // if any IDs conflict with a previously inserted LaunchNoteClass, replace it

@@ -1,29 +1,33 @@
-package com.example.ubclaunchpad.launchnote.photoBrowser
+package com.example.ubclaunchpad.launchnote.photoBrowser.projects
 
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
-import com.example.ubclaunchpad.launchnote.models.PicNote
+import com.example.ubclaunchpad.launchnote.models.Project
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.atomic.AtomicInteger
+
+/**
+ * Created by sherryuan on 2018-01-09.
+ */
 
 /**
  * Fragment displaying all photos in a grid format
  */
-class AllPhotosFragment : Fragment() {
+class ProjectFragment : Fragment() {
 
     // a MutableList in Kotlin is the same as a List in Java
     // Kotlin also has a List class, but it's immutable and doesn't let you add/remove items
-    private var picNotes: MutableList<PicNote> = mutableListOf()
+    private var projects: MutableList<Project> = mutableListOf()
 
-    lateinit var adapter: AllPhotosAdapter
+    lateinit var adapter: ProjectVerticalAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +35,7 @@ class AllPhotosFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_all_photos, null)
+        return inflater.inflate(R.layout.fragment_project, null)
     }
 
     override fun onResume() {
@@ -44,30 +48,35 @@ class AllPhotosFragment : Fragment() {
     }
 
     private fun loadImages() {
-        LaunchNoteDatabase.getDatabase(activity)?.let {
-            it.picNoteDao().loadAll()
+        projects.clear()
+        LaunchNoteDatabase.getDatabase(activity)?.let { database ->
+            database.projectDao().loadAll()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { dbPicNotes ->
-                        // clear the currently saved picNotes
-                        // and replace them with new ones from the database
-                        picNotes.clear()
-                        for (next in dbPicNotes) {
-                            picNotes.add(next)
-                            adapter.notifyDataSetChanged()
+                    .subscribe { dbProjects ->
+                        // loop through all the projects
+                        dbProjects.forEach { dbProject ->
+                            val numPicNotes = AtomicInteger(0)
+                            dbProject.picNoteIds.forEach {
+                                // for each project, loop through the picNoteIds
+                                database.picNoteDao().findById(it).subscribe {
+                                    // get the actual PicNote based on the id and add to the project's PicNotes
+                                    dbProject.picNotes.addAll(it)
+                                    if (numPicNotes.incrementAndGet() == dbProject.picNoteIds.size) {
+                                        // if we've added all the PicNotes for the project, add project to projects
+                                        projects.add(dbProject)
+                                        adapter.setProjects(projects)
+                                        Toast.makeText(activity, "updating adapter", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
                         }
                     }
         }
     }
 
     private fun initViews(numColumn: Int) {
-        val recyclerView = view!!.findViewById<RecyclerView>(R.id.card_recycler_view)
-        recyclerView.setHasFixedSize(true)
-        val layoutManager = GridLayoutManager(activity, numColumn)
-        recyclerView.layoutManager = layoutManager
-
-        adapter = AllPhotosAdapter(activity, picNotes)
-        recyclerView.adapter = adapter
+        // do nothing
     }
 
     companion object {

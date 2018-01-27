@@ -8,6 +8,8 @@ import android.support.v4.view.ViewPager
 import butterknife.ButterKnife
 import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.R
+import com.example.ubclaunchpad.launchnote.photoBrowser.allPhotos.AllPhotosFragment
+import com.example.ubclaunchpad.launchnote.photoBrowser.projects.ProjectFragment
 import kotlinx.android.synthetic.main.activity_photo_browser.*
 
 /**
@@ -30,7 +32,7 @@ class PhotoBrowserActivity : BaseActivity() {
         view_pager.adapter = customPagerAdapter
         view_pager.currentItem = ALL_FRAGMENT
         // add listener to view_pager that will update buttons when user scrolls to new page
-        view_pager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
                 // do nothing
             }
@@ -95,10 +97,13 @@ class PhotoBrowserActivity : BaseActivity() {
             return NUM_ITEMS
         }
 
-        override fun getItem(position: Int): Fragment {
-            // TODO: once the other fragments are implemented, return the correct one
-            return AllPhotosFragment()
-        }
+        override fun getItem(position: Int): Fragment =
+                when (position) {
+                    0 -> AllPhotosFragment() // TODO: once the other fragments are implemented, return the correct one
+                    1 -> ProjectFragment()
+                    2 -> AllPhotosFragment()
+                    else -> throw IllegalArgumentException("Position must be 0, 1, or 2")
+                }
     }
 
     companion object {

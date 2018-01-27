@@ -63,14 +63,14 @@ public class LaunchNoteTableTest {
         picNoteDao.insert(picNote3);
 
         // test that we can find the first PicNote
-        List<PicNote> picNoteById1 = picNoteDao.findById("1").blockingFirst();
+        List<PicNote> picNoteById1 = picNoteDao.findById(1).blockingFirst();
         Assert.assertEquals(picNoteById1.get(0).getImageUri(), picNote1.getImageUri());
         Assert.assertEquals(picNoteById1.get(0).getDescription(), picNote1.getDescription());
 
         Assert.assertEquals(picNoteById1.size(), 1);
 
         // test that we can find the third PicNote
-        List<PicNote> picNoteById3 = picNoteDao.findById("3").blockingFirst();
+        List<PicNote> picNoteById3 = picNoteDao.findById(3).blockingFirst();
         Assert.assertEquals(picNoteById3.get(0).getImageUri(), picNote3.getImageUri());
         Assert.assertEquals(picNoteById3.get(0).getDescription(), picNote3.getDescription());
 
@@ -94,12 +94,12 @@ public class LaunchNoteTableTest {
         classDao.insertAll(class1, class2, class3);
 
         // test that we can find the first LaunchNoteClass
-        List<LaunchNoteClass> classById1 = classDao.findById("1").blockingFirst();
+        List<LaunchNoteClass> classById1 = classDao.findById(1).blockingFirst();
         Assert.assertEquals(classById1.get(0).getDescription(), class1.getDescription());
         Assert.assertEquals(classById1.size(), 1);
 
         // test that we can find the third LaunchNoteClass
-        List<LaunchNoteClass> classById3 = classDao.findById("3").blockingFirst();
+        List<LaunchNoteClass> classById3 = classDao.findById(3).blockingFirst();
         Assert.assertEquals(classById3.get(0).getDescription(), class3.getDescription());
 
         Assert.assertEquals(classById3.size(), 1);
@@ -122,7 +122,7 @@ public class LaunchNoteTableTest {
         projectDao.insertAll(project1, project2, project3);
 
         // test that we can find the first LaunchNoteClass
-        List<Project> projectById1 = projectDao.findById("1").blockingFirst();
+        List<Project> projectById1 = projectDao.findById(1).blockingFirst();
         Assert.assertEquals(projectById1.get(0).getDescription(), project1.getDescription());
         Assert.assertEquals(projectById1.size(), 1);
 

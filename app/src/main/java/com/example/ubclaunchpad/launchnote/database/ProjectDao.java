@@ -19,7 +19,7 @@ public interface ProjectDao {
     // find by ID query
     // retrieve the Project with the correct ID from the database
     @Query("SELECT * FROM Project WHERE id = :id")
-    Flowable<List<Project>> findById(String id);
+    Flowable<List<Project>> findById(Integer id);
 
     // insert any number of Projects into the database
     // if any IDs conflict with a previously inserted Project, replace it
