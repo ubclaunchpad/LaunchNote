@@ -3,6 +3,7 @@ package com.example.ubclaunchpad.launchnote.photoBrowser
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,7 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
 
     private lateinit var picNotes: List<PicNote>
     private lateinit var context: Context
+    var onLongPressImageListener: LongPressImageListener? = null;
 
     /**
      * The secondary constructor
@@ -53,6 +55,11 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
                             intent.putExtra(ExpandPhotoActivity.EXTRA_INTENT_IMAGE_URI, picNote.imageUri)  // pass in 1 imageuri to ExpandPhotoActivity
                             context.startActivity(intent)
                         }
+
+                        holder.image.setOnLongClickListener {
+                            onLongPressImageListener?.onLongPressImageListener(picNote)
+                            true
+                        }
                     }
                 })
     }
@@ -69,8 +76,12 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         // our ViewHolder has two Views: an Imageview displaying the actual photo,
         // and a TextView displaying the description
-        var description: TextView = view.findViewById<View>(R.id.description) as TextView
-        var image: ImageView = view.findViewById<View>(R.id.image) as ImageView
+        val description: TextView = view.findViewById<View>(R.id.description) as TextView
+        val image: ImageView = view.findViewById<View>(R.id.image) as ImageView
 
+    }
+
+    interface LongPressImageListener {
+        fun onLongPressImageListener(picNote: PicNote)
     }
 }

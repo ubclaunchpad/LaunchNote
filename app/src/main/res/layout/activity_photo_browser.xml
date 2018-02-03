@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context="com.example.ubclaunchpad.launchnote.photoBrowser.PhotoBrowserActivity">
 
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/photoBrowserToolbarFragment"
+        class="com.example.ubclaunchpad.launchnote.toolbar.PhotoNavigatonToolbarFragment"/>
+
     <LinearLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
@@ -13,7 +19,8 @@
         android:layout_weight="0"
         android:gravity="center"
         android:measureWithLargestChild="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/photoBrowserToolbarFragment">
 
         <Button
             android:id="@+id/class_button"

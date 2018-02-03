@@ -5,27 +5,36 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.ViewPager
+import android.util.Log
+import android.view.ViewGroup
 import butterknife.ButterKnife
 import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.R
+import com.example.ubclaunchpad.launchnote.models.PicNote
+import com.example.ubclaunchpad.launchnote.toolbar.PhotoNavigatonToolbarFragment
 import kotlinx.android.synthetic.main.activity_photo_browser.*
+import kotlinx.android.synthetic.main.photo_navigation_bar.*
 
 /**
  * Activity for browsing photos in different folders
  */
-class PhotoBrowserActivity : BaseActivity() {
-
+class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, PhotoNavigatonToolbarFragment.OnButtonPressListener {
     lateinit var customPagerAdapter: CustomPagerAdapter
+    lateinit var toolbarFragment: PhotoNavigatonToolbarFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // set up the toolbar
+
         super.onCreate(savedInstanceState)
         ButterKnife.bind(this)
+        setSupportActionBar(topToolbar)
 
         // set up ViewPager
         // this lets us swipe between the three different ways of browsing photos:
         // by LaunchNoteClass, by Project, or by All photos
         // each of them is represented by a fragment
-        customPagerAdapter = CustomPagerAdapter(supportFragmentManager)
+        customPagerAdapter = CustomPagerAdapter(supportFragmentManager, this)
+        toolbarFragment = supportFragmentManager.findFragmentById(R.id.photoBrowserToolbarFragment) as PhotoNavigatonToolbarFragment
 
         view_pager.adapter = customPagerAdapter
         view_pager.currentItem = ALL_FRAGMENT
@@ -63,6 +72,27 @@ class PhotoBrowserActivity : BaseActivity() {
         }
     }
 
+    override fun onEditPhotoMode(isActiveEdit: Boolean, l: List<PicNote>) {
+        if (isActiveEdit) {
+            toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.EditMode)
+        } else {
+            toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.NormalMode)
+        }
+    }
+
+    override fun onButtonClicked(element: Int) {
+        Log.i("INFO","Clicked " + element)
+        when(element) {
+            R.id.edit_toolbar_back_btn -> {
+                customPagerAdapter.currentFragment!!.cancelSelection()
+            }
+            R.id.edit_toolbar_delete_btn -> {
+                customPagerAdapter.currentFragment!!.removeSelection()
+            }
+        }
+    }
+
+
     override fun onResume() {
         super.onResume()
         bottomNavigation.menu.getItem(BROWSE_MENU_ITEM).isChecked = true
@@ -87,17 +117,28 @@ class PhotoBrowserActivity : BaseActivity() {
     /**
      * FragmentPagerAdapter class
      */
-    class CustomPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
-
+    class CustomPagerAdapter(fragmentManager: FragmentManager, val editModeListener: AllPhotosFragment.OnEditPhotoMode) : FragmentPagerAdapter(fragmentManager) {
         val NUM_ITEMS = 3
+        var currentFragment : AllPhotosFragment? = null
 
         override fun getCount(): Int {
             return NUM_ITEMS
         }
 
+        override fun setPrimaryItem(container: ViewGroup?, position: Int, `object`: Any?) {
+            super.setPrimaryItem(container, position, `object`)
+
+            if(currentFragment != `object`) {
+                currentFragment?.cancelSelection()
+                currentFragment = `object` as AllPhotosFragment
+            }
+        }
+
         override fun getItem(position: Int): Fragment {
             // TODO: once the other fragments are implemented, return the correct one
-            return AllPhotosFragment()
+            val fmt = AllPhotosFragment()
+            fmt.onListener = editModeListener
+            return fmt
         }
     }
 
