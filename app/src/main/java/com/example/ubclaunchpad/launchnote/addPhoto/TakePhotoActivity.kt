@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.R
@@ -23,17 +24,22 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class TakePhotoActivity : BaseActivity() {
+class TakePhotoActivity : BaseActivity(), PhotoInfoFragment.OnFragmentInteractionListener {
+    override fun onFragmentInteraction(uri: Uri) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun getContentViewId(): Int {
         return R.layout.activity_take_photo
     }
 
-    internal lateinit var currentImagePath: String
-    internal lateinit var currentImageFile: File
-    internal lateinit var currentImageUri: Uri
+    private lateinit var currentImagePath: String
+    private lateinit var currentImageFile: File
+    private lateinit var currentImageUri: Uri
     var picNoteToSave: PicNote? = null
 
     fun takePhoto(view: View) {
+        /*
         // Intent to open up Android's camera
         val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         // If it can be handled ...
@@ -55,6 +61,8 @@ class TakePhotoActivity : BaseActivity() {
                 startActivityForResult(takePhotoIntent, TAKE_PHOTO_REQUEST_CODE)
             }
         }
+        */
+        openFragmentInfo()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -64,9 +72,6 @@ class TakePhotoActivity : BaseActivity() {
                 let's save its URI to the database
                  */
                 saveImgToDB(currentImageUri)
-                /*val fragment = PhotoInfoFragment.newInstance()
-                val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.take_photo_container, fragment).commit()*/
 
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 /* I the picture was not taken or not saved to internal storage, delete
@@ -77,12 +82,18 @@ class TakePhotoActivity : BaseActivity() {
                  just in case???
                  */
             }
+            //finish() // ??
         }
     }
 
     private fun saveImgToDB(imageURI: Uri) {
         // TODO: parse out the description
         // passing in empty string for now
+        Handler().post(Runnable() {
+            fun run() {
+                openFragmentInfo()
+            }
+        })
         picNoteToSave = PicNote(imageURI.toString(), "", "")
 
         // insert image into database on a different thread
@@ -92,7 +103,7 @@ class TakePhotoActivity : BaseActivity() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe()
         }
-        finish()
+        //finish()
 
     }
 
@@ -109,6 +120,18 @@ class TakePhotoActivity : BaseActivity() {
         currentImageFile = image
         return image
     }
+
+    private fun openFragmentInfo() {
+        // Begin the transaction
+        val transaction = supportFragmentManager.beginTransaction();
+        // Replace the contents of the container with the new fragment
+        transaction.add(R.id.take_photo_container, PhotoInfoFragment());
+        // or transaction.replace(R.id.take_photo_container, PhotoInfoFragment());
+        // Complete the changes added above
+        transaction.commit();
+
+    }
+
 
     companion object {
 
