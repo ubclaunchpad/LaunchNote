@@ -3,8 +3,9 @@ package com.example.ubclaunchpad.launchnote.photoBrowser
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.support.constraint.ConstraintLayout
+import android.graphics.PorterDuff
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,16 +23,18 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
 
     private lateinit var picNotes: List<PicNote>
     private lateinit var context: Context
-    var onLongPressImageListener: LongPressImageListener? = null;
+    private lateinit var picNotesSelected: Set<PicNote>
+    var onOnImageActionListener: onImageActionListener? = null;
 
     /**
      * The secondary constructor
      * It'll call the constructor inherited from RecyclerView.Adapter
      * and also set the picNotes and context fields
      */
-    constructor(context: Context, picNotes: List<PicNote>) : this() {
+    constructor(context: Context, picNotes: List<PicNote>, picNotesSelected: Set<PicNote>) : this() {
         this.picNotes = picNotes
         this.context = context
+        this.picNotesSelected = picNotesSelected
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -51,14 +54,30 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
                         holder.description.text = "fake description"
 
                         holder.image.setOnClickListener {
-                            val intent = Intent(context, ExpandPhotoActivity::class.java)
-                            intent.putExtra(ExpandPhotoActivity.EXTRA_INTENT_IMAGE_URI, picNote.imageUri)  // pass in 1 imageuri to ExpandPhotoActivity
-                            context.startActivity(intent)
+                            if(picNotesSelected.isNotEmpty()){
+                                if(picNotesSelected.contains(picNote)){
+                                    onOnImageActionListener?.onImageDeselected(picNote)
+                                } else {
+                                    onOnImageActionListener?.onImageSelected(picNote)
+                                }
+                            } else {
+                                val intent = Intent(context, ExpandPhotoActivity::class.java)
+                                intent.putExtra(ExpandPhotoActivity.EXTRA_INTENT_IMAGE_URI, picNote.imageUri)  // pass in 1 imageuri to ExpandPhotoActivity
+                                context.startActivity(intent)
+                            }
                         }
 
                         holder.image.setOnLongClickListener {
-                            onLongPressImageListener?.onLongPressImageListener(picNote)
+                            onOnImageActionListener?.onImageSelected(picNote)
                             true
+                        }
+
+                        if(picNotesSelected.contains(picNote)) {
+                            Log.i("INFO", "Marking " + picNote + " as selected!")
+                            val color = 0x8f000000.toInt()
+                            holder.image.setColorFilter( color, PorterDuff.Mode.DARKEN )
+                        } else {
+                            holder.image.clearColorFilter()
                         }
                     }
                 })
@@ -68,6 +87,8 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
         return picNotes.size
     }
 
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.row_layout, parent, false)
         return ViewHolder(view)
@@ -76,12 +97,13 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         // our ViewHolder has two Views: an Imageview displaying the actual photo,
         // and a TextView displaying the description
-        val description: TextView = view.findViewById<View>(R.id.description) as TextView
-        val image: ImageView = view.findViewById<View>(R.id.image) as ImageView
+        val description: TextView = view.findViewById<View>(R.id.photoBrowserDescription) as TextView
+        val image: ImageView = view.findViewById<View>(R.id.photo_browser_image_view) as ImageView
 
     }
 
-    interface LongPressImageListener {
-        fun onLongPressImageListener(picNote: PicNote)
+    interface onImageActionListener {
+        fun onImageSelected(picNote: PicNote)
+        fun onImageDeselected(picNote: PicNote)
     }
 }

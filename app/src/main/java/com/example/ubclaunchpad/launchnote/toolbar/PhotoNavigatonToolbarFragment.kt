@@ -43,19 +43,24 @@ class PhotoNavigatonToolbarFragment : Fragment() {
     fun setMode(newMode: ToolbarMode, view: View = getView()!!) {
         mMode.buttons.forEach {
             val v = view.findViewById<View>(it.id)
-            v.visibility = View.GONE
-            it.listeners.forEach {
-                view.findViewById<View>(it).setOnClickListener {  }
+            v.post {
+                v.visibility = View.GONE
+                it.listeners.forEach {
+                    view.findViewById<View>(it).setOnClickListener {  }
+                }
             }
         }
         newMode.buttons.forEach{
             val v = view.findViewById<View>(it.id)
-            v.visibility = View.VISIBLE
-            it.listeners.forEach { listenerId ->
-                view.findViewById<View>(listenerId).setOnClickListener {
-                    mListener!!.onButtonClicked(listenerId)
+            v.post {
+                v.visibility = View.VISIBLE
+                it.listeners.forEach { listenerId ->
+                    view.findViewById<View>(listenerId).setOnClickListener {
+                        mListener!!.onButtonClicked(listenerId)
+                    }
                 }
             }
+
         }
         mMode = newMode
 

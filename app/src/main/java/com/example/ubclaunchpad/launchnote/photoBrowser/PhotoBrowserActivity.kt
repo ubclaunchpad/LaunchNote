@@ -72,7 +72,7 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
         }
     }
 
-    override fun onEditPhotoMode(isActiveEdit: Boolean, l: List<PicNote>) {
+    override fun onEditPhotoMode(isActiveEdit: Boolean, l: Set<PicNote>) {
         if (isActiveEdit) {
             toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.EditMode)
         } else {

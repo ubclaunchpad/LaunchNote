@@ -23,7 +23,7 @@ class AllPhotosFragment : Fragment() {
     // a MutableList in Kotlin is the same as a List in Java
     // Kotlin also has a List class, but it's immutable and doesn't let you add/remove items
     private val picNotes: MutableList<PicNote> = mutableListOf()
-    private val picNotesSelected: MutableList<PicNote> = mutableListOf();
+    private val picNotesSelected: MutableSet<PicNote> = mutableSetOf();
 
     var onListener: OnEditPhotoMode? = null;
 
@@ -54,11 +54,12 @@ class AllPhotosFragment : Fragment() {
         LaunchNoteDatabase.getDatabase(activity)?.let {
             Thread({
                 picNotesSelected.forEach {pn ->
+                    Log.i("DEL","Deleting: " + pn)
                     it.picNoteDao().delete(pn)
+                    rerenderPhotoGrid()
+                    onListener?.onEditPhotoMode(false)
                 }
                 picNotesSelected.clear()
-                onListener?.onEditPhotoMode(false)
-                rerenderPhotoGrid()
             }).start()
         }
     }
@@ -72,6 +73,9 @@ class AllPhotosFragment : Fragment() {
     private fun rerenderPhotoGrid() {
         // TODO vpineda depending on the view the load images method might change
         loadImages()
+        view?.post {
+            adapter.notifyDataSetChanged()
+        }
     }
 
     private fun loadImages() {
@@ -85,8 +89,8 @@ class AllPhotosFragment : Fragment() {
                         picNotes.clear()
                         for (next in dbPicNotes) {
                             picNotes.add(next)
-                            adapter.notifyDataSetChanged()
                         }
+                        adapter.notifyDataSetChanged()
                     }
         }
     }
@@ -97,18 +101,29 @@ class AllPhotosFragment : Fragment() {
         val layoutManager = GridLayoutManager(activity, numColumn)
         recyclerView.layoutManager = layoutManager
 
-        adapter = AllPhotosAdapter(activity, picNotes)
-        adapter.onLongPressImageListener = onLongPressImage
+        adapter = AllPhotosAdapter(activity, picNotes, picNotesSelected)
+        adapter.onOnImageActionListener = onLongPressImage
         recyclerView.adapter = adapter
     }
 
     /**
      * Callback object for long press image
      */
-    private val onLongPressImage = object : AllPhotosAdapter.LongPressImageListener {
-        override fun onLongPressImageListener(picNote: PicNote) {
+    private val onLongPressImage = object : AllPhotosAdapter.onImageActionListener {
+        override fun onImageSelected(picNote: PicNote) {
             picNotesSelected.add(picNote)
             onListener?.onEditPhotoMode(true, picNotesSelected)
+            // TODO vpineda re-render here is a bit harsh, we might be able to optimize this to just rerender all if we change to selection mode
+            rerenderPhotoGrid()
+        }
+
+        override fun onImageDeselected(picNote: PicNote) {
+            picNotesSelected.remove(picNote)
+            if(picNotesSelected.isEmpty()) {
+                onListener?.onEditPhotoMode(false, picNotesSelected)
+            } else {
+                onListener?.onEditPhotoMode(true, picNotesSelected)
+            }
             // TODO vpineda re-render here is a bit harsh, we might be able to optimize this to just rerender all if we change to selection mode
             rerenderPhotoGrid()
         }
@@ -123,6 +138,6 @@ class AllPhotosFragment : Fragment() {
     }
 
     interface OnEditPhotoMode {
-        fun onEditPhotoMode(isActiveEdit: Boolean, l: List<PicNote> = ArrayList())
+        fun onEditPhotoMode(isActiveEdit: Boolean, l: Set<PicNote> = mutableSetOf())
     }
 }
