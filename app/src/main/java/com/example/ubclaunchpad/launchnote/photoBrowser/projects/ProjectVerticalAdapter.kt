@@ -1,15 +1,13 @@
 package com.example.ubclaunchpad.launchnote.photoBrowser.projects
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
+import android.view.ViewGroup
 import android.widget.TextView
 import com.example.ubclaunchpad.launchnote.R
-import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.models.Project
 
 

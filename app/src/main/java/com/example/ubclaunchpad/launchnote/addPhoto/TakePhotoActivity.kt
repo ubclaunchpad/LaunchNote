@@ -27,6 +27,8 @@ class TakePhotoActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         bottomNavigation.menu.getItem(ADD_MENU_ITEM).isChecked = true
+
+
     }
 
     override fun getContentViewId(): Int {

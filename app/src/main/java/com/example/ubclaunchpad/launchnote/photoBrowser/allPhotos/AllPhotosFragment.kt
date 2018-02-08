@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
+import com.example.ubclaunchpad.launchnote.models.Project
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -51,9 +53,17 @@ class AllPhotosFragment : Fragment() {
                     .subscribe { dbPicNotes ->
                         // clear the currently saved picNotes
                         // and replace them with new ones from the database
+                        var dummyProject = Project("dummy Project")
                         picNotes.clear()
                         for (next in dbPicNotes) {
                             picNotes.add(next)
+                            // next two lines are creating a fake project for testing purposes
+                            dummyProject.picNotes.add(next)
+                            Observable.fromCallable { it.projectDao().insert(dummyProject) }
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe()
+
                             adapter.notifyDataSetChanged()
                         }
                     }
