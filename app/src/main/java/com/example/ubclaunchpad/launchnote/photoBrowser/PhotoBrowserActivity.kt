@@ -13,6 +13,9 @@ import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.toolbar.PhotoNavigatonToolbarFragment
+import io.reactivex.Observable
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_photo_browser.*
 import kotlinx.android.synthetic.main.photo_navigation_bar.*
 
@@ -25,7 +28,6 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // set up the toolbar
-
         super.onCreate(savedInstanceState)
         ButterKnife.bind(this)
         setSupportActionBar(topToolbar)
@@ -86,12 +88,16 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
                 }
     }
 
-    override fun onEditPhotoMode(isActiveEdit: Boolean, l: Set<PicNote>) {
-        if (isActiveEdit) {
-            toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.EditMode)
-        } else {
-            toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.NormalMode)
-        }
+    override fun onEditPhotoMode(isActiveEdit: Boolean, selectedImages: Set<PicNote>) {
+        Observable.just(isActiveEdit)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    if (it) {
+                        toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.EditMode)
+                    } else {
+                        toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.NormalMode)
+                    }
+                }
     }
 
     override fun onButtonClicked(butonInfo: Int) {

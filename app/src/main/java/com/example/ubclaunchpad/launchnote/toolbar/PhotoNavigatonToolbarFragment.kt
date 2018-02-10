@@ -30,10 +30,10 @@ class PhotoNavigatonToolbarFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val inflatedView =  inflater!!.inflate(R.layout.photo_navigation_bar, container, false)
+        val inflatedView =  inflater.inflate(R.layout.photo_navigation_bar, container, false)
         setMode(toolMode, inflatedView)
         return inflatedView
     }
@@ -41,21 +41,17 @@ class PhotoNavigatonToolbarFragment : Fragment() {
     fun setMode(newMode: ToolbarMode, view: View = getView()!!) {
         toolMode.elements.forEach {
             val v = view.findViewById<View>(it.id)
-            v.post {
-                v.visibility = View.GONE
-                it.listeners.forEach {
-                    view.findViewById<View>(it).setOnClickListener {  }
-                }
+            v.visibility = View.GONE
+            it.listeners.forEach {
+                view.findViewById<View>(it).setOnClickListener {  }
             }
         }
         newMode.elements.forEach{ elementInfo ->
             val v = view.findViewById<View>(elementInfo.id)
-            v.post {
-                v.visibility = View.VISIBLE
-                elementInfo.listeners.forEach { listenerId ->
-                    view.findViewById<View>(listenerId).setOnClickListener {
-                        buttonListener?.onButtonClicked(listenerId)
-                    }
+            v.visibility = View.VISIBLE
+            elementInfo.listeners.forEach { listenerId ->
+                view.findViewById<View>(listenerId).setOnClickListener {
+                    buttonListener?.onButtonClicked(listenerId)
                 }
             }
 

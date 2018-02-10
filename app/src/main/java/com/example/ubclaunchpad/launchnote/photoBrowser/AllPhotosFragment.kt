@@ -139,6 +139,6 @@ class AllPhotosFragment() : Fragment() {
     }
 
     interface OnEditPhotoMode {
-        fun onEditPhotoMode(isActiveEdit: Boolean, l: Set<PicNote> = mutableSetOf())
+        fun onEditPhotoMode(isActiveEdit: Boolean, imagesSelected: Set<PicNote> = mutableSetOf())
     }
 }
