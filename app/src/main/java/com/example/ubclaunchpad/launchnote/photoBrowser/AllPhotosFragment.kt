@@ -31,7 +31,6 @@ class AllPhotosFragment() : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loadImages()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -45,6 +44,7 @@ class AllPhotosFragment() : Fragment() {
         } else {
             initViews(NUM_COLUMNS_LANDSCAPE) // 4 columns while rotated
         }
+        loadImages()
     }
 
     /**
