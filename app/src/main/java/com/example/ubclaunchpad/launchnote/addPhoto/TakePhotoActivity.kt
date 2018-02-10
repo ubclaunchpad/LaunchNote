@@ -9,6 +9,7 @@ import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.R
@@ -36,10 +37,8 @@ class TakePhotoActivity : BaseActivity(), PhotoInfoFragment.OnFragmentInteractio
     private lateinit var currentImagePath: String
     private lateinit var currentImageFile: File
     private lateinit var currentImageUri: Uri
-    var picNoteToSave: PicNote? = null
 
     fun takePhoto(view: View) {
-        /*
         // Intent to open up Android's camera
         val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         // If it can be handled ...
@@ -61,8 +60,6 @@ class TakePhotoActivity : BaseActivity(), PhotoInfoFragment.OnFragmentInteractio
                 startActivityForResult(takePhotoIntent, TAKE_PHOTO_REQUEST_CODE)
             }
         }
-        */
-        openFragmentInfo()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -71,10 +68,9 @@ class TakePhotoActivity : BaseActivity(), PhotoInfoFragment.OnFragmentInteractio
                 /* If the picture was taken and saved to internal storage successfully,
                 let's save its URI to the database
                  */
-                saveImgToDB(currentImageUri)
-
+                openFragmentInfo()
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                /* I the picture was not taken or not saved to internal storage, delete
+                /* If the picture was not taken or not saved to internal storage, delete
                  the file that had been created (where the picture was supposed to go)
                  */
                 currentImageFile.delete()
@@ -82,29 +78,7 @@ class TakePhotoActivity : BaseActivity(), PhotoInfoFragment.OnFragmentInteractio
                  just in case???
                  */
             }
-            //finish() // ??
         }
-    }
-
-    private fun saveImgToDB(imageURI: Uri) {
-        // TODO: parse out the description
-        // passing in empty string for now
-        Handler().post(Runnable() {
-            fun run() {
-                openFragmentInfo()
-            }
-        })
-        picNoteToSave = PicNote(imageURI.toString(), "", "")
-
-        // insert image into database on a different thread
-        PicNoteDatabase.getDatabase(this)?.let {
-            Observable.fromCallable { it.picNoteDao().insert(picNoteToSave) }
-                        .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe()
-        }
-        //finish()
-
     }
 
     @Throws(IOException::class)
@@ -122,13 +96,17 @@ class TakePhotoActivity : BaseActivity(), PhotoInfoFragment.OnFragmentInteractio
     }
 
     private fun openFragmentInfo() {
-        // Begin the transaction
-        val transaction = supportFragmentManager.beginTransaction();
-        // Replace the contents of the container with the new fragment
-        transaction.add(R.id.take_photo_container, PhotoInfoFragment());
-        // or transaction.replace(R.id.take_photo_container, PhotoInfoFragment());
+        val bundle = Bundle()
+        bundle.putString(URI_KEY, currentImageUri.toString())
+        // Begin transaction
+        val transaction = supportFragmentManager.beginTransaction()
+        // Replace the contents of the container with the info fragment
+        val fragment = PhotoInfoFragment()
+        fragment.arguments = bundle
+        transaction.add(R.id.take_photo_container, PhotoInfoFragment())
+        // or transaction.replace(R.id.take_photo_container, PhotoInfoFragment())
         // Complete the changes added above
-        transaction.commit();
+        transaction.commitAllowingStateLoss()
 
     }
 
@@ -140,6 +118,7 @@ class TakePhotoActivity : BaseActivity(), PhotoInfoFragment.OnFragmentInteractio
         internal const val AUTHORITY = "com.example.ubclaunchpad.launchnote.FileProvider"
         internal const val JPEG = "JPEG_"
         internal const val IMAGE_EXTENSION = ".jpg"
+        const val URI_KEY = "uri"
     }
 
 }

@@ -4,11 +4,19 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 
 import com.example.ubclaunchpad.launchnote.R
+import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase
+import com.example.ubclaunchpad.launchnote.models.PicNote
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_photo_info.*
 
 /**
  * A simple [Fragment] subclass.
@@ -20,6 +28,8 @@ import com.example.ubclaunchpad.launchnote.R
  */
 class PhotoInfoFragment : Fragment() {
 
+    private var picNoteToSave: PicNote? = null
+
     // TODO: Rename and change types of parameters
     private var mParam1: String? = null
     private var mParam2: String? = null
@@ -28,15 +38,14 @@ class PhotoInfoFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            mParam1 = arguments.getString(ARG_PARAM1)
-            mParam2 = arguments.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
+        //val uriStr = arguments.getString(TakePhotoActivity.URI_KEY)
+        //imageURI = Uri.parse(uriStr)
+        save_button.setOnClickListener { saveImgToDB() }
         return inflater!!.inflate(R.layout.fragment_photo_info, container, false)
     }
 
@@ -59,6 +68,29 @@ class PhotoInfoFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         mListener = null
+    }
+
+    private fun saveImgToDB() {
+        val uriStr = arguments.getString(TakePhotoActivity.URI_KEY)
+        val imageURI = Uri.parse((uriStr))
+        Log.d("title", title_input.text.toString())
+        Log.d("description", description_input.text.toString())
+        Log.d("class", class_input.text.toString())
+        Log.d("project", project_input.text.toString())
+
+        /*
+        // TODO: parse out the description
+        // passing in empty string for now
+        Log.d("TEST", "testing")
+        picNoteToSave = PicNote(imageURI.toString(), "", "")
+
+        // insert image into database on a different thread
+        PicNoteDatabase.getDatabase(activity)?.let {
+            Observable.fromCallable { it.picNoteDao().insert(picNoteToSave) }
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe()
+        }*/
     }
 
     /**
