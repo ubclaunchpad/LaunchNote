@@ -25,7 +25,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private fun setupBottomNavigation() {
         bottomNavigation = findViewById(R.id.bottom_navigation)
-        // set up the buttons in the bottom navigation bar
+        // set up the elements in the bottom navigation bar
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.add_menu_item -> {
