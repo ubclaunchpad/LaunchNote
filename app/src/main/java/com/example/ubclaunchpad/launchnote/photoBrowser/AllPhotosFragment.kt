@@ -12,19 +12,19 @@ import android.view.ViewGroup
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
+import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 /**
  * Fragment displaying all photos in a grid format
  */
-class AllPhotosFragment : Fragment() {
+class AllPhotosFragment() : Fragment() {
 
     // a MutableList in Kotlin is the same as a List in Java
     // Kotlin also has a List class, but it's immutable and doesn't let you add/remove items
     private val picNotes: MutableList<PicNote> = mutableListOf()
     private val picNotesSelected: MutableSet<PicNote> = mutableSetOf();
-
     var onListener: OnEditPhotoMode? = null;
 
     lateinit var adapter: AllPhotosAdapter
@@ -51,16 +51,17 @@ class AllPhotosFragment : Fragment() {
      * Removes the selected images from the database, clears the selection and forces a rerender
      */
     fun removeSelection() {
-        LaunchNoteDatabase.getDatabase(activity)?.let {
-            Thread({
+        Flowable.fromCallable {
+            LaunchNoteDatabase.getDatabase(activity)?.let {
                 picNotesSelected.forEach {pn ->
                     Log.i("DEL","Deleting: " + pn)
                     it.picNoteDao().delete(pn)
-                    rerenderPhotoGrid()
-                    onListener?.onEditPhotoMode(false)
                 }
                 picNotesSelected.clear()
-            }).start()
+            }
+        }.subscribeOn(Schedulers.io()).subscribe {
+            rerenderPhotoGrid()
+            onListener?.onEditPhotoMode(false)
         }
     }
 
@@ -112,7 +113,7 @@ class AllPhotosFragment : Fragment() {
     private val onLongPressImage = object : AllPhotosAdapter.onImageActionListener {
         override fun onImageSelected(picNote: PicNote) {
             picNotesSelected.add(picNote)
-            onListener?.onEditPhotoMode(true, picNotesSelected)
+            onListener!!.onEditPhotoMode(true, picNotesSelected)
             // TODO vpineda re-render here is a bit harsh, we might be able to optimize this to just rerender all if we change to selection mode
             rerenderPhotoGrid()
         }
@@ -120,9 +121,9 @@ class AllPhotosFragment : Fragment() {
         override fun onImageDeselected(picNote: PicNote) {
             picNotesSelected.remove(picNote)
             if(picNotesSelected.isEmpty()) {
-                onListener?.onEditPhotoMode(false, picNotesSelected)
+                onListener!!.onEditPhotoMode(false, picNotesSelected)
             } else {
-                onListener?.onEditPhotoMode(true, picNotesSelected)
+                onListener!!.onEditPhotoMode(true, picNotesSelected)
             }
             // TODO vpineda re-render here is a bit harsh, we might be able to optimize this to just rerender all if we change to selection mode
             rerenderPhotoGrid()

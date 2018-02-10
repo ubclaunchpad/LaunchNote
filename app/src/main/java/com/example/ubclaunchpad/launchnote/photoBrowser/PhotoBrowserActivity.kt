@@ -1,6 +1,7 @@
 package com.example.ubclaunchpad.launchnote.photoBrowser
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
@@ -28,6 +29,7 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
         super.onCreate(savedInstanceState)
         ButterKnife.bind(this)
         setSupportActionBar(topToolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         // set up ViewPager
         // this lets us swipe between the three different ways of browsing photos:
@@ -37,8 +39,9 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
         toolbarFragment = supportFragmentManager.findFragmentById(R.id.photoBrowserToolbarFragment) as PhotoNavigatonToolbarFragment
 
         view_pager.adapter = customPagerAdapter
+        // todo vpineda should we be reading the current item from the bundle rather than hardcoding it?
         view_pager.currentItem = ALL_FRAGMENT
-        // add listener to view_pager that will update buttons when user scrolls to new page
+        // add listener to view_pager that will update elements when user scrolls to new page
         view_pager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
                 // do nothing
@@ -70,6 +73,17 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
             view_pager.currentItem = ALL_FRAGMENT
             updateButtons(ALL_FRAGMENT)
         }
+
+        // Restore state of fragments
+        (0 until NUMBER_OF_FRAGMENTS)
+                .map { // todo vpineda generalize to the diff types of photo fragments
+                    supportFragmentManager.findFragmentByTag("android:switcher:${R.id.view_pager}:$it") as AllPhotosFragment?
+                }
+                .forEach { f ->
+                    f?.let {
+                        it.onListener = this
+                    }
+                }
     }
 
     override fun onEditPhotoMode(isActiveEdit: Boolean, l: Set<PicNote>) {
@@ -80,9 +94,9 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
         }
     }
 
-    override fun onButtonClicked(element: Int) {
-        Log.i("INFO","Clicked " + element)
-        when(element) {
+    override fun onButtonClicked(butonInfo: Int) {
+        Log.i("INFO","Clicked " + butonInfo)
+        when(butonInfo) {
             R.id.edit_toolbar_back_btn -> {
                 customPagerAdapter.currentFragment!!.cancelSelection()
             }
@@ -134,6 +148,10 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
             }
         }
 
+        override fun restoreState(state: Parcelable?, loader: ClassLoader?) {
+            super.restoreState(state, loader)
+        }
+
         override fun getItem(position: Int): Fragment {
             // TODO: once the other fragments are implemented, return the correct one
             val fmt = AllPhotosFragment()
@@ -146,5 +164,6 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
         const val CLASS_FRAGMENT = 0
         const val PROJECT_FRAGMENT = 1
         const val ALL_FRAGMENT = 2
+        const val NUMBER_OF_FRAGMENTS = 3
     }
 }

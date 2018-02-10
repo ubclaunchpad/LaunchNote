@@ -6,10 +6,9 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.example.ubclaunchpad.launchnote.R
 import java.io.Serializable
-import kotlin.collections.ArrayList
+
 
 /**
  * A simple [Fragment] subclass.
@@ -21,14 +20,13 @@ import kotlin.collections.ArrayList
  */
 class PhotoNavigatonToolbarFragment : Fragment() {
 
-    // TODO: Rename and change types of parameters
-    private var mMode: ToolbarMode = ToolbarMode.NormalMode
-    private var mListener: OnButtonPressListener? = null
+    private var toolMode: ToolbarMode = ToolbarMode.NormalMode
+    private var buttonListener: OnButtonPressListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            mMode = arguments.getSerializable(MODE) as ToolbarMode
+        arguments?.let {
+            toolMode = it.getSerializable(MODE) as ToolbarMode
         }
     }
 
@@ -36,12 +34,12 @@ class PhotoNavigatonToolbarFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val inflatedView =  inflater!!.inflate(R.layout.photo_navigation_bar, container, false)
-        setMode(mMode, inflatedView)
+        setMode(toolMode, inflatedView)
         return inflatedView
     }
 
     fun setMode(newMode: ToolbarMode, view: View = getView()!!) {
-        mMode.buttons.forEach {
+        toolMode.elements.forEach {
             val v = view.findViewById<View>(it.id)
             v.post {
                 v.visibility = View.GONE
@@ -50,34 +48,33 @@ class PhotoNavigatonToolbarFragment : Fragment() {
                 }
             }
         }
-        newMode.buttons.forEach{
-            val v = view.findViewById<View>(it.id)
+        newMode.elements.forEach{ elementInfo ->
+            val v = view.findViewById<View>(elementInfo.id)
             v.post {
                 v.visibility = View.VISIBLE
-                it.listeners.forEach { listenerId ->
+                elementInfo.listeners.forEach { listenerId ->
                     view.findViewById<View>(listenerId).setOnClickListener {
-                        mListener!!.onButtonClicked(listenerId)
+                        buttonListener?.onButtonClicked(listenerId)
                     }
                 }
             }
 
         }
-        mMode = newMode
-
+        toolMode = newMode
     }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         if (context is OnButtonPressListener) {
-            mListener = context
+            buttonListener = context
         } else {
-            throw RuntimeException(context!!.toString() + " must implement OnButtonPressListener")
+            throw RuntimeException("$context must implement OnButtonPressListener")
         }
     }
 
     override fun onDetach() {
         super.onDetach()
-        mListener = null
+        buttonListener = null
     }
 
     /**
@@ -90,20 +87,17 @@ class PhotoNavigatonToolbarFragment : Fragment() {
      * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
      */
     interface OnButtonPressListener {
-        // TODO: Update argument type and name
         fun onButtonClicked(butonInfo: Int)
     }
 
     companion object {
-        private val BUTTONS = "BUTTONS"
         private val MODE = "MODE"
 
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
          *
-         * @param param1 Parameter 1.
-         * @param mode Parameter 2.
+         * @param mode the mode the fragment will be created.
          * @return A new instance of fragment PhotoNavigatonToolbarFragment.
          */
         fun newInstance(mode: ToolbarMode): PhotoNavigatonToolbarFragment {
@@ -115,16 +109,26 @@ class PhotoNavigatonToolbarFragment : Fragment() {
         }
     }
 
-    sealed class ToolbarMode(val buttons: ArrayList<ElementInfo>) : Serializable {
+    /**
+     * Used to indicate the current state of the toolbar. Since its sealed only the objects declared
+     * here will be possible toolbar states
+     * @param elements a list of elements that will be displayed with the list of inner elements
+     *               that we want to set a click listener to
+     */
+    sealed class ToolbarMode(val elements: ArrayList<ElementInfo>) : Serializable {
         object EditMode : ToolbarMode(ArrayList(editButtons.toList()))
         object NormalMode: ToolbarMode(ArrayList(normalModeButtons.toList()))
 
         companion object {
             val editButtonsListeners = arrayOf(R.id.edit_toolbar_back_btn, R.id.edit_toolbar_delete_btn)
             val editButtons = arrayOf(ElementInfo(R.id.edit_toolbar_layout, ArrayList(editButtonsListeners.toList())))
-            val normalModeButtons = arrayOf<ElementInfo>()
+            val normalModeButtons = arrayOf<ElementInfo>(ElementInfo(R.id.photo_view_title))
         }
     }
 
+    /**
+     * @param id parent id of the element that you want to show (ie LinearLayout)
+     * @param listeners elements inside of the parent id that will invoke this fragment's listener
+     */
     data class ElementInfo(val id: Int, val listeners: ArrayList<Int> = ArrayList())
 }// Required empty public constructor

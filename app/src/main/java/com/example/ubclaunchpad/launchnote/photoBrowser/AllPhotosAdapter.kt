@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -74,7 +75,7 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
 
                         if(picNotesSelected.contains(picNote)) {
                             Log.i("INFO", "Marking " + picNote + " as selected!")
-                            val color = 0x8f000000.toInt()
+                            val color = ContextCompat.getColor(context, R.color.imageSelectionMask)
                             holder.image.setColorFilter( color, PorterDuff.Mode.DARKEN )
                         } else {
                             holder.image.clearColorFilter()
@@ -86,8 +87,6 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
     override fun getItemCount(): Int {
         return picNotes.size
     }
-
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.row_layout, parent, false)
