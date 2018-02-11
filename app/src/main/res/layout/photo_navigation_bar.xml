@@ -50,6 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="?attr/actionBarSize"
                     android:gravity="center"
+                    android:id="@+id/edit_toolbar_text_view"
                     style="@style/toolbarTextStyle"
                     android:text="@string/toolbar_edit"/>
 
@@ -59,12 +60,13 @@
                     android:orientation="horizontal"
                     android:gravity="end">
                     <ImageButton
-                        android:layout_width="30dp"
+                        android:layout_width="wrap_content"
                         android:id="@+id/edit_toolbar_delete_btn"
                         android:layout_height="?attr/actionBarSize"
                         android:background="?attr/selectableItemBackground"
                         android:src="@android:drawable/ic_menu_delete"
-                        android:layout_marginRight="14dp"/>
+                        android:paddingEnd="15dp"
+                        android:paddingStart="15dp"/>
 
                 </LinearLayout>
             </LinearLayout>

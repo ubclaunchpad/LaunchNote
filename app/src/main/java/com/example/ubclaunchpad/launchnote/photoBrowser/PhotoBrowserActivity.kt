@@ -14,7 +14,6 @@ import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.toolbar.PhotoNavigatonToolbarFragment
 import io.reactivex.Observable
-import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_photo_browser.*
 import kotlinx.android.synthetic.main.photo_navigation_bar.*
@@ -104,6 +103,9 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
         Log.i("INFO","Clicked " + butonInfo)
         when(butonInfo) {
             R.id.edit_toolbar_back_btn -> {
+                customPagerAdapter.currentFragment!!.cancelSelection()
+            }
+            R.id.edit_toolbar_text_view -> {
                 customPagerAdapter.currentFragment!!.cancelSelection()
             }
             R.id.edit_toolbar_delete_btn -> {

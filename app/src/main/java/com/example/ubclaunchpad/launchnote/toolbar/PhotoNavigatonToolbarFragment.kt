@@ -116,7 +116,7 @@ class PhotoNavigatonToolbarFragment : Fragment() {
         object NormalMode: ToolbarMode(ArrayList(normalModeButtons.toList()))
 
         companion object {
-            val editButtonsListeners = arrayOf(R.id.edit_toolbar_back_btn, R.id.edit_toolbar_delete_btn)
+            val editButtonsListeners = arrayOf(R.id.edit_toolbar_back_btn, R.id.edit_toolbar_delete_btn, R.id.edit_toolbar_text_view)
             val editButtons = arrayOf(ElementInfo(R.id.edit_toolbar_layout, ArrayList(editButtonsListeners.toList())))
             val normalModeButtons = arrayOf<ElementInfo>(ElementInfo(R.id.photo_view_title))
         }

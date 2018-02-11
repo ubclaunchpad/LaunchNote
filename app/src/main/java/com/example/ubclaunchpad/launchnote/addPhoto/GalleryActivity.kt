@@ -9,17 +9,15 @@ import android.provider.MediaStore
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
-
+import butterknife.ButterKnife
+import butterknife.OnClick
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
-
-import butterknife.ButterKnife
-import butterknife.OnClick
-import com.example.ubclaunchpad.launchnote.BaseActivity
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -85,7 +83,8 @@ class GalleryActivity : BaseActivity() {
         if (photoUri != null && photoBitmap != null) {
             // TODO: parse out the description
             // passing in empty string for now
-            picNoteToSave = PicNote(photoUri.toString(), "", photoBitmap)
+            // todo vpineda optimize this save
+            picNoteToSave = PicNote(photoUri.toString(), photoUri.toString(),"", photoBitmap)
 
             // insert image into database on a different thread
             LaunchNoteDatabase.getDatabase(this)?.let {
