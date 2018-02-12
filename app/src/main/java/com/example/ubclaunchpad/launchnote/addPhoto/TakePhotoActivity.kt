@@ -1,12 +1,16 @@
 package com.example.ubclaunchpad.launchnote.addPhoto
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
+import android.support.v7.app.AppCompatActivity
+import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -28,16 +32,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TakePhotoActivity : BaseActivity() {
-
-    override fun onResume() {
-        super.onResume()
-        bottomNavigation.menu.getItem(ADD_MENU_ITEM).isChecked = true
-    }
-
-    override fun getContentViewId(): Int {
-        return R.layout.activity_take_photo
-    }
+class TakePhotoActivity : AppCompatActivity() {
 
     internal lateinit var currentImagePath: String
     internal lateinit var currentImageFile: File
@@ -45,6 +40,18 @@ class TakePhotoActivity : BaseActivity() {
     var picNoteToSave: PicNote? = null
 
     fun takePhoto(view: View) {
+        takePhoto()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if(savedInstanceState?.containsKey(PHOTOFRAGMENTINIT) != true) {
+            takePhoto()
+        }
+        savedInstanceState?.putBoolean(PHOTOFRAGMENTINIT, true)
+    }
+
+    private fun takePhoto() {
         // Intent to open up Android's camera
         val takePhotoIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         // If it can be handled ...
@@ -54,7 +61,7 @@ class TakePhotoActivity : BaseActivity() {
             try {
                 imageFile = createImageFile()
             } catch (e: IOException) {
-                Toast.makeText(view.context, "Cannot save file", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Cannot save file", Toast.LENGTH_LONG).show()
                 e.printStackTrace()
             }
 
@@ -72,7 +79,7 @@ class TakePhotoActivity : BaseActivity() {
     private fun compressImage(): Uri {
         // Compress the images in such a way that we are able to expand them correctly later on
         val maxSize  = maxOf(resources.displayMetrics.widthPixels, resources.displayMetrics.heightPixels) / AllPhotosFragment.NUM_COLUMNS_PORTRAIT
-        val compressedBmp = Glide.with(this)
+        val compressedBmp = Glide.with(applicationContext)
                 .asBitmap()
                 .load(currentImageUri)
                 .apply(RequestOptions.bitmapTransform(CenterInside()))
@@ -86,12 +93,15 @@ class TakePhotoActivity : BaseActivity() {
                 try {
                     if (out != null) {
                         out.close();
+                        out = null;
                     }
                 } catch (e: IOException) {
                     e.printStackTrace()
+                    Toast.makeText(this, "Couldn't compress file to small image, using large one!", Toast.LENGTH_SHORT).show()
                 }
         }
-        return FileProvider.getUriForFile(this, AUTHORITY, f)
+        Log.d("TakePhotoActivity", "Finished compressing file")
+        return if(out == null) currentImageUri else FileProvider.getUriForFile(this, AUTHORITY, f)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -104,26 +114,26 @@ class TakePhotoActivity : BaseActivity() {
                         .observeOn(Schedulers.io())
                         .flatMap({
                             Observable.create<Unit> {
-                                Log.i("INFO", "Got to call 1")
                                 val compressedImageUri = compressImage()
                                 saveImgToDB(currentImageUri, compressedImageUri, it)
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
-                            Log.i("INFO", "Got to call 2")
+                            Log.d("TakePhotoActivity", "Clearing Glide cache")
                             Glide.get(this).clearMemory()
-                            finish()
                         }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 /* I the picture was not taken or not saved to internal storage, delete
                  the file that had been created (where the picture was supposed to go)
                  */
+                Log.d("TakePhotoActivity", "Result canceled deleting temp image")
                 currentImageFile.delete()
                 /* Should something currentImagePath and currentImageUri be nulled
                  just in case???
                  */
             }
+            finish()
         }
     }
 
@@ -162,7 +172,7 @@ class TakePhotoActivity : BaseActivity() {
     }
 
     companion object {
-
+        internal const val PHOTOFRAGMENTINIT = "PHOTOFRAGMENTINIT"
         internal const val TAKE_PHOTO_REQUEST_CODE = 1
         internal const val DATE_FORMAT = "yyyyMMdd_HHmmss"
         internal const val AUTHORITY = "com.example.ubclaunchpad.launchnote.FileProvider"

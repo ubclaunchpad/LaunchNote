@@ -35,6 +35,10 @@ class GalleryActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         photoView = findViewById(R.id.imgView)
+        if(savedInstanceState?.containsKey(GALLERYBROWSEOPEN) != true) {
+            loadImageFromGallery()
+        }
+        savedInstanceState?.putBoolean(GALLERYBROWSEOPEN, true)
         ButterKnife.bind(this)
     }
 
@@ -66,15 +70,18 @@ class GalleryActivity : BaseActivity() {
                         }
                     })
         } else {
-            Toast.makeText(this, "You haven't picked an image", Toast.LENGTH_LONG).show()
-
+            Toast.makeText(this, "You didn't select an image!", Toast.LENGTH_LONG).show()
+            finish()
         }
     }
 
     @OnClick(R.id.buttonLoadPicture)
     fun loadImageFromGallery(view: View) {
-        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        loadImageFromGallery()
+    }
 
+    private fun loadImageFromGallery() {
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startActivityForResult(galleryIntent, RESULT_LOAD_IMG)
     }
 
@@ -93,7 +100,6 @@ class GalleryActivity : BaseActivity() {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe()
             }
-
             finish()
         } else {
             Toast.makeText(this, "You haven't picked an image", Toast.LENGTH_LONG).show()
@@ -101,7 +107,7 @@ class GalleryActivity : BaseActivity() {
     }
 
     companion object {
-
+        internal const val GALLERYBROWSEOPEN = "GALLERYBROWSEOPEN"
         private val RESULT_LOAD_IMG = 1
     }
 }
