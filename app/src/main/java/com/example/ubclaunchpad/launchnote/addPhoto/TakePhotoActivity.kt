@@ -1,7 +1,6 @@
 package com.example.ubclaunchpad.launchnote.addPhoto
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -10,15 +9,12 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
-import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.request.RequestOptions
-import com.example.ubclaunchpad.launchnote.BaseActivity
-import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.photoBrowser.AllPhotosFragment
@@ -30,7 +26,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 class TakePhotoActivity : AppCompatActivity() {
 
@@ -84,21 +80,19 @@ class TakePhotoActivity : AppCompatActivity() {
                 .load(currentImageUri)
                 .apply(RequestOptions.bitmapTransform(CenterInside()))
                 .apply(RequestOptions().override(maxSize)).submit().get()
+        // Creates the temp file that we write to
         val f = createImageFile(true)
         var out: FileOutputStream? = null;
         try {
             out = FileOutputStream(f)
             compressedBmp.compress(Bitmap.CompressFormat.PNG, 100, out)
         } finally {
-                try {
-                    if (out != null) {
-                        out.close();
-                        out = null;
-                    }
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                    Toast.makeText(this, "Couldn't compress file to small image, using large one!", Toast.LENGTH_SHORT).show()
-                }
+            try {
+                out?.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(this, "Couldn't compress file to small image, using large one!", Toast.LENGTH_SHORT).show()
+            }
         }
         Log.d("TakePhotoActivity", "Finished compressing file")
         return if(out == null) currentImageUri else FileProvider.getUriForFile(this, AUTHORITY, f)
@@ -108,7 +102,7 @@ class TakePhotoActivity : AppCompatActivity() {
         if (requestCode == TAKE_PHOTO_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 /* If the picture was taken and saved to internal storage successfully,
-                let's save its URI to the database
+                let's compress it and then save both URIs to the database
                  */
                 Observable.just(requestCode)
                         .observeOn(Schedulers.io())
@@ -154,6 +148,12 @@ class TakePhotoActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * This function gets called when we want to create a image file
+     * @param forCompressed normally if we create a file we want the currentImageReference to point to it
+     *                      but in the case of creating a compressed image we dont want that, furthermore
+     *                      we append cmp to the image URI
+     */
     @Throws(IOException::class)
     private fun createImageFile(forCompressed: Boolean = false): File {
         // First, create file name

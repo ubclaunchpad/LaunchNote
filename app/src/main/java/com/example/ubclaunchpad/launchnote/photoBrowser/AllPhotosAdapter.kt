@@ -23,11 +23,10 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
     private lateinit var picNotes: List<PicNote>
     private lateinit var context: Context
     private lateinit var picNotesSelected: Set<PicNote>
+    // Size of every scaled image that we are going to put on the view
     private var scale: Int = 500
 
     var onOnImageActionListener: onImageActionListener? = null;
-
-
 
     /**
      * The secondary constructor
@@ -35,7 +34,7 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
      * and also set the picNotes and context fields
      */
     constructor(context: Context, picNotes: List<PicNote>, picNotesSelected: Set<PicNote>) : this() {
-        this.scale = context.resources.displayMetrics.widthPixels / 3
+        this.scale = maxOf(context.resources.displayMetrics.widthPixels, context.resources.displayMetrics.heightPixels) / AllPhotosFragment.NUM_COLUMNS_PORTRAIT
         this.picNotes = picNotes
         this.context = context
         this.picNotesSelected = picNotesSelected
@@ -43,13 +42,10 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val picNote = picNotes[position]
-        // Size of every scaled image that we are going to put on the view
-        val size = maxOf(context.resources.displayMetrics.widthPixels, context.resources.displayMetrics.heightPixels) / AllPhotosFragment.NUM_COLUMNS_PORTRAIT
-
         // get Bitmap from the picNote's URI and show it in an ImageView
         Glide.with(context)
                 .asBitmap()
-                .apply(RequestOptions().override(size))
+                .apply(RequestOptions().override(this.scale))
                 .load(picNote.compressedImageUri)
                 .into(holder.image)
 

@@ -27,6 +27,10 @@ data class PicNote(
     var projectId: Int = 0
 
     companion object {
+        /**
+         * Deletes a PicNote from the database and it also deletes any photo that the database is
+         * referencing
+         */
         fun deleteFromDb(context: Context, pn: PicNote): Boolean {
             var success = true
             try {
