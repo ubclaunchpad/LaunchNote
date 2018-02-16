@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
@@ -52,13 +53,12 @@ class AllPhotosFragment() : Fragment() {
      */
     fun removeSelection() {
         Flowable.fromCallable {
-            LaunchNoteDatabase.getDatabase(activity)?.let {
-                picNotesSelected.forEach {pn ->
-                    Log.i("DEL","Deleting: " + pn)
-                    it.picNoteDao().delete(pn)
-                }
-                picNotesSelected.clear()
+            picNotesSelected.forEach {pn ->
+                Log.i("DEL","Deleting: " + pn)
+                val success = PicNote.deleteFromDb(context, pn)
+                if (!success) Toast.makeText(context, "Cannot delete ${pn.id}", Toast.LENGTH_LONG).show()
             }
+            picNotesSelected.clear()
         }.subscribeOn(Schedulers.io()).subscribe {
             rerenderPhotoGrid()
             onListener?.onEditPhotoMode(false)

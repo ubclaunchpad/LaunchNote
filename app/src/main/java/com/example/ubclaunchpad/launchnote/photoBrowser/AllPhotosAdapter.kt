@@ -2,7 +2,6 @@ package com.example.ubclaunchpad.launchnote.photoBrowser
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
@@ -13,8 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.transition.Transition
+import com.bumptech.glide.request.RequestOptions
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.models.PicNote
 
@@ -25,6 +23,9 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
     private lateinit var picNotes: List<PicNote>
     private lateinit var context: Context
     private lateinit var picNotesSelected: Set<PicNote>
+    // Size of every scaled image that we are going to put on the view
+    private var scale: Int = 500
+
     var onOnImageActionListener: onImageActionListener? = null;
 
     /**
@@ -33,6 +34,7 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
      * and also set the picNotes and context fields
      */
     constructor(context: Context, picNotes: List<PicNote>, picNotesSelected: Set<PicNote>) : this() {
+        this.scale = maxOf(context.resources.displayMetrics.widthPixels, context.resources.displayMetrics.heightPixels) / AllPhotosFragment.NUM_COLUMNS_PORTRAIT
         this.picNotes = picNotes
         this.context = context
         this.picNotesSelected = picNotesSelected
@@ -40,48 +42,42 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val picNote = picNotes[position]
-        holder.description.text = picNote.description
-
         // get Bitmap from the picNote's URI and show it in an ImageView
         Glide.with(context)
                 .asBitmap()
-                .load(picNote.imageUri)
-                .into(object : SimpleTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
-                        // set the image
-                        holder.image.setImageBitmap(resource)
-                        // TODO: replace with real description
-                        // set the text
-                        holder.description.text = "fake description"
+                .apply(RequestOptions().override(this.scale))
+                .load(picNote.compressedImageUri)
+                .into(holder.image)
 
-                        holder.image.setOnClickListener {
-                            if(picNotesSelected.isNotEmpty()){
-                                if(picNotesSelected.contains(picNote)){
-                                    onOnImageActionListener?.onImageDeselected(picNote)
-                                } else {
-                                    onOnImageActionListener?.onImageSelected(picNote)
-                                }
-                            } else {
-                                val intent = Intent(context, ExpandPhotoActivity::class.java)
-                                intent.putExtra(ExpandPhotoActivity.EXTRA_INTENT_IMAGE_URI, picNote.imageUri)  // pass in 1 imageuri to ExpandPhotoActivity
-                                context.startActivity(intent)
-                            }
-                        }
+        // set the text
+        holder.description.text = "fake description"
 
-                        holder.image.setOnLongClickListener {
-                            onOnImageActionListener?.onImageSelected(picNote)
-                            true
-                        }
+        holder.image.setOnClickListener {
+            if(picNotesSelected.isNotEmpty()){
+                if(picNotesSelected.contains(picNote)){
+                    onOnImageActionListener?.onImageDeselected(picNote)
+                } else {
+                    onOnImageActionListener?.onImageSelected(picNote)
+                }
+            } else {
+                val intent = Intent(context, ExpandPhotoActivity::class.java)
+                intent.putExtra(ExpandPhotoActivity.EXTRA_INTENT_IMAGE_URI, picNote.imageUri)  // pass in 1 imageuri to ExpandPhotoActivity
+                context.startActivity(intent)
+            }
+        }
 
-                        if(picNotesSelected.contains(picNote)) {
-                            Log.i("INFO", "Marking " + picNote + " as selected!")
-                            val color = ContextCompat.getColor(context, R.color.imageSelectionMask)
-                            holder.image.setColorFilter( color, PorterDuff.Mode.DARKEN )
-                        } else {
-                            holder.image.clearColorFilter()
-                        }
-                    }
-                })
+        holder.image.setOnLongClickListener {
+            onOnImageActionListener?.onImageSelected(picNote)
+            true
+        }
+
+        if(picNotesSelected.contains(picNote)) {
+            Log.i("INFO", "Marking " + picNote + " as selected!")
+            val color = ContextCompat.getColor(context, R.color.imageSelectionMask)
+            holder.image.setColorFilter( color, PorterDuff.Mode.DARKEN )
+        } else {
+            holder.image.clearColorFilter()
+        }
     }
 
     override fun getItemCount(): Int {

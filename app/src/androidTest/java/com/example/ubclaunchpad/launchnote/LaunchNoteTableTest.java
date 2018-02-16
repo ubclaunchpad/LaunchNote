@@ -51,15 +51,15 @@ public class LaunchNoteTableTest {
     @Test
     public void testPicNoteDaoQueries() throws Exception {
         // create first picNote with dummy values
-        PicNote picNote1 = new PicNote("../test/uri1.png", "test picNote1", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888));
+        PicNote picNote1 = new PicNote("../test/uri1.png", "../test/uri1.png", "test picNote1", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888));
         picNoteDao.insert(picNote1);
 
         // create second picNote with dummy values
-        PicNote picNote2 = new PicNote("../test/uri2.png", "test picNote2", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888));
+        PicNote picNote2 = new PicNote("../test/uri2.png", "../test/uri1.png", "test picNote2", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888));
         picNoteDao.insert(picNote2);
 
         // create second picNote with dummy values
-        PicNote picNote3 = new PicNote("../test/uri3.png", "test picNote3", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888));
+        PicNote picNote3 = new PicNote("../test/uri3.png","../test/uri1.png", "test picNote3", Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888));
         picNoteDao.insert(picNote3);
 
         // test that we can find the first PicNote
