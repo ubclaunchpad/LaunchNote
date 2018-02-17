@@ -43,7 +43,7 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
         // todo vpineda should we be reading the current item from the bundle rather than hardcoding it?
         view_pager.currentItem = ALL_FRAGMENT
         // add listener to view_pager that will update elements when user scrolls to new page
-        view_pager.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
                 // do nothing
             }
@@ -77,7 +77,8 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
 
         // Restore state of fragments
         (0 until NUMBER_OF_FRAGMENTS)
-                .map { // todo vpineda generalize to the diff types of photo fragments
+                .map {
+                    // todo vpineda generalize to the diff types of photo fragments
                     supportFragmentManager.findFragmentByTag("android:switcher:${R.id.view_pager}:$it") as AllPhotosFragment?
                 }
                 .forEach { f ->
@@ -87,21 +88,17 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
                 }
     }
 
-    override fun onEditPhotoMode(isActiveEdit: Boolean, selectedImages: Set<PicNote>) {
-        Observable.just(isActiveEdit)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    if (it) {
-                        toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.EditMode)
-                    } else {
-                        toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.NormalMode)
-                    }
-                }
+    override fun onEditPhotoMode(isActiveEdit: Boolean, imagesSelected: Set<PicNote>) {
+        if (isActiveEdit) {
+            toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.EditMode)
+        } else {
+            toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.NormalMode)
+        }
     }
 
     override fun onButtonClicked(butonInfo: Int) {
-        Log.i("INFO","Clicked " + butonInfo)
-        when(butonInfo) {
+        Log.i("INFO", "Clicked " + butonInfo)
+        when (butonInfo) {
             R.id.edit_toolbar_back_btn -> {
                 customPagerAdapter.currentFragment!!.cancelSelection()
             }
@@ -141,7 +138,7 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
      */
     class CustomPagerAdapter(fragmentManager: FragmentManager, val editModeListener: AllPhotosFragment.OnEditPhotoMode) : FragmentPagerAdapter(fragmentManager) {
         val NUM_ITEMS = 3
-        var currentFragment : AllPhotosFragment? = null
+        var currentFragment: AllPhotosFragment? = null
 
         override fun getCount(): Int {
             return NUM_ITEMS
@@ -150,7 +147,7 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
         override fun setPrimaryItem(container: ViewGroup?, position: Int, `object`: Any?) {
             super.setPrimaryItem(container, position, `object`)
 
-            if(currentFragment != `object`) {
+            if (currentFragment != `object`) {
                 currentFragment?.cancelSelection()
                 currentFragment = `object` as AllPhotosFragment
             }

@@ -7,6 +7,12 @@
     android:background="@android:color/black"
     tools:context="com.example.ubclaunchpad.launchnote.photoBrowser.ExpandPhotoActivity">
 
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/expand_photo_toolbar_fragment"
+        class="com.example.ubclaunchpad.launchnote.toolbar.PhotoNavigatonToolbarFragment"/>
+
     <android.support.v4.view.ViewPager
         android:id="@+id/expand_photo"
         android:layout_width="match_parent"

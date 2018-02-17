@@ -4,26 +4,44 @@ import android.R.attr.uiOptions
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import com.example.ubclaunchpad.launchnote.R
-import android.view.ViewGroup
-import android.support.v4.view.ViewPager
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
+import com.example.ubclaunchpad.launchnote.toolbar.PhotoNavigatonToolbarFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 
-class ExpandPhotoActivity : AppCompatActivity() {
+class ExpandPhotoActivity : AppCompatActivity(), PhotoNavigatonToolbarFragment.OnButtonPressListener {
+
+    override fun onButtonClicked(butonInfo: Int) {
+        Log.i("INFO", "Clicked " + butonInfo)
+        when (butonInfo) {
+            R.id.edit_toolbar_back_btn -> {
+                Toast.makeText(this, "back clicked", Toast.LENGTH_SHORT).show()
+            }
+            R.id.edit_toolbar_text_view -> {
+                Toast.makeText(this, "text clicked", Toast.LENGTH_SHORT).show()
+            }
+            R.id.edit_toolbar_delete_btn -> {
+                Toast.makeText(this, "delete clicked", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private var picNotes: MutableList<PicNote> = mutableListOf()
     lateinit private var adapter: PhotoViewPagerAdapter
     lateinit private var viewPager: ViewPager
+    lateinit var toolbarFragment: PhotoNavigatonToolbarFragment
 
-    private var defaultImageId: Int = 0;
+    private var defaultImageId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +53,8 @@ class ExpandPhotoActivity : AppCompatActivity() {
 
         adapter = PhotoViewPagerAdapter(supportFragmentManager)
         viewPager.adapter = adapter
-
         defaultImageId = intent.getIntExtra(EXTRA_INTENT_IMAGE_ID, 0)
+        toolbarFragment = supportFragmentManager.findFragmentById(R.id.expand_photo_toolbar_fragment) as PhotoNavigatonToolbarFragment
 
         fullScreen()
     }
