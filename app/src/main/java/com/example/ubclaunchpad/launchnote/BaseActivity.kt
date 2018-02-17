@@ -25,7 +25,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private fun setupBottomNavigation() {
         bottomNavigation = findViewById(R.id.bottom_navigation)
-        // set up the buttons in the bottom navigation bar
+        // set up the elements in the bottom navigation bar
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.add_menu_item -> {
@@ -57,9 +57,10 @@ abstract class BaseActivity : AppCompatActivity() {
                 //registering popup with OnMenuItemClickListener
                 setOnMenuItemClickListener { item ->
                     if (item.itemId == R.id.take_photo_item) {
+                        val b = Bundle()
                         val takePhotoActivityIntent = Intent(applicationContext, TakePhotoActivity::class.java)
                                 .apply { flags = FLAG_ACTIVITY_REORDER_TO_FRONT }
-                        startActivity(takePhotoActivityIntent)
+                        startActivity(takePhotoActivityIntent, b)
                     } else if (item.itemId == R.id.add_from_library_item) {
                         val galleryActivityIntent = Intent(applicationContext, GalleryActivity::class.java)
                                 .apply { flags = FLAG_ACTIVITY_REORDER_TO_FRONT }
