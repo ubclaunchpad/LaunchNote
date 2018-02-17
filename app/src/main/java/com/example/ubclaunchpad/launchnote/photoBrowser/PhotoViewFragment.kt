@@ -30,7 +30,7 @@ class PhotoViewFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
+        arguments?.apply {
             picNoteId = arguments.getInt(ARG_ITEM_ID)
             uri = arguments.getString(ARG_ITEM_URI)
         }
@@ -57,7 +57,6 @@ class PhotoViewFragment : Fragment() {
     }
 
     companion object {
-        // TODO: Rename parameter arguments, choose names that match
         // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
         private const val ARG_ITEM_ID = "id"
         private const val ARG_ITEM_URI = "uri"
@@ -69,7 +68,6 @@ class PhotoViewFragment : Fragment() {
          * @param picNote pic note reference
          * @return A new instance of fragment PhotoViewFragment.
          */
-        // TODO: Rename and change types and number of parameters
         fun newInstance(picNote: PicNote): PhotoViewFragment {
             val fragment = PhotoViewFragment()
             val args = Bundle()
