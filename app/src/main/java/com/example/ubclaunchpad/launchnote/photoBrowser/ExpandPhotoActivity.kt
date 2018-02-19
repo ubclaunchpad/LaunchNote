@@ -21,21 +21,6 @@ import io.reactivex.schedulers.Schedulers
 
 class ExpandPhotoActivity : AppCompatActivity(), PhotoNavigatonToolbarFragment.OnButtonPressListener {
 
-    override fun onButtonClicked(butonInfo: Int) {
-        Log.i("INFO", "Clicked " + butonInfo)
-        when (butonInfo) {
-            R.id.edit_toolbar_back_btn -> {
-                Toast.makeText(this, "back clicked", Toast.LENGTH_SHORT).show()
-            }
-            R.id.edit_toolbar_text_view -> {
-                Toast.makeText(this, "text clicked", Toast.LENGTH_SHORT).show()
-            }
-            R.id.edit_toolbar_delete_btn -> {
-                Toast.makeText(this, "delete clicked", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
     private var picNotes: MutableList<PicNote> = mutableListOf()
     lateinit private var adapter: PhotoViewPagerAdapter
     lateinit private var viewPager: ViewPager
@@ -49,15 +34,34 @@ class ExpandPhotoActivity : AppCompatActivity(), PhotoNavigatonToolbarFragment.O
 
         loadImages()
 
-        viewPager = findViewById<ViewPager>(R.id.expand_photo)
+        viewPager = findViewById(R.id.expand_photo)
 
         adapter = PhotoViewPagerAdapter(supportFragmentManager)
         viewPager.adapter = adapter
         defaultImageId = intent.getIntExtra(EXTRA_INTENT_IMAGE_ID, 0)
+
+        // set toolbar to EditMode
         toolbarFragment = supportFragmentManager.findFragmentById(R.id.expand_photo_toolbar_fragment) as PhotoNavigatonToolbarFragment
+        toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.EditMode)
 
         fullScreen()
     }
+
+    override fun onButtonClicked(butonInfo: Int) {
+        Log.i("INFO", "Clicked " + butonInfo)
+        when (butonInfo) {
+            R.id.edit_toolbar_back_btn -> {
+                super.onBackPressed()
+            }
+            R.id.edit_toolbar_text_view -> {
+                // do nothing
+            }
+            R.id.edit_toolbar_delete_btn -> {
+                onDeletePressed()
+            }
+        }
+    }
+
 
     private fun fullScreen() {
         var newUiOptions = window.decorView.systemUiVisibility
@@ -103,6 +107,24 @@ class ExpandPhotoActivity : AppCompatActivity(), PhotoNavigatonToolbarFragment.O
                         }
                     }
         }
+    }
+
+    private fun onDeletePressed() {
+        // get the id of the current item displayed in the ViewPager and delete it
+        LaunchNoteDatabase
+                .getDatabase(this)
+                ?.picNoteDao()
+                ?.findById(picNotes[viewPager.currentItem].id)
+                ?.map { picNotes ->
+                    picNotes.forEach {
+                        val success = PicNote.deleteFromDb(this, it)
+                        if (!success) Toast.makeText(this, "Cannot delete $defaultImageId", Toast.LENGTH_LONG).show()
+                    }
+                }?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe()
+        // exit full screen
+        super.onBackPressed()
     }
 
     internal inner class PhotoViewPagerAdapter(fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {

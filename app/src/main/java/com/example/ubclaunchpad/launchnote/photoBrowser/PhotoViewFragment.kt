@@ -63,7 +63,6 @@ class PhotoViewFragment : Fragment() {
      */
     private fun setUpToolbar() {
         toolbarFragment = activity.supportFragmentManager.findFragmentById(R.id.expand_photo_toolbar_fragment) as PhotoNavigatonToolbarFragment
-        toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.EditMode)
 
         // hide the toolbar when image is first loaded
         activity.supportFragmentManager.beginTransaction()
@@ -72,22 +71,20 @@ class PhotoViewFragment : Fragment() {
                 .commit()
 
         photoView?.setOnClickListener {
+            isActiveEdit = !isActiveEdit
             if (isActiveEdit) {
                 // if it's an active edit, show toolbar
-                toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.EditMode)
                 activity.supportFragmentManager.beginTransaction()
                         .setCustomAnimations(R.anim.tooltip_enter, R.anim.tooltip_exit)
                         .show(toolbarFragment)
                         .commit()
             } else {
                 // if it's not an active edit, hide toolbar
-                toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.EditMode)
                 activity.supportFragmentManager.beginTransaction()
                         .setCustomAnimations(R.anim.tooltip_enter, R.anim.tooltip_exit)
                         .hide(toolbarFragment)
                         .commit()
             }
-            isActiveEdit = !isActiveEdit
         }
     }
 
