@@ -62,7 +62,6 @@ class ExpandPhotoActivity : AppCompatActivity(), PhotoNavigatonToolbarFragment.O
         }
     }
 
-
     private fun fullScreen() {
         var newUiOptions = window.decorView.systemUiVisibility
         val isImmersiveModeEnabled = isImmersiveModeEnabled()   // built-in
@@ -109,6 +108,9 @@ class ExpandPhotoActivity : AppCompatActivity(), PhotoNavigatonToolbarFragment.O
         }
     }
 
+    /**
+     * Called when toolbar's "delete" is pressed
+     */
     private fun onDeletePressed() {
         // get the id of the current item displayed in the ViewPager and delete it
         LaunchNoteDatabase
