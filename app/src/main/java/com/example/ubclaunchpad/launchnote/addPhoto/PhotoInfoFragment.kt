@@ -8,44 +8,26 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-
+import butterknife.OnClick
 import com.example.ubclaunchpad.launchnote.R
-import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_photo_info.*
 
 /**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [PhotoInfoFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [PhotoInfoFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * A simple fragment that takes in a serialized
  */
 class PhotoInfoFragment : Fragment() {
 
-    private var picNoteToSave: PicNote? = null
-
-    // TODO: Rename and change types of parameters
-    private var mParam1: String? = null
-    private var mParam2: String? = null
-
+    private lateinit var picNoteToEdit: PicNote
     private var mListener: OnFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        picNoteToEdit = savedInstanceState?.getSerializable(PICNOTE) as PicNote
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        //val uriStr = arguments.getString(TakePhotoActivity.URI_KEY)
-        //imageURI = Uri.parse(uriStr)
-        save_button.setOnClickListener { saveImgToDB() }
         return inflater!!.inflate(R.layout.fragment_photo_info, container, false)
     }
 
@@ -70,6 +52,7 @@ class PhotoInfoFragment : Fragment() {
         mListener = null
     }
 
+    @OnClick(R.id.save_button)
     private fun saveImgToDB() {
         val uriStr = arguments.getString(TakePhotoActivity.URI_KEY)
         val imageURI = Uri.parse((uriStr))
@@ -94,13 +77,7 @@ class PhotoInfoFragment : Fragment() {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
      *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
      */
     interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
@@ -108,25 +85,17 @@ class PhotoInfoFragment : Fragment() {
     }
 
     companion object {
-        // TODO: Rename parameter arguments, choose names that match
-        // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-        private val ARG_PARAM1 = "param1"
-        private val ARG_PARAM2 = "param2"
+        private val PICNOTE = "PICNOTE"
 
         /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
+         * @param picNote picnote
          * @return A new instance of fragment PhotoInfoFragment.
          */
         // TODO: Rename and change types and number of parameters
-        fun newInstance(): PhotoInfoFragment {
+        fun newInstance(picNote: PicNote): PhotoInfoFragment {
             val fragment = PhotoInfoFragment()
             val args = Bundle()
-            //args.putString(ARG_PARAM1, param1)
-            //args.putString(ARG_PARAM2, param2)
+            args.putSerializable(PICNOTE, picNote)
             fragment.arguments = args
             return fragment
         }

@@ -10,13 +10,12 @@ import android.provider.MediaStore
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.os.Handler
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.request.RequestOptions
+import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.photoBrowser.AllPhotosFragment
@@ -28,13 +27,17 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 
-class TakePhotoActivity : AppCompatActivity() {
+class TakePhotoActivity : AppCompatActivity(), PhotoInfoFragment.OnFragmentInteractionListener {
+    override fun onFragmentInteraction(uri: Uri) {
+        //TODO vpineda save the image to the database and close this image
+    }
 
     private lateinit var currentImagePath: String
     private lateinit var currentImageFile: File
     private lateinit var currentImageUri: Uri
+    var picNoteToSave: PicNote? = null
 
     fun takePhoto(view: View) {
         takePhoto()
@@ -118,7 +121,9 @@ class TakePhotoActivity : AppCompatActivity() {
                             Log.d("TakePhotoActivity", "Clearing Glide cache")
                             Glide.get(this).clearMemory()
                         }
-                openFragmentInfo()
+                val intent = Intent()
+                intent.putExtra(BaseActivity.PIC_NOTE_KEY, picNoteToSave)
+                setResult(BaseActivity.PHOTO_SAVED, intent)
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 /* If the picture was not taken or not saved to internal storage, delete
                  the file that had been created (where the picture was supposed to go)
@@ -128,6 +133,7 @@ class TakePhotoActivity : AppCompatActivity() {
                 /* Should something currentImagePath and currentImageUri be nulled
                  just in case???
                  */
+                setResult(BaseActivity.PHOTO_NOT_SAVED)
             }
             finish()
         }
@@ -136,7 +142,7 @@ class TakePhotoActivity : AppCompatActivity() {
     private fun saveImgToDB(imageURI: Uri, compressedUri: Uri, onDone: ObservableEmitter<Unit>) {
         // TODO: parse out the description
         // passing in empty string for now
-        picNoteToSave = PicNote(imageURI.toString(), compressedUri.toString(),"", null)
+        picNoteToSave = PicNote(imageURI.toString(), compressedUri.toString(),"", "",null)
 
         // insert image into database on a different thread
         LaunchNoteDatabase.getDatabase(this)?.let {
@@ -173,25 +179,12 @@ class TakePhotoActivity : AppCompatActivity() {
         return image
     }
 
-    private fun openFragmentInfo() {
-        val bundle = Bundle()
-        bundle.putString(URI_KEY, currentImageUri.toString())
-        // Begin transaction
-        val transaction = supportFragmentManager.beginTransaction()
-        // Replace the contents of the container with the info fragment
-        val fragment = PhotoInfoFragment()
-        fragment.arguments = bundle
-        transaction.add(R.id.take_photo_container, PhotoInfoFragment())
-        // or transaction.replace(R.id.take_photo_container, PhotoInfoFragment())
-        // Complete the changes added above
-        transaction.commitAllowingStateLoss()
-
-    }
-
 
     companion object {
         internal const val PHOTOFRAGMENTINIT = "PHOTOFRAGMENTINIT"
-        internal const val TAKE_PHOTO_REQUEST_CODE = 1
+        const val TAKE_PHOTO_REQUEST_CODE = 45912
+
+
         internal const val DATE_FORMAT = "yyyyMMdd_HHmmss"
         internal const val AUTHORITY = "com.example.ubclaunchpad.launchnote.FileProvider"
         internal const val JPEG = "JPEG_"

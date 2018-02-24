@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import java.io.File
 import java.io.IOException
+import java.io.Serializable
 
 /**
  * Model class for representing one photo
@@ -20,7 +21,7 @@ data class PicNote(
         var description: String = "",
         @Ignore
         var image: Bitmap? = null
-) {
+) : Serializable {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
 

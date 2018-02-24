@@ -71,6 +71,7 @@ class GalleryActivity : BaseActivity() {
                     })
         } else {
             Toast.makeText(this, "You didn't select an image!", Toast.LENGTH_LONG).show()
+            setResult(BaseActivity.PHOTO_NOT_SAVED)
             finish()
         }
     }
@@ -100,6 +101,9 @@ class GalleryActivity : BaseActivity() {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe()
             }
+            val intent = Intent()
+            intent.putExtra(BaseActivity.PIC_NOTE_KEY, picNoteToSave)
+            setResult(BaseActivity.PHOTO_SAVED, intent)
             finish()
         } else {
             Toast.makeText(this, "You haven't picked an image", Toast.LENGTH_LONG).show()
@@ -107,6 +111,7 @@ class GalleryActivity : BaseActivity() {
     }
 
     companion object {
+        const val GALLERY_ACTIVITY_REQ_CODE = 93242
         internal const val GALLERYBROWSEOPEN = "GALLERYBROWSEOPEN"
         private val RESULT_LOAD_IMG = 1
     }
