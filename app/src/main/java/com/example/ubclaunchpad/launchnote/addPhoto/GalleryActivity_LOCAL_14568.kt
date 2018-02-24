@@ -9,15 +9,17 @@ import android.provider.MediaStore
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
-import butterknife.ButterKnife
-import butterknife.OnClick
+
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.R
-import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
+import com.example.ubclaunchpad.launchnote.database.PicNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
+
+import butterknife.ButterKnife
+import butterknife.OnClick
+import com.example.ubclaunchpad.launchnote.BaseActivity
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -35,16 +37,7 @@ class GalleryActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         photoView = findViewById(R.id.imgView)
-        if(savedInstanceState?.containsKey(GALLERYBROWSEOPEN) != true) {
-            loadImageFromGallery()
-        }
-        savedInstanceState?.putBoolean(GALLERYBROWSEOPEN, true)
         ButterKnife.bind(this)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        bottomNavigation.menu.getItem(ADD_MENU_ITEM).isChecked = true
     }
 
     override fun getContentViewId(): Int {
@@ -70,18 +63,15 @@ class GalleryActivity : BaseActivity() {
                         }
                     })
         } else {
-            Toast.makeText(this, "You didn't select an image!", Toast.LENGTH_LONG).show()
-            finish()
+            Toast.makeText(this, "You haven't picked an image", Toast.LENGTH_LONG).show()
+
         }
     }
 
     @OnClick(R.id.buttonLoadPicture)
     fun loadImageFromGallery(view: View) {
-        loadImageFromGallery()
-    }
-
-    private fun loadImageFromGallery() {
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+
         startActivityForResult(galleryIntent, RESULT_LOAD_IMG)
     }
 
@@ -90,16 +80,16 @@ class GalleryActivity : BaseActivity() {
         if (photoUri != null && photoBitmap != null) {
             // TODO: parse out the description
             // passing in empty string for now
-            // todo vpineda optimize this save
-            picNoteToSave = PicNote(photoUri.toString(), photoUri.toString(),"", "", photoBitmap)
+            picNoteToSave = PicNote(photoUri.toString(), "", "", photoBitmap)
 
             // insert image into database on a different thread
-            LaunchNoteDatabase.getDatabase(this)?.let {
+            PicNoteDatabase.getDatabase(this)?.let {
                 Observable.fromCallable { it.picNoteDao().insert(picNoteToSave) }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe()
             }
+
             finish()
         } else {
             Toast.makeText(this, "You haven't picked an image", Toast.LENGTH_LONG).show()
@@ -107,7 +97,7 @@ class GalleryActivity : BaseActivity() {
     }
 
     companion object {
-        internal const val GALLERYBROWSEOPEN = "GALLERYBROWSEOPEN"
+
         private val RESULT_LOAD_IMG = 1
     }
 }

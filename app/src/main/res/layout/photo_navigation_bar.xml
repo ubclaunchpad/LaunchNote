@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.AppBarLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:theme="@style/AppBarActionBar"
+    android:id="@+id/topAppBarLayout">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/topToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:popupTheme="@style/AppBarActionBar">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                style="@style/toolbarTextStyle"
+                android:id="@+id/photo_view_title"
+                android:text="@string/app_name"
+                android:paddingStart="15dp"
+                android:visibility="gone"
+                android:gravity="center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/edit_toolbar_layout"
+                android:background="@color/colorPrimaryDark"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="?attr/actionBarSize"
+                    android:id="@+id/edit_toolbar_back_btn"
+                    app:srcCompat="?attr/homeAsUpIndicator"
+                    android:background="?attr/selectableItemBackground"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="?attr/actionBarSize"
+                    android:gravity="center"
+                    android:id="@+id/edit_toolbar_text_view"
+                    style="@style/toolbarTextStyle"
+                    android:text="@string/toolbar_edit"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="end">
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:id="@+id/edit_toolbar_delete_btn"
+                        android:layout_height="?attr/actionBarSize"
+                        android:background="?attr/selectableItemBackground"
+                        android:src="@android:drawable/ic_menu_delete"
+                        android:paddingEnd="15dp"
+                        android:paddingStart="15dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.Toolbar>
+</android.support.design.widget.AppBarLayout>
