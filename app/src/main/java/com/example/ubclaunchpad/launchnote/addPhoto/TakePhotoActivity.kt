@@ -45,10 +45,10 @@ class TakePhotoActivity : AppCompatActivity(), PhotoInfoFragment.OnFragmentInter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(savedInstanceState?.containsKey(PHOTOFRAGMENTINIT) != true) {
+        if(!intent.hasExtra(PHOTOFRAGMENTINIT)) {
             takePhoto()
         }
-        savedInstanceState?.putBoolean(PHOTOFRAGMENTINIT, true)
+        intent.putExtra(PHOTOFRAGMENTINIT, true)
     }
 
     private fun takePhoto() {

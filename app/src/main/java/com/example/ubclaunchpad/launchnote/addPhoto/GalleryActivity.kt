@@ -111,7 +111,7 @@ class GalleryActivity : BaseActivity() {
     }
 
     companion object {
-        const val GALLERY_ACTIVITY_REQ_CODE = 93242
+        const val GALLERY_ACTIVITY_REQ_CODE = 434
         internal const val GALLERYBROWSEOPEN = "GALLERYBROWSEOPEN"
         private val RESULT_LOAD_IMG = 1
     }

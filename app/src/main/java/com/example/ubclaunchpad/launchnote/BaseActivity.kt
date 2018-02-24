@@ -60,7 +60,6 @@ abstract class BaseActivity : AppCompatActivity() {
                 //registering popup with OnMenuItemClickListener
                 setOnMenuItemClickListener { item ->
                     if (item.itemId == R.id.take_photo_item) {
-                        val b = Bundle()
                         val takePhotoActivityIntent = Intent(applicationContext, TakePhotoActivity::class.java)
                                 .apply { flags = FLAG_ACTIVITY_REORDER_TO_FRONT }
                         startActivityForResult(takePhotoActivityIntent, TakePhotoActivity.TAKE_PHOTO_REQUEST_CODE)
