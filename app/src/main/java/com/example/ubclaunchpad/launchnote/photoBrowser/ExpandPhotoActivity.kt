@@ -11,10 +11,12 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.toolbar.PhotoNavigatonToolbarFragment
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -47,11 +49,25 @@ class ExpandPhotoActivity : AppCompatActivity(), PhotoNavigatonToolbarFragment.O
         fullScreen()
     }
 
+    /**
+     * When back button is pressed, clear Glide cache
+     */
+    override fun onBackPressed() {
+        Observable.just {
+            Glide.get(this).clearDiskCache()
+            Glide.get(this).clearMemory()
+        }
+                .subscribeOn(Schedulers.io())
+                .subscribe()
+
+        super.onBackPressed()
+    }
+
     override fun onButtonClicked(butonInfo: Int) {
         Log.i("INFO", "Clicked " + butonInfo)
         when (butonInfo) {
             R.id.edit_toolbar_back_btn -> {
-                super.onBackPressed()
+                onBackPressed()
             }
             R.id.edit_toolbar_text_view -> {
                 // do nothing
@@ -126,7 +142,7 @@ class ExpandPhotoActivity : AppCompatActivity(), PhotoNavigatonToolbarFragment.O
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe()
         // exit full screen
-        super.onBackPressed()
+        onBackPressed()
     }
 
     internal inner class PhotoViewPagerAdapter(fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {

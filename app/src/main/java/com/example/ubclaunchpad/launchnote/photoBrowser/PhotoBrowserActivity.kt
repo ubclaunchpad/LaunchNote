@@ -89,11 +89,15 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
     }
 
     override fun onEditPhotoMode(isActiveEdit: Boolean, imagesSelected: Set<PicNote>) {
-        if (isActiveEdit) {
-            toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.EditMode)
-        } else {
-            toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.NormalMode)
-        }
+        Observable.just(isActiveEdit)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    if (it) {
+                        toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.EditMode)
+                    } else {
+                        toolbarFragment.setMode(PhotoNavigatonToolbarFragment.ToolbarMode.NormalMode)
+                    }
+                }
     }
 
     override fun onButtonClicked(butonInfo: Int) {
