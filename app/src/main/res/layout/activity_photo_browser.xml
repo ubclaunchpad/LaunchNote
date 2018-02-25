@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/photo_browser_container"
     tools:context="com.example.ubclaunchpad.launchnote.photoBrowser.PhotoBrowserActivity">
 
     <fragment

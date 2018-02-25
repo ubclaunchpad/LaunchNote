@@ -92,7 +92,7 @@ class GalleryActivity : BaseActivity() {
             // TODO: parse out the description
             // passing in empty string for now
             // todo vpineda optimize this save
-            picNoteToSave = PicNote(photoUri.toString(), photoUri.toString(),"", "", photoBitmap)
+            picNoteToSave = PicNote(photoUri.toString(), photoUri.toString(),"", "")
 
             // insert image into database on a different thread
             LaunchNoteDatabase.getDatabase(this)?.let {

@@ -1,6 +1,7 @@
 package com.example.ubclaunchpad.launchnote.addPhoto
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -9,6 +10,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
+import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -17,6 +19,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.request.RequestOptions
 import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
+import com.example.ubclaunchpad.launchnote.database.PicNoteDao
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.photoBrowser.AllPhotosFragment
 import io.reactivex.Observable
@@ -26,18 +29,15 @@ import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TakePhotoActivity : AppCompatActivity(), PhotoInfoFragment.OnFragmentInteractionListener {
-    override fun onFragmentInteraction(uri: Uri) {
-        //TODO vpineda save the image to the database and close this image
-    }
+class TakePhotoActivity : AppCompatActivity() {
 
     private lateinit var currentImagePath: String
     private lateinit var currentImageFile: File
     private lateinit var currentImageUri: Uri
-    var picNoteToSave: PicNote? = null
 
     fun takePhoto(view: View) {
         takePhoto()
@@ -108,22 +108,28 @@ class TakePhotoActivity : AppCompatActivity(), PhotoInfoFragment.OnFragmentInter
                 /* If the picture was taken and saved to internal storage successfully,
                 let's compress it and then save both URIs to the database
                  */
+                val pn =  PicNote(currentImageUri.toString(),
+                        "",
+                        "", DateFormat.getDateInstance().format(Date()))
                 Observable.just(requestCode)
                         .observeOn(Schedulers.io())
                         .flatMap({
                             Observable.create<Unit> {
                                 val compressedImageUri = compressImage()
-                                saveImgToDB(currentImageUri, compressedImageUri, it)
+                                pn.compressedImageUri = compressedImageUri.toString()
+                                it.onNext(Unit)
+                                it.onComplete()
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
                             Log.d("TakePhotoActivity", "Clearing Glide cache")
                             Glide.get(this).clearMemory()
+                            val intent = Intent()
+                            intent.putExtra(BaseActivity.PIC_NOTE_KEY, pn)
+                            setResult(BaseActivity.PHOTO_SAVED, intent)
+                            finish()
                         }
-                val intent = Intent()
-                intent.putExtra(BaseActivity.PIC_NOTE_KEY, picNoteToSave)
-                setResult(BaseActivity.PHOTO_SAVED, intent)
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 /* If the picture was not taken or not saved to internal storage, delete
                  the file that had been created (where the picture was supposed to go)
@@ -134,25 +140,8 @@ class TakePhotoActivity : AppCompatActivity(), PhotoInfoFragment.OnFragmentInter
                  just in case???
                  */
                 setResult(BaseActivity.PHOTO_NOT_SAVED)
+                finish()
             }
-            finish()
-        }
-    }
-
-    private fun saveImgToDB(imageURI: Uri, compressedUri: Uri, onDone: ObservableEmitter<Unit>) {
-        // TODO: parse out the description
-        // passing in empty string for now
-        picNoteToSave = PicNote(imageURI.toString(), compressedUri.toString(),"", "",null)
-
-        // insert image into database on a different thread
-        LaunchNoteDatabase.getDatabase(this)?.let {
-            Observable.fromCallable { it.picNoteDao().insert(picNoteToSave) }
-                        .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        onDone.onNext(Unit)
-                        onDone.onComplete()
-                    }
         }
     }
 

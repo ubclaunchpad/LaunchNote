@@ -50,7 +50,7 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
                 .into(holder.image)
 
         // set the text
-        holder.description.text = "fake description"
+        holder.description.text = picNote.description
 
         holder.image.setOnClickListener {
             if(picNotesSelected.isNotEmpty()){

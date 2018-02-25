@@ -1,6 +1,5 @@
 package com.example.ubclaunchpad.launchnote
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
 import android.os.Bundle
@@ -8,10 +7,11 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.widget.PopupMenu
 import com.example.ubclaunchpad.launchnote.addPhoto.GalleryActivity
-import com.example.ubclaunchpad.launchnote.addPhoto.PhotoInfoFragment
+import com.example.ubclaunchpad.launchnote.addPhoto.PhotoInfoActivity
 import com.example.ubclaunchpad.launchnote.addPhoto.TakePhotoActivity
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.photoBrowser.PhotoBrowserActivity
+import java.util.*
 
 /**
  * A base Activity that will set up the bottom navigation bar for any Activities extending it
@@ -92,15 +92,13 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     private fun editPicNote(pn: PicNote) {
-        // Begin transaction
-        val transaction = supportFragmentManager.beginTransaction()
-        // Replace the contents of the container with the info fragment
-        val fragment = PhotoInfoFragment.newInstance(pn)
-        transaction.replace(R.id.photo_browser_container, fragment)
-        transaction.addToBackStack("photo_info_fragment")
-        // or transaction.replace(R.id.take_photo_container, PhotoInfoFragment())
-        // Complete the changes added above
-        transaction.commit()
+        val openEditIntent = Intent(applicationContext, PhotoInfoActivity::class.java)
+                .apply { flags = FLAG_ACTIVITY_REORDER_TO_FRONT }
+        val b = Bundle()
+        b.putSerializable(PhotoInfoActivity.PIC_NOTE_ARG, pn)
+        b.putBoolean(PhotoInfoActivity.REMOVE_IMAGES_IF_NO_CHANGE, true)
+        openEditIntent.putExtras(b)
+        startActivity(openEditIntent)
     }
 
     companion object {

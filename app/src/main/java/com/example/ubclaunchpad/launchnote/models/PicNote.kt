@@ -19,12 +19,12 @@ data class PicNote(
         var compressedImageUri: String = "",
         var title: String = "",
         var description: String = "",
+
+        @PrimaryKey(autoGenerate = true)
+        var id: Int = 0,
         @Ignore
         var image: Bitmap? = null
 ) : Serializable {
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
-
     var classId: Int = 0
     var projectId: Int = 0
 
