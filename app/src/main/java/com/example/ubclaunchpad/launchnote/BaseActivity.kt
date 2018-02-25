@@ -1,5 +1,6 @@
 package com.example.ubclaunchpad.launchnote
 
+import android.app.Activity
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
 import android.os.Bundle
@@ -11,7 +12,6 @@ import com.example.ubclaunchpad.launchnote.addPhoto.PhotoInfoActivity
 import com.example.ubclaunchpad.launchnote.addPhoto.TakePhotoActivity
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.photoBrowser.PhotoBrowserActivity
-import java.util.*
 
 /**
  * A base Activity that will set up the bottom navigation bar for any Activities extending it
@@ -80,11 +80,11 @@ abstract class BaseActivity : AppCompatActivity() {
 
         if(requestCode == TakePhotoActivity.TAKE_PHOTO_REQUEST_CODE || requestCode == GalleryActivity.GALLERY_ACTIVITY_REQ_CODE) {
             when (resultCode) {
-                PHOTO_SAVED -> {
+                Activity.RESULT_OK -> {
                     val picNote = data!!.getSerializableExtra(PIC_NOTE_KEY) as PicNote
                     editPicNote(picNote)
                 }
-                PHOTO_NOT_SAVED -> {
+                Activity.RESULT_CANCELED -> {
                     // todo vpineda what to do when the photo is not saved
                 }
             }
@@ -106,8 +106,6 @@ abstract class BaseActivity : AppCompatActivity() {
         const val SCAN_MENU_ITEM = 1
         const val BROWSE_MENU_ITEM = 2
 
-        const val PHOTO_SAVED = 21421
-        const val PHOTO_NOT_SAVED = 45346
         const val PIC_NOTE_KEY = "PIC_NOTE_KEY"
     }
 }

@@ -1,7 +1,6 @@
 package com.example.ubclaunchpad.launchnote.addPhoto
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -10,7 +9,6 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
-import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -18,12 +16,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.request.RequestOptions
 import com.example.ubclaunchpad.launchnote.BaseActivity
-import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
-import com.example.ubclaunchpad.launchnote.database.PicNoteDao
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.photoBrowser.AllPhotosFragment
 import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.File
@@ -127,7 +122,7 @@ class TakePhotoActivity : AppCompatActivity() {
                             Glide.get(this).clearMemory()
                             val intent = Intent()
                             intent.putExtra(BaseActivity.PIC_NOTE_KEY, pn)
-                            setResult(BaseActivity.PHOTO_SAVED, intent)
+                            setResult(Activity.RESULT_OK, intent)
                             finish()
                         }
             } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -139,7 +134,7 @@ class TakePhotoActivity : AppCompatActivity() {
                 /* Should something currentImagePath and currentImageUri be nulled
                  just in case???
                  */
-                setResult(BaseActivity.PHOTO_NOT_SAVED)
+                setResult(Activity.RESULT_CANCELED)
                 finish()
             }
         }

@@ -71,7 +71,7 @@ class GalleryActivity : BaseActivity() {
                     })
         } else {
             Toast.makeText(this, "You didn't select an image!", Toast.LENGTH_LONG).show()
-            setResult(BaseActivity.PHOTO_NOT_SAVED)
+            setResult(Activity.RESULT_CANCELED)
             finish()
         }
     }
@@ -103,7 +103,7 @@ class GalleryActivity : BaseActivity() {
             }
             val intent = Intent()
             intent.putExtra(BaseActivity.PIC_NOTE_KEY, picNoteToSave)
-            setResult(BaseActivity.PHOTO_SAVED, intent)
+            setResult(Activity.RESULT_OK, intent)
             finish()
         } else {
             Toast.makeText(this, "You haven't picked an image", Toast.LENGTH_LONG).show()
