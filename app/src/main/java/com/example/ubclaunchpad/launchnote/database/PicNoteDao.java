@@ -23,7 +23,7 @@ public interface PicNoteDao {
     // find by ID query
     // retrieve the PicNote with the correct ID from the database
     @Query("SELECT * FROM PicNote WHERE id = :id")
-    Flowable<List<PicNote>> findById(String id);
+    Flowable<List<PicNote>> findById(Integer id);
 
     // insert any number of PicNotes into the database
     // if any IDs conflict with a previously inserted PicNote, replace it

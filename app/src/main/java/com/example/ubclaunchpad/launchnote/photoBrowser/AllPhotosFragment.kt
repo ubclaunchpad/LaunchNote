@@ -20,19 +20,15 @@ import io.reactivex.schedulers.Schedulers
 /**
  * Fragment displaying all photos in a grid format
  */
-class AllPhotosFragment() : Fragment() {
+class AllPhotosFragment : Fragment() {
 
     // a MutableList in Kotlin is the same as a List in Java
     // Kotlin also has a List class, but it's immutable and doesn't let you add/remove items
     private val picNotes: MutableList<PicNote> = mutableListOf()
-    private val picNotesSelected: MutableSet<PicNote> = mutableSetOf();
-    var onListener: OnEditPhotoMode? = null;
+    private val picNotesSelected: MutableSet<PicNote> = mutableSetOf()
+    var onListener: OnEditPhotoMode? = null
 
     lateinit var adapter: AllPhotosAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_all_photos, null)
