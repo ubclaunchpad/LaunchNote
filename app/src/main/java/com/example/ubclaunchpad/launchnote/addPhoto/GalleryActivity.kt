@@ -51,7 +51,7 @@ class GalleryActivity : BaseActivity() {
         return R.layout.activity_gallery
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         // when an Image is picked
         if (requestCode == RESULT_LOAD_IMG && resultCode == Activity.RESULT_OK && data != null) {
