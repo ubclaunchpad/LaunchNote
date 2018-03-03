@@ -3,4 +3,5 @@
     <string name="delete_toolbar">Delete</string>
     <string name="go_back_arrow">Go Back</string>
     <string name="toolbar_edit">Edit</string>
+    <string name="title_activity_photo_info">Info</string>
 </resources>

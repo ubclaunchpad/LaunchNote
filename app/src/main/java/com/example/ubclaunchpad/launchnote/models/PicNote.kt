@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import java.io.File
 import java.io.IOException
+import java.io.Serializable
 
 /**
  * Model class for representing one photo
@@ -16,15 +17,16 @@ import java.io.IOException
 data class PicNote(
         var imageUri: String = "",
         var compressedImageUri: String = "",
+        var title: String = "",
         var description: String = "",
+
+        @PrimaryKey(autoGenerate = true)
+        var id: Int = 0,
         @Ignore
         var image: Bitmap? = null
-) {
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
-
-    var classId: Int = 0
-    var projectId: Int = 0
+) : Serializable {
+    var classId: Int = DEFAULT_CLASSID
+    var projectId: Int = DEFAULT_PROJECTID
 
     companion object {
         /**
@@ -48,5 +50,8 @@ data class PicNote(
             LaunchNoteDatabase.getDatabase(context)?.picNoteDao()?.delete(pn)
             return success
         }
+
+        const val DEFAULT_CLASSID = 0
+        const val DEFAULT_PROJECTID = 0
     }
 }

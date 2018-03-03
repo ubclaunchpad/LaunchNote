@@ -31,17 +31,22 @@
         <activity android:name=".photoBrowser.PhotoBrowserActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:theme="@style/addPhotoTheme"
             android:name=".addPhoto.TakePhotoActivity"
-            android:exported="true"></activity>
+            android:exported="true"
+            android:theme="@style/addPhotoTheme" />
         <activity
-            android:theme="@style/addPhotoTheme"
-            android:name=".addPhoto.GalleryActivity" />
-        <activity android:name=".photoBrowser.ExpandPhotoActivity"></activity>
+            android:name=".addPhoto.GalleryActivity"
+            android:theme="@style/addPhotoTheme" />
+        <activity android:name=".photoBrowser.ExpandPhotoActivity" />
+        <activity
+            android:name=".edit.PhotoInfoActivity"
+            android:label="@string/title_activity_photo_info"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

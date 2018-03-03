@@ -1,6 +1,7 @@
 package com.example.ubclaunchpad.launchnote.photoBrowser
 
 import android.R.attr.uiOptions
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -14,6 +15,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
+import com.example.ubclaunchpad.launchnote.edit.PhotoInfoActivity
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.toolbar.PhotoNavigatonToolbarFragment
 import io.reactivex.Observable
@@ -71,6 +73,9 @@ class ExpandPhotoActivity : AppCompatActivity(), PhotoNavigatonToolbarFragment.O
             }
             R.id.edit_toolbar_text_view -> {
                 // do nothing
+            }
+            R.id.edit_toolbar_edit_desc_btn -> {
+                onEditPressed()
             }
             R.id.edit_toolbar_delete_btn -> {
                 onDeletePressed()
@@ -143,6 +148,12 @@ class ExpandPhotoActivity : AppCompatActivity(), PhotoNavigatonToolbarFragment.O
                 ?.subscribe()
         // exit full screen
         onBackPressed()
+    }
+
+    private fun onEditPressed() {
+        val i = Intent(this, PhotoInfoActivity::class.java)
+        i.putExtra(PhotoInfoActivity.PIC_NOTE_ARG, picNotes[viewPager.currentItem])
+        startActivity(i)
     }
 
     internal inner class PhotoViewPagerAdapter(fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {

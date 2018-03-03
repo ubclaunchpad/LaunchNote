@@ -15,25 +15,24 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.request.RequestOptions
-import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
+import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.photoBrowser.AllPhotosFragment
 import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 
 class TakePhotoActivity : AppCompatActivity() {
 
-    internal lateinit var currentImagePath: String
-    internal lateinit var currentImageFile: File
-    internal lateinit var currentImageUri: Uri
-    var picNoteToSave: PicNote? = null
+    private lateinit var currentImagePath: String
+    private lateinit var currentImageFile: File
+    private lateinit var currentImageUri: Uri
 
     fun takePhoto(view: View) {
         takePhoto()
@@ -41,10 +40,10 @@ class TakePhotoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(savedInstanceState?.containsKey(PHOTOFRAGMENTINIT) != true) {
+        if(!intent.hasExtra(PHOTOFRAGMENTINIT)) {
             takePhoto()
         }
-        savedInstanceState?.putBoolean(PHOTOFRAGMENTINIT, true)
+        intent.putExtra(PHOTOFRAGMENTINIT, true)
     }
 
     private fun takePhoto() {
@@ -104,21 +103,28 @@ class TakePhotoActivity : AppCompatActivity() {
                 /* If the picture was taken and saved to internal storage successfully,
                 let's compress it and then save both URIs to the database
                  */
+                val pn =  PicNote(currentImageUri.toString())
                 Observable.just(requestCode)
                         .observeOn(Schedulers.io())
                         .flatMap({
                             Observable.create<Unit> {
                                 val compressedImageUri = compressImage()
-                                saveImgToDB(currentImageUri, compressedImageUri, it)
+                                pn.compressedImageUri = compressedImageUri.toString()
+                                it.onNext(Unit)
+                                it.onComplete()
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe {
                             Log.d("TakePhotoActivity", "Clearing Glide cache")
                             Glide.get(this).clearMemory()
+                            val intent = Intent()
+                            intent.putExtra(BaseActivity.PIC_NOTE_KEY, pn)
+                            setResult(Activity.RESULT_OK, intent)
+                            finish()
                         }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                /* I the picture was not taken or not saved to internal storage, delete
+                /* If the picture was not taken or not saved to internal storage, delete
                  the file that had been created (where the picture was supposed to go)
                  */
                 Log.d("TakePhotoActivity", "Result canceled deleting temp image")
@@ -126,25 +132,9 @@ class TakePhotoActivity : AppCompatActivity() {
                 /* Should something currentImagePath and currentImageUri be nulled
                  just in case???
                  */
+                setResult(Activity.RESULT_CANCELED)
+                finish()
             }
-            finish()
-        }
-    }
-
-    private fun saveImgToDB(imageURI: Uri, compressedUri: Uri, onDone: ObservableEmitter<Unit>) {
-        // TODO: parse out the description
-        // passing in empty string for now
-        picNoteToSave = PicNote(imageURI.toString(), compressedUri.toString(),"", null)
-
-        // insert image into database on a different thread
-        LaunchNoteDatabase.getDatabase(this)?.let {
-            Observable.fromCallable { it.picNoteDao().insert(picNoteToSave) }
-                        .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        onDone.onNext(Unit)
-                        onDone.onComplete()
-                    }
         }
     }
 
@@ -171,13 +161,17 @@ class TakePhotoActivity : AppCompatActivity() {
         return image
     }
 
+
     companion object {
         internal const val PHOTOFRAGMENTINIT = "PHOTOFRAGMENTINIT"
-        internal const val TAKE_PHOTO_REQUEST_CODE = 1
+        const val TAKE_PHOTO_REQUEST_CODE = 45912
+
+
         internal const val DATE_FORMAT = "yyyyMMdd_HHmmss"
         internal const val AUTHORITY = "com.example.ubclaunchpad.launchnote.FileProvider"
         internal const val JPEG = "JPEG_"
         internal const val IMAGE_EXTENSION = ".jpg"
+        const val URI_KEY = "uri"
     }
 
 }

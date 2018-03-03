@@ -1,5 +1,6 @@
 package com.example.ubclaunchpad.launchnote.photoBrowser
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -12,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
+import com.example.ubclaunchpad.launchnote.edit.PhotoInfoActivity
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -58,6 +60,18 @@ class AllPhotosFragment : Fragment() {
         }.subscribeOn(Schedulers.io()).subscribe {
             rerenderPhotoGrid()
             onListener?.onEditPhotoMode(false)
+        }
+    }
+
+    fun openEditView() {
+        if (picNotesSelected.size != 1) {
+            Toast.makeText(context, "Cannot edit more than 1 image at a time, for now", Toast.LENGTH_SHORT).show()
+        } else {
+            val i = Intent(context, PhotoInfoActivity::class.java)
+            i.putExtra(PhotoInfoActivity.PIC_NOTE_ARG, picNotesSelected.first())
+            picNotesSelected.clear()
+            onListener?.onEditPhotoMode(false)
+            startActivity(i)
         }
     }
 

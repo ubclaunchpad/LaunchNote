@@ -101,16 +101,15 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
     }
 
     override fun onButtonClicked(butonInfo: Int) {
-        Log.i("INFO", "Clicked " + butonInfo)
-        when (butonInfo) {
-            R.id.edit_toolbar_back_btn -> {
-                customPagerAdapter.currentFragment!!.cancelSelection()
-            }
-            R.id.edit_toolbar_text_view -> {
-                customPagerAdapter.currentFragment!!.cancelSelection()
-            }
+        when(butonInfo) {
             R.id.edit_toolbar_delete_btn -> {
                 customPagerAdapter.currentFragment!!.removeSelection()
+            }
+            R.id.edit_toolbar_edit_desc_btn -> {
+                customPagerAdapter.currentFragment!!.openEditView()
+            }
+            else -> {
+                customPagerAdapter.currentFragment!!.cancelSelection()
             }
         }
     }

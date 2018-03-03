@@ -71,6 +71,7 @@ class GalleryActivity : BaseActivity() {
                     })
         } else {
             Toast.makeText(this, "You didn't select an image!", Toast.LENGTH_LONG).show()
+            setResult(Activity.RESULT_CANCELED)
             finish()
         }
     }
@@ -91,7 +92,7 @@ class GalleryActivity : BaseActivity() {
             // TODO: parse out the description
             // passing in empty string for now
             // todo vpineda optimize this save
-            picNoteToSave = PicNote(photoUri.toString(), photoUri.toString(),"", photoBitmap)
+            picNoteToSave = PicNote(photoUri.toString(), photoUri.toString(),"", "")
 
             // insert image into database on a different thread
             LaunchNoteDatabase.getDatabase(this)?.let {
@@ -100,6 +101,9 @@ class GalleryActivity : BaseActivity() {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe()
             }
+            val intent = Intent()
+            intent.putExtra(BaseActivity.PIC_NOTE_KEY, picNoteToSave)
+            setResult(Activity.RESULT_OK, intent)
             finish()
         } else {
             Toast.makeText(this, "You haven't picked an image", Toast.LENGTH_LONG).show()
@@ -107,6 +111,7 @@ class GalleryActivity : BaseActivity() {
     }
 
     companion object {
+        const val GALLERY_ACTIVITY_REQ_CODE = 434
         internal const val GALLERYBROWSEOPEN = "GALLERYBROWSEOPEN"
         private val RESULT_LOAD_IMG = 1
     }
