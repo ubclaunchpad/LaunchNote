@@ -25,8 +25,7 @@ data class PicNote(
         @Ignore
         var image: Bitmap? = null
 ) : Serializable {
-    var classId: Int = DEFAULT_CLASSID
-    var projectId: Int = DEFAULT_PROJECTID
+    var folderId = DEFAULT_FOLDERID
 
     companion object {
         /**
@@ -47,11 +46,12 @@ data class PicNote(
                 e.printStackTrace()
                 success = false
             }
+
             LaunchNoteDatabase.getDatabase(context)?.picNoteDao()?.delete(pn)
             return success
+
         }
 
-        const val DEFAULT_CLASSID = 0
-        const val DEFAULT_PROJECTID = 0
+        const val DEFAULT_FOLDERID: Int = 0
     }
 }

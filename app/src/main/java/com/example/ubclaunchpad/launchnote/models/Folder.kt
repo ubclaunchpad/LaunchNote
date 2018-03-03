@@ -4,15 +4,16 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 
 /**
- * Model class for representing a school class
+ * Model class for representing a project
  */
 @Entity
-data class LaunchNoteClass(
+data class Folder(
         var description: String = ""
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
+    var name: String = ""
 
-    var subProjectIds: MutableList<Int> = mutableListOf()
+    var subFolderIds: MutableList<Int> = mutableListOf()
     var picNoteIds: MutableList<Int> = mutableListOf()
 }

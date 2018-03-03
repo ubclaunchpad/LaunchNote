@@ -34,7 +34,7 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
 
         // set up ViewPager
         // this lets us swipe between the three different ways of browsing photos:
-        // by LaunchNoteClass, by Project, or by All photos
+        // by LaunchNoteClass, by Folder, or by All photos
         // each of them is represented by a fragment
         customPagerAdapter = CustomPagerAdapter(supportFragmentManager, this)
         toolbarFragment = supportFragmentManager.findFragmentById(R.id.photoBrowserToolbarFragment) as PhotoNavigatonToolbarFragment

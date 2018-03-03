@@ -3,13 +3,11 @@ package com.example.ubclaunchpad.launchnote;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
-import com.example.ubclaunchpad.launchnote.database.ClassDao;
+import com.example.ubclaunchpad.launchnote.database.FolderDao;
 import com.example.ubclaunchpad.launchnote.database.PicNoteDao;
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase;
-import com.example.ubclaunchpad.launchnote.database.ProjectDao;
-import com.example.ubclaunchpad.launchnote.models.LaunchNoteClass;
 import com.example.ubclaunchpad.launchnote.models.PicNote;
-import com.example.ubclaunchpad.launchnote.models.Project;
+import com.example.ubclaunchpad.launchnote.models.Folder;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -30,8 +28,7 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class LaunchNoteTableTest {
     private PicNoteDao picNoteDao;
-    private ClassDao classDao;
-    private ProjectDao projectDao;
+    private FolderDao folderDao;
     private LaunchNoteDatabase testDatabase;
 
     @Before
@@ -39,8 +36,7 @@ public class LaunchNoteTableTest {
         Context context = InstrumentationRegistry.getTargetContext();
         testDatabase = Room.inMemoryDatabaseBuilder(context, LaunchNoteDatabase.class).build();
         picNoteDao = testDatabase.picNoteDao();
-        classDao = testDatabase.classDao();
-        projectDao = testDatabase.projectDao();
+        folderDao = testDatabase.projectDao();
     }
 
     @After
@@ -88,24 +84,24 @@ public class LaunchNoteTableTest {
     @Test
     public void testClassDaoQueries() {
         // create first LaunchNoteClass with dummy values
-        LaunchNoteClass class1 = new LaunchNoteClass("test class1");
-        LaunchNoteClass class2 = new LaunchNoteClass("test class2");
-        LaunchNoteClass class3 = new LaunchNoteClass("test class3");
-        classDao.insertAll(class1, class2, class3);
+        Folder class1 = new Folder("test folder1");
+        Folder class2 = new Folder("test folder2");
+        Folder class3 = new Folder("test folder3");
+        folderDao.insertAll(class1, class2, class3);
 
         // test that we can find the first LaunchNoteClass
-        List<LaunchNoteClass> classById1 = classDao.findById("1").blockingFirst();
+        List<Folder> classById1 = folderDao.findById("1").blockingFirst();
         Assert.assertEquals(classById1.get(0).getDescription(), class1.getDescription());
         Assert.assertEquals(classById1.size(), 1);
 
         // test that we can find the third LaunchNoteClass
-        List<LaunchNoteClass> classById3 = classDao.findById("3").blockingFirst();
+        List<Folder> classById3 = folderDao.findById("3").blockingFirst();
         Assert.assertEquals(classById3.get(0).getDescription(), class3.getDescription());
 
         Assert.assertEquals(classById3.size(), 1);
 
         // test that we can get all the LaunchNoteClasses
-        List<LaunchNoteClass> allClasses = classDao.loadAll().blockingFirst();
+        List<Folder> allClasses = folderDao.loadAll().blockingFirst();
         Assert.assertEquals(allClasses.get(0).getDescription(), class1.getDescription());
         Assert.assertEquals(allClasses.get(1).getDescription(), class2.getDescription());
         Assert.assertEquals(allClasses.get(2).getDescription(), class3.getDescription());
@@ -116,29 +112,29 @@ public class LaunchNoteTableTest {
     @Test
     public void testProjectDaoQueries() {
         // create first class with dummy values
-        Project project1 = new Project("test project1");
-        Project project2 = new Project("test project2");
-        Project project3 = new Project("test project3");
-        projectDao.insertAll(project1, project2, project3);
+        Folder folder1 = new Folder("test folder1");
+        Folder folder2 = new Folder("test folder2");
+        Folder folder3 = new Folder("test folder3");
+        folderDao.insertAll(folder1, folder2, folder3);
 
         // test that we can find the first LaunchNoteClass
-        List<Project> projectById1 = projectDao.findById("1").blockingFirst();
-        Assert.assertEquals(projectById1.get(0).getDescription(), project1.getDescription());
-        Assert.assertEquals(projectById1.size(), 1);
+        List<Folder> folderById1 = folderDao.findById("1").blockingFirst();
+        Assert.assertEquals(folderById1.get(0).getDescription(), folder1.getDescription());
+        Assert.assertEquals(folderById1.size(), 1);
 
         // test that we can get all the PicNotes
-        List<Project> allProjects = projectDao.loadAll().blockingFirst();
-        Assert.assertEquals(allProjects.get(0).getDescription(), project1.getDescription());
-        Assert.assertEquals(allProjects.get(1).getDescription(), project2.getDescription());
-        Assert.assertEquals(allProjects.get(2).getDescription(), project3.getDescription());
+        List<Folder> allFolders = folderDao.loadAll().blockingFirst();
+        Assert.assertEquals(allFolders.get(0).getDescription(), folder1.getDescription());
+        Assert.assertEquals(allFolders.get(1).getDescription(), folder2.getDescription());
+        Assert.assertEquals(allFolders.get(2).getDescription(), folder3.getDescription());
 
-        Assert.assertEquals(allProjects.size(), 3);
+        Assert.assertEquals(allFolders.size(), 3);
 
         // test delete
-        project1.setId(1);
-        projectDao.delete(project1);
-        allProjects = projectDao.loadAll().blockingFirst();
-        Assert.assertFalse(allProjects.contains(project1));
-        Assert.assertEquals(allProjects.size(), 2);
+        folder1.setId(1);
+        folderDao.delete(folder1);
+        allFolders = folderDao.loadAll().blockingFirst();
+        Assert.assertFalse(allFolders.contains(folder1));
+        Assert.assertEquals(allFolders.size(), 2);
     }
 }
