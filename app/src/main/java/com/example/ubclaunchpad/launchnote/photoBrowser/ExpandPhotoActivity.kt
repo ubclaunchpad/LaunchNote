@@ -151,7 +151,7 @@ class ExpandPhotoActivity : AppCompatActivity(), PhotoNavigatonToolbarFragment.O
     }
 
     private fun onEditPressed() {
-        val i = Intent(this, PhotoInfoActivity.javaClass)
+        val i = Intent(this, PhotoInfoActivity::class.java)
         i.putExtra(PhotoInfoActivity.PIC_NOTE_ARG, picNotes[viewPager.currentItem])
         startActivity(i)
     }
