@@ -75,13 +75,13 @@ abstract class BaseActivity : AppCompatActivity() {
 
     abstract fun getContentViewId(): Int
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if(requestCode == TakePhotoActivity.TAKE_PHOTO_REQUEST_CODE || requestCode == GalleryActivity.GALLERY_ACTIVITY_REQ_CODE) {
             when (resultCode) {
                 Activity.RESULT_OK -> {
-                    val picNote = data!!.getSerializableExtra(PIC_NOTE_KEY) as PicNote
+                    val picNote = data.getSerializableExtra(PIC_NOTE_KEY) as PicNote
                     editPicNote(picNote)
                 }
                 Activity.RESULT_CANCELED -> {

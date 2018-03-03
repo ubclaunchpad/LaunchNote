@@ -28,11 +28,15 @@ class PhotoInfoActivity : AppCompatActivity() {
         removeIfNoSave = intent.extras.containsKey(REMOVE_IMAGES_IF_NO_CHANGE) &&
                 intent.extras.getBoolean(REMOVE_IMAGES_IF_NO_CHANGE)
 
-        title_input.setText(picNoteToEdit.title)
-        description_input.setText(picNoteToEdit.description)
+        if(picNoteToEdit.title.isNotEmpty())
+            title_input.setText(picNoteToEdit.title)
+        if(picNoteToEdit.description.isNotEmpty())
+            description_input.setText(picNoteToEdit.description)
         // todo vpineda we need to create a dropdown for all of the classes or projects!
-        class_input.setText(picNoteToEdit.classId.toString())
-        project_input.setText(picNoteToEdit.projectId.toString())
+        if(picNoteToEdit.classId != PicNote.DEFAULT_CLASSID)
+            class_input.setText(picNoteToEdit.classId.toString())
+        if(picNoteToEdit.projectId != PicNote.DEFAULT_PROJECTID)
+            project_input.setText(picNoteToEdit.projectId.toString())
     }
 
     @OnClick(R.id.save_button)
