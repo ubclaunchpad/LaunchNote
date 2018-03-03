@@ -1,21 +1,17 @@
 package com.example.ubclaunchpad.launchnote.photoBrowser
 
-import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
-
 import com.example.ubclaunchpad.launchnote.R
-import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
+import com.example.ubclaunchpad.launchnote.toolbar.PhotoNavigatonToolbarFragment
 import com.github.chrisbanes.photoview.PhotoView
 
 /**
@@ -27,6 +23,9 @@ class PhotoViewFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var picNoteId: Int = -1
     private var uri: String = ""
+    lateinit var toolbarFragment: PhotoNavigatonToolbarFragment
+    var photoView: PhotoView? = null
+    private var isActiveEdit = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +38,10 @@ class PhotoViewFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.fragment_picnote, container, false)
-        val photoView = view?.findViewById<PhotoView>(R.id.photo_view)
+        photoView = view?.findViewById(R.id.photo_view)
+
+        setUpToolbar()
+
         setImageIn(uri, photoView)
         return view
     }
@@ -54,6 +56,36 @@ class PhotoViewFragment : Fragment() {
                         dest?.setImageBitmap(resource)
                     }
                 })
+    }
+
+    /**
+     * Set up the toolbar for editing photos
+     */
+    private fun setUpToolbar() {
+        toolbarFragment = activity.supportFragmentManager.findFragmentById(R.id.expand_photo_toolbar_fragment) as PhotoNavigatonToolbarFragment
+
+        // hide the toolbar when image is first loaded
+        activity.supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.tooltip_enter, R.anim.tooltip_exit)
+                .hide(toolbarFragment)
+                .commit()
+
+        photoView?.setOnClickListener {
+            isActiveEdit = !isActiveEdit
+            if (isActiveEdit) {
+                // if it's an active edit, show toolbar
+                activity.supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.tooltip_enter, R.anim.tooltip_exit)
+                        .show(toolbarFragment)
+                        .commit()
+            } else {
+                // if it's not an active edit, hide toolbar
+                activity.supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.tooltip_enter, R.anim.tooltip_exit)
+                        .hide(toolbarFragment)
+                        .commit()
+            }
+        }
     }
 
     companion object {
@@ -73,8 +105,8 @@ class PhotoViewFragment : Fragment() {
             val args = Bundle()
             args.putInt(ARG_ITEM_ID, picNote.id)
             args.putString(ARG_ITEM_URI, picNote.imageUri)
-            fragment.arguments = args;
-            return fragment;
+            fragment.arguments = args
+            return fragment
         }
     }
 }// Required empty public constructor
