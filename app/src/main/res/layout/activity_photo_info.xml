@@ -5,7 +5,7 @@
     android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.ubclaunchpad.launchnote.addPhoto.PhotoInfoActivity"
+    tools:context="com.example.ubclaunchpad.launchnote.edit.PhotoInfoActivity"
     android:id="@+id/fragment_photo_info_container">
 
     <!-- TODO: Update blank fragment layout -->

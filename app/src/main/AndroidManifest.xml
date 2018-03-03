@@ -44,7 +44,7 @@
             android:theme="@style/addPhotoTheme" />
         <activity android:name=".photoBrowser.ExpandPhotoActivity" />
         <activity
-            android:name=".addPhoto.PhotoInfoActivity"
+            android:name=".edit.PhotoInfoActivity"
             android:label="@string/title_activity_photo_info"
             android:theme="@style/AppTheme"></activity>
     </application>

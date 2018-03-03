@@ -8,7 +8,7 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.widget.PopupMenu
 import com.example.ubclaunchpad.launchnote.addPhoto.GalleryActivity
-import com.example.ubclaunchpad.launchnote.addPhoto.PhotoInfoActivity
+import com.example.ubclaunchpad.launchnote.edit.PhotoInfoActivity
 import com.example.ubclaunchpad.launchnote.addPhoto.TakePhotoActivity
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.photoBrowser.PhotoBrowserActivity
