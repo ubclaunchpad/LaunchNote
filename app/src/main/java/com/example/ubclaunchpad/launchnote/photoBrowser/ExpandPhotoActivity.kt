@@ -25,10 +25,10 @@ import io.reactivex.schedulers.Schedulers
 
 class ExpandPhotoActivity : AppCompatActivity(), PhotoNavigatonToolbarFragment.OnButtonPressListener {
 
-    private var picNotes: MutableList<PicNote> = mutableListOf()
+    private val picNotes: MutableList<PicNote> = mutableListOf()
     lateinit private var adapter: PhotoViewPagerAdapter
     lateinit private var viewPager: ViewPager
-    lateinit var toolbarFragment: PhotoNavigatonToolbarFragment
+    lateinit private var toolbarFragment: PhotoNavigatonToolbarFragment
 
     private var defaultImageId: Int = 0
 
