@@ -76,6 +76,14 @@
                         android:paddingEnd="15dp"
                         android:paddingStart="15dp"/>
 
+                    <ImageButton
+                    android:layout_width="30dp"
+                    android:id="@+id/edit_toolbar_save_btn"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/selectableItemBackground"
+                    android:src="@android:drawable/ic_menu_save"
+                    android:layout_marginRight="14dp"/>
+
                 </LinearLayout>
             </LinearLayout>
         </android.support.constraint.ConstraintLayout>

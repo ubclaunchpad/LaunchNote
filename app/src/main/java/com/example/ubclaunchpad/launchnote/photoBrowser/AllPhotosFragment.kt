@@ -1,6 +1,11 @@
 package com.example.ubclaunchpad.launchnote.photoBrowser
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.provider.MediaStore
+import android.support.v4.content.ContextCompat
+import com.bumptech.glide.Glide
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -51,8 +56,8 @@ class AllPhotosFragment : Fragment() {
      */
     fun removeSelection() {
         Flowable.fromCallable {
-            picNotesSelected.forEach {pn ->
-                Log.i("DEL","Deleting: " + pn)
+            picNotesSelected.forEach { pn ->
+                Log.i("DEL", "Deleting: " + pn)
                 val success = PicNote.deleteFromDb(context, pn)
                 if (!success) Toast.makeText(context, "Cannot delete ${pn.id}", Toast.LENGTH_LONG).show()
             }
@@ -72,6 +77,45 @@ class AllPhotosFragment : Fragment() {
             picNotesSelected.clear()
             onListener?.onEditPhotoMode(false)
             startActivity(i)
+        }
+    }
+
+    fun saveSelection() {
+        Flowable.fromCallable {
+            LaunchNoteDatabase.getDatabase(activity)?.let {
+                picNotesSelected.forEach { pn ->
+                    Log.i("SAV", "saving: " + pn)
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
+                        var bitmap: Bitmap;
+                        bitmap = Glide.with(activity)
+                                .asBitmap()
+                                .load(pn.imageUri)
+                                .submit()
+                                .get();
+
+                        Log.i("SAV", "BITMAP" + bitmap)
+                        MediaStore.Images.Media.insertImage(activity.getContentResolver(), bitmap, "yourTitle", "yourDescription");
+
+                    } else {
+                        requestPermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 1);
+
+                    }
+                }
+            }
+
+        }.subscribeOn(Schedulers.io()).subscribe {
+            onListener?.onEditPhotoMode(false)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (requestCode == 1) {
+                saveSelection();
+
+            }
         }
     }
 
@@ -130,7 +174,7 @@ class AllPhotosFragment : Fragment() {
 
         override fun onImageDeselected(picNote: PicNote) {
             picNotesSelected.remove(picNote)
-            if(picNotesSelected.isEmpty()) {
+            if (picNotesSelected.isEmpty()) {
                 onListener!!.onEditPhotoMode(false, picNotesSelected)
             } else {
                 onListener!!.onEditPhotoMode(true, picNotesSelected)
