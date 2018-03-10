@@ -46,7 +46,7 @@ class AllPhotosAdapter(): RecyclerView.Adapter<AllPhotosAdapter.ViewHolder>() {
         Glide.with(context)
                 .asBitmap()
                 .apply(RequestOptions().override(this.scale))
-                .load(picNote.compressedImageUri)
+                .load( if (picNote.compressedImageUri == "") picNote.imageUri else picNote.compressedImageUri)
                 .into(holder.image)
 
         // set the text
