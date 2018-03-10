@@ -36,7 +36,7 @@ public class LaunchNoteTableTest {
         Context context = InstrumentationRegistry.getTargetContext();
         testDatabase = Room.inMemoryDatabaseBuilder(context, LaunchNoteDatabase.class).build();
         picNoteDao = testDatabase.picNoteDao();
-        folderDao = testDatabase.projectDao();
+        folderDao = testDatabase.folderDao();
     }
 
     @After
@@ -82,35 +82,7 @@ public class LaunchNoteTableTest {
     }
 
     @Test
-    public void testClassDaoQueries() {
-        // create first LaunchNoteClass with dummy values
-        Folder class1 = new Folder("test folder1");
-        Folder class2 = new Folder("test folder2");
-        Folder class3 = new Folder("test folder3");
-        folderDao.insertAll(class1, class2, class3);
-
-        // test that we can find the first LaunchNoteClass
-        List<Folder> classById1 = folderDao.findById("1").blockingFirst();
-        Assert.assertEquals(classById1.get(0).getDescription(), class1.getDescription());
-        Assert.assertEquals(classById1.size(), 1);
-
-        // test that we can find the third LaunchNoteClass
-        List<Folder> classById3 = folderDao.findById("3").blockingFirst();
-        Assert.assertEquals(classById3.get(0).getDescription(), class3.getDescription());
-
-        Assert.assertEquals(classById3.size(), 1);
-
-        // test that we can get all the LaunchNoteClasses
-        List<Folder> allClasses = folderDao.loadAll().blockingFirst();
-        Assert.assertEquals(allClasses.get(0).getDescription(), class1.getDescription());
-        Assert.assertEquals(allClasses.get(1).getDescription(), class2.getDescription());
-        Assert.assertEquals(allClasses.get(2).getDescription(), class3.getDescription());
-
-        Assert.assertEquals(allClasses.size(), 3);
-    }
-
-    @Test
-    public void testProjectDaoQueries() {
+    public void testFolderDaoQueries() {
         // create first class with dummy values
         Folder folder1 = new Folder("test folder1");
         Folder folder2 = new Folder("test folder2");

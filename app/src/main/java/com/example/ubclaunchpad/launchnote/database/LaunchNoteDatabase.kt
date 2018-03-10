@@ -18,7 +18,7 @@ abstract class LaunchNoteDatabase : RoomDatabase() {
 
     abstract fun picNoteDao(): PicNoteDao
 
-    abstract fun projectDao(): FolderDao
+    abstract fun folderDao(): FolderDao
 
     // in Kotlin, there is no static keyword.
     // If you want something to be an instance of a class, put it in the companion object block
