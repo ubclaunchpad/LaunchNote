@@ -12,6 +12,7 @@ import com.example.ubclaunchpad.launchnote.edit.PhotoInfoActivity
 import com.example.ubclaunchpad.launchnote.addPhoto.TakePhotoActivity
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.photoBrowser.PhotoBrowserActivity
+import com.example.ubclaunchpad.launchnote.scan.ScanCameraActivity
 
 /**
  * A base Activity that will set up the bottom navigation bar for any Activities extending it
@@ -37,6 +38,8 @@ abstract class BaseActivity : AppCompatActivity() {
                 R.id.scan_menu_item -> {
                     // TODO: create an Activity to handle scanning and move bottom nav selection there
                     bottomNavigation.menu.getItem(SCAN_MENU_ITEM).isChecked = true
+                    val scanActivityIntent = Intent(applicationContext, ScanCameraActivity::class.java)
+                    startActivity(scanActivityIntent)
                 }
                 R.id.browse_menu_item -> {
                     val photoBrowserActivityIntent = Intent(applicationContext, PhotoBrowserActivity::class.java)

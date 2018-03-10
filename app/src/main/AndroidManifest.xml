@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ubclaunchpad.launchnote">
 
+
+    <uses-permission android:name="android.permission.CAMERA"/>
     <!-- TakePhotoActivity -->
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -46,7 +48,16 @@
         <activity
             android:name=".edit.PhotoInfoActivity"
             android:label="@string/title_activity_photo_info"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".scan.ScanCameraActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_scan_camera"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".scan.test"
+            android:label="@string/title_activity_test"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>
