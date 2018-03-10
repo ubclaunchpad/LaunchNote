@@ -109,6 +109,9 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
             R.id.edit_toolbar_delete_btn -> {
                 customPagerAdapter.currentFragment!!.removeSelection()
             }
+            R.id.edit_toolbar_save_btn -> {
+                customPagerAdapter.currentFragment!!.saveSelection()
+            }
         }
     }
 

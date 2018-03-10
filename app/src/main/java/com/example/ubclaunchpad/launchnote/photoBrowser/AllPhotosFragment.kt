@@ -1,7 +1,14 @@
 package com.example.ubclaunchpad.launchnote.photoBrowser
 
+import android.app.AlertDialog
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -15,6 +22,10 @@ import com.example.ubclaunchpad.launchnote.models.PicNote
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
+import android.widget.Toast
+import com.bumptech.glide.Glide
 
 /**
  * Fragment displaying all photos in a grid format
@@ -64,6 +75,46 @@ class AllPhotosFragment() : Fragment() {
             onListener?.onEditPhotoMode(false)
         }
     }
+
+    fun saveSelection() {
+        Flowable.fromCallable {
+            LaunchNoteDatabase.getDatabase(activity)?.let {
+                picNotesSelected.forEach { pn ->
+                    Log.i("SAV", "saving: " + pn)
+                    if (ContextCompat.checkSelfPermission(getActivity(),
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
+                        var bitmap: Bitmap;
+                         bitmap = Glide.with(activity)
+                                 .asBitmap()
+                                 .load(pn.imageUri)
+                                 .submit()
+                                 .get();
+
+                        Log.i("SAV", "BITMAP" + bitmap)
+                        MediaStore.Images.Media.insertImage(activity.getContentResolver(), bitmap , "yourTitle", "yourDescription");
+
+                    } else {
+                        requestPermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 1);
+
+                    }
+                    }
+                }
+
+            }.subscribeOn(Schedulers.io()).subscribe {
+                onListener?.onEditPhotoMode(false)
+            }
+        }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            if(requestCode ==1){
+                saveSelection();
+
+            }
+        }
+    }
+
 
     fun cancelSelection() {
         picNotesSelected.clear()
