@@ -52,6 +52,6 @@ data class PicNote(
 
         }
 
-        const val DEFAULT_FOLDERID: Int = 0
+        const val DEFAULT_FOLDERID = 0
     }
 }

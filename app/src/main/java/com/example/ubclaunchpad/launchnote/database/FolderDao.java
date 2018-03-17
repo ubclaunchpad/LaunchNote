@@ -20,7 +20,7 @@ public interface FolderDao {
     @Query("SELECT * FROM Folder WHERE id = :id")
     Flowable<List<Folder>> findById(String id);
 
-    // insert any number of Projects into the database
+    // insert any number of Folders into the database
     // if any IDs conflict with a previously inserted Folder, replace it
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Folder... folders);
@@ -34,7 +34,7 @@ public interface FolderDao {
     @Delete
     void delete(Folder folder);
 
-    // retrieve all Projects from the database
+    // retrieve all Folders from the database
     @Query("SELECT * FROM Folder")
     Flowable<List<Folder>> loadAll();
 

@@ -4,7 +4,7 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 
 /**
- * Model class for representing a project
+ * Model class for representing a Folder
  */
 @Entity
 data class Folder(

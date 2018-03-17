@@ -41,7 +41,7 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
 
         view_pager.adapter = customPagerAdapter
         // todo vpineda should we be reading the current item from the bundle rather than hardcoding it?
-        updateButtons(FRAGMENT.ALL)
+        updateButtons(BROWSER.ALL)
         // add listener to view_pager that will update elements when user scrolls to new page
         view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
@@ -54,17 +54,17 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
 
             override fun onPageSelected(position: Int) {
                 // when new page is selected, update button
-                updateButtons(FRAGMENT.fromOrdinal(position), updateViewPager = false)
+                updateButtons(BROWSER.fromOrdinal(position), updateViewPager = false)
             }
 
         })
 
         // Watch for button clicks. When a button is clicked, go to the correct fragment
-        folder_button.setOnClickListener { updateButtons(FRAGMENT.FOLDER) }
-        all_button.setOnClickListener { updateButtons(FRAGMENT.ALL) }
+        folder_button.setOnClickListener { updateButtons(BROWSER.FOLDER) }
+        all_button.setOnClickListener { updateButtons(BROWSER.ALL) }
 
         // Restore state of fragments
-        FRAGMENT.values()
+        BROWSER.values()
                 .map {
                     // todo vpineda generalize to the diff types of photo fragments
                     supportFragmentManager.findFragmentByTag("android:switcher:${R.id.view_pager}:${it.ordinal}") as AllPhotosFragment?
@@ -111,14 +111,14 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
         return R.layout.activity_photo_browser
     }
 
-    private fun updateButtons(fragmentId: FRAGMENT, updateViewPager: Boolean = true) {
+    private fun updateButtons(fragmentId: BROWSER, updateViewPager: Boolean = true) {
         if (updateViewPager) view_pager.currentItem = fragmentId.ordinal;
         folder_button.setTextColor(resources.getColor(R.color.darkGreyText))
         all_button.setTextColor(resources.getColor(R.color.darkGreyText))
 
         when (fragmentId) {
-            FRAGMENT.FOLDER -> folder_button.setTextColor(resources.getColor(R.color.colorAccent))
-            FRAGMENT.ALL -> all_button.setTextColor(resources.getColor(R.color.colorAccent))
+            BROWSER.FOLDER -> folder_button.setTextColor(resources.getColor(R.color.colorAccent))
+            BROWSER.ALL -> all_button.setTextColor(resources.getColor(R.color.colorAccent))
         }
     }
 
@@ -155,11 +155,11 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
     }
 
     companion object {
-        enum class FRAGMENT {
+        enum class BROWSER {
             FOLDER, ALL;
 
             companion object {
-                fun fromOrdinal(ordinal: Int): FRAGMENT = FRAGMENT.values()[ordinal]
+                fun fromOrdinal(ordinal: Int): BROWSER = BROWSER.values()[ordinal]
             }
         }
     }
