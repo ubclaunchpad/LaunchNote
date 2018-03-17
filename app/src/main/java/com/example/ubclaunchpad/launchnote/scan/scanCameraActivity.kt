@@ -28,6 +28,8 @@ import android.os.HandlerThread
 import android.hardware.camera2.CameraMetadata
 import android.hardware.camera2.CaptureRequest
 import android.os.Handler
+import android.view.Window
+import android.view.WindowManager
 
 
 class ScanCameraActivity : AppCompatActivity() {
@@ -45,8 +47,9 @@ class ScanCameraActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_scan_camera)
-        setSupportActionBar(toolbar) // remove this?
     }
 
     override fun onResume() {
