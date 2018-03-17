@@ -52,7 +52,7 @@ class TakePhotoActivity : AppCompatActivity() {
             var imageFile: File? = null
             try {
                 imageFile = PhotoUtils.createImageFile(this)
-                // save the un
+                // save the uncompressed image
                 currentImagePath = imageFile.absolutePath
                 currentImageFile = imageFile
             } catch (e: IOException) {
