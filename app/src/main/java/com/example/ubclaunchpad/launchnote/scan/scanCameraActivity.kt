@@ -51,8 +51,8 @@ class ScanCameraActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        mTextureView = findViewById<TextureView>(R.id.previewTextureView)
-        mTextureView.setSurfaceTextureListener(mSurfaceTextureListner)
+        mTextureView = findViewById(R.id.previewTextureView)
+        mTextureView.surfaceTextureListener = mSurfaceTextureListner
     }
 
     override fun onPause() {
@@ -87,6 +87,9 @@ class ScanCameraActivity : AppCompatActivity() {
             // Do I really need to do this check?
             if (ContextCompat.checkSelfPermission(this@ScanCameraActivity, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this@ScanCameraActivity, arrayOf(android.Manifest.permission.CAMERA), MY_PERMISSIONS_REQUEST_CAMERA)
+            }
+            else {
+                safeCameraOpen()
             }
         }
     }
@@ -190,41 +193,5 @@ class ScanCameraActivity : AppCompatActivity() {
             Log.e(TAG, "CameraCaptureSession Configure failed")
         }
     }
-
-
-    /*private fun safeCameraOpen(): Boolean {
-        var manager : CameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
-        var cameraIds = manager.cameraIdList
-        var cameraCallback = object: CameraDevice.StateCallback() {
-            override fun onDisconnected(p0: CameraDevice?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onError(p0: CameraDevice?, p1: Int) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onOpened(p0: CameraDevice?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-        }
-        try {
-            //releaseCameraAndPreview()
-            manager.openCamera(cameraIds[0], cameraCallback, null)
-        } catch (e: Exception) {
-            Log.e(getString(R.string.app_name), "failed to open camera")
-            e.printStackTrace()
-            return false
-        } catch(se: SecurityException) { // not sure if this is right, maybe should use checkPermission()
-            Log.e(getString(R.string.app_name), "permission failed")
-            se.printStackTrace()
-            return false
-        }
-
-        return true
-    }*/
-
-
-
 }
 
