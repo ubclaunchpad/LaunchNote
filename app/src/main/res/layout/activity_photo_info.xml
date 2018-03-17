@@ -2,75 +2,61 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@android:color/white"
+    android:id="@+id/fragment_photo_info_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.ubclaunchpad.launchnote.edit.PhotoInfoActivity"
-    android:id="@+id/fragment_photo_info_container">
+    android:background="@android:color/white"
+    android:padding="8dp"
+    tools:context="com.example.ubclaunchpad.launchnote.edit.PhotoInfoActivity">
 
     <!-- TODO: Update blank fragment layout -->
 
-    <EditText
-        android:id="@+id/title_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:hint="title"
-        android:inputType="text"
-        tools:layout_editor_absoluteX="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/description_input"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
-
-    <EditText
-        android:id="@+id/description_input"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:hint="description"
-        android:inputType="text"
-        tools:layout_editor_absoluteX="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/class_input"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>/>
-
-    <AutoCompleteTextView
-        android:id="@+id/class_input"
-        android:layout_width="373dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="8dp"
-        android:inputType="number"
-        android:hint="class"
-        app:layout_constraintBottom_toTopOf="@+id/project_input"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <AutoCompleteTextView
-        android:id="@+id/project_input"
-        android:layout_width="373dp"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="project"
-        app:layout_constraintBottom_toBottomOf="@id/class_input"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
         android:id="@+id/info_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:fontFamily="monospace"
         android:text="Info"
         android:textColor="@android:color/black"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/title_input"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-    </TextView>
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/title_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Title"
+        android:inputType="text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/info_text" />
+
+    <EditText
+        android:id="@+id/description_input"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Description"
+        android:inputType="text"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_input" />
+
+    <AutoCompleteTextView
+        android:id="@+id/folder_input"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:hint="Folder"
+        android:inputType="number"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/description_input" />
 
     <Button
         android:id="@+id/save_button"
@@ -78,11 +64,11 @@
         android:layout_height="wrap_content"
         android:onClick="onSaveButtonPressed"
         android:text="Save"
-        tools:layout_editor_absoluteX="148dp"
-        tools:layout_editor_absoluteY="458dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteX="148dp"
+        tools:layout_editor_absoluteY="458dp" />
 
 </android.support.constraint.ConstraintLayout>
 

@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -18,6 +19,7 @@ import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
+import com.example.ubclaunchpad.launchnote.utils.PhotoUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -35,7 +37,7 @@ class GalleryActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         photoView = findViewById(R.id.imgView)
-        if(savedInstanceState?.containsKey(GALLERYBROWSEOPEN) != true) {
+        if (savedInstanceState?.containsKey(GALLERYBROWSEOPEN) != true) {
             loadImageFromGallery()
         }
         savedInstanceState?.putBoolean(GALLERYBROWSEOPEN, true)
@@ -92,19 +94,20 @@ class GalleryActivity : BaseActivity() {
             // TODO: parse out the description
             // passing in empty string for now
             // todo vpineda optimize this save
-            picNoteToSave = PicNote(photoUri.toString(), photoUri.toString(),"", "")
-
-            // insert image into database on a different thread
-            LaunchNoteDatabase.getDatabase(this)?.let {
-                Observable.fromCallable { it.picNoteDao().insert(picNoteToSave) }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe()
+            photoUri?.let {
+                Observable.just(
+                        {
+                            val compressedImageUri = PhotoUtils.compressImage(this, it)
+                            picNoteToSave?.compressedImageUri = compressedImageUri.toString()
+                        })
+                        .observeOn(Schedulers.io())
+                        .subscribe {
+                            val intent = Intent()
+                            intent.putExtra(BaseActivity.PIC_NOTE_KEY, picNoteToSave)
+                            setResult(Activity.RESULT_OK, intent)
+                            finish()
+                        }
             }
-            val intent = Intent()
-            intent.putExtra(BaseActivity.PIC_NOTE_KEY, picNoteToSave)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
         } else {
             Toast.makeText(this, "You haven't picked an image", Toast.LENGTH_LONG).show()
         }

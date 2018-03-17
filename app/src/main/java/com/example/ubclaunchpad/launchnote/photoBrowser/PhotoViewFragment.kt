@@ -23,8 +23,8 @@ class PhotoViewFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var picNoteId: Int = -1
     private var uri: String = ""
-    lateinit var toolbarFragment: PhotoNavigatonToolbarFragment
-    var photoView: PhotoView? = null
+    private lateinit var toolbarFragment: PhotoNavigatonToolbarFragment
+    private var photoView: PhotoView? = null
     private var isActiveEdit = false
 
     override fun onCreate(savedInstanceState: Bundle?) {

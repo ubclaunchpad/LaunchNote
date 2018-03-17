@@ -30,7 +30,7 @@ class AllPhotosFragment : Fragment() {
     private val picNotesSelected: MutableSet<PicNote> = mutableSetOf()
     var onListener: OnEditPhotoMode? = null
 
-    lateinit var adapter: AllPhotosAdapter
+    private lateinit var adapter: AllPhotosAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_all_photos, null)
