@@ -72,14 +72,7 @@ class GalleryActivity : BaseActivity() {
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        Log.d("TakePhotoActivity", "Clearing Glide cache")
-                        Glide.get(this).clearMemory()
-                        val intent = Intent()
-                        intent.putExtra(BaseActivity.PIC_NOTE_KEY, picNoteToSave)
-                        setResult(Activity.RESULT_OK, intent)
-                        finish()
-                    }
+                    .subscribe()
 
             // load Bitmap using Glide
             Glide.with(this)
