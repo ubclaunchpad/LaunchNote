@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.ubclaunchpad.launchnote.scan.ScanCameraActivity">
 
+    <!-- remove this? -->
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,5 +20,12 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
+
+    <TextureView
+        android:id="@+id/previewTextureView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
 
 </android.support.design.widget.CoordinatorLayout>
