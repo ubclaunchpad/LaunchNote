@@ -89,15 +89,15 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
     }
 
     override fun onButtonClicked(butonInfo: Int) {
-        when(butonInfo) {
+        when (butonInfo) {
             R.id.edit_toolbar_delete_btn -> {
-                customPagerAdapter.currentFragment!!.removeSelection()
+                (customPagerAdapter.currentFragment!! as AllPhotosFragment).removeSelection()
             }
             R.id.edit_toolbar_edit_desc_btn -> {
-                customPagerAdapter.currentFragment!!.openEditView()
+                (customPagerAdapter.currentFragment!! as AllPhotosFragment).openEditView()
             }
             else -> {
-                customPagerAdapter.currentFragment!!.cancelSelection()
+                (customPagerAdapter.currentFragment!! as AllPhotosFragment).cancelSelection()
             }
         }
     }
@@ -126,8 +126,8 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
      * FragmentPagerAdapter class
      */
     class CustomPagerAdapter(fragmentManager: FragmentManager, val editModeListener: AllPhotosFragment.OnEditPhotoMode) : FragmentPagerAdapter(fragmentManager) {
-        val NUM_ITEMS = 3
-        var currentFragment: AllPhotosFragment? = null
+        val NUM_ITEMS = 2
+        var currentFragment: Fragment? = null
 
         override fun getCount(): Int {
             return NUM_ITEMS
@@ -136,9 +136,10 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
         override fun setPrimaryItem(container: ViewGroup?, position: Int, `object`: Any?) {
             super.setPrimaryItem(container, position, `object`)
 
-            if (currentFragment != `object`) {
-                currentFragment?.cancelSelection()
+            if (position == 1) {
                 currentFragment = `object` as AllPhotosFragment
+            } else {
+                currentFragment = `object` as FoldersFragment
             }
         }
 
@@ -147,9 +148,17 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
         }
 
         override fun getItem(position: Int): Fragment {
-            // TODO: once the other fragments are implemented, return the correct one
-            val fmt = AllPhotosFragment()
-            fmt.onListener = editModeListener
+
+            val fmt =
+                    if (position == 1) {
+                        AllPhotosFragment()
+                    } else {
+                        FoldersFragment()
+                    }
+
+            if (fmt.javaClass == AllPhotosFragment().javaClass) {
+                (fmt as AllPhotosFragment).onListener = editModeListener
+            }
             return fmt
         }
     }

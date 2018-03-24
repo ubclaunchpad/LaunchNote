@@ -44,8 +44,23 @@ class PhotoInfoActivity : AppCompatActivity() {
         picNoteToEdit.title = title_input.text.toString()
         picNoteToEdit.description = description_input.text.toString()
         // todo vpineda we need to create a dropdown for all of the classes or projects!
-        if(folder_input.text.isNotEmpty())
+        if(folder_input.text.isNotEmpty()) {
             picNoteToEdit.folderId = Integer.parseInt(folder_input.text.toString())
+
+            // create new Folder
+            val folderToInsert = Folder("")
+            folderToInsert.id = picNoteToEdit.folderId
+            folderToInsert.picNoteIds.add(picNoteToEdit.id)
+
+            // insert folder into database on a different thread
+            LaunchNoteDatabase.getDatabase(this)?.let {
+                Observable.fromCallable {
+                    it.folderDao().insert(folderToInsert) }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe()
+            }
+        }
 
         // insert image into database on a different thread
         LaunchNoteDatabase.getDatabase(this)?.let {

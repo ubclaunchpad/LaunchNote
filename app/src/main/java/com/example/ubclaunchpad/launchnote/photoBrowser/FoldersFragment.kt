@@ -2,6 +2,9 @@ package com.example.ubclaunchpad.launchnote.photoBrowser
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +24,7 @@ class FoldersFragment : Fragment() {
     // Kotlin also has a List class, but it's immutable and doesn't let you add/remove items
     private val folders: MutableList<Folder> = mutableListOf()
 
-    private lateinit var adapter: AllPhotosAdapter
+    private lateinit var adapter: FoldersAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_folder, null)
@@ -30,7 +33,19 @@ class FoldersFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
+        initViews()
+
         loadFolders()
+    }
+
+    private fun initViews() {
+        val recyclerView = view!!.findViewById<RecyclerView>(R.id.folder_recycler_view)
+        recyclerView.setHasFixedSize(true)
+        val layoutManager = LinearLayoutManager(activity)
+        recyclerView.layoutManager = layoutManager
+
+        adapter = FoldersAdapter(activity, folders)
+        recyclerView.adapter = adapter
     }
 
     private fun loadFolders() {
@@ -39,7 +54,7 @@ class FoldersFragment : Fragment() {
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { loadedFolders ->
-                        // clear the currently saved picNotes
+                        // clear the currently saved folders
                         // and replace them with new ones from the database
                         folders.clear()
                         for (next in loadedFolders) {

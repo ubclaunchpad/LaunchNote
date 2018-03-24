@@ -43,14 +43,17 @@ class FoldersAdapter() : RecyclerView.Adapter<FoldersAdapter.ViewHolder>() {
 
         if (folder.picNoteIds.size > 0) {
             LaunchNoteDatabase.getDatabase(context)?.let {
-                it.picNoteDao().findById(folder.picNoteIds[0])
+                it.picNoteDao().findById(0)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe { picNote1 ->
-                            Glide.with(context)
-                                    .asBitmap()
-                                    .load( if (picNote1[0].compressedImageUri == "") picNote1[0].imageUri else picNote1[0].compressedImageUri)
-                                    .into(holder.img1)
+
+                            if (picNote1.size > 0) {
+                                Glide.with(context)
+                                        .asBitmap()
+                                        .load(if (picNote1[0].compressedImageUri == "") picNote1[0].imageUri else picNote1[0].compressedImageUri)
+                                        .into(holder.img1)
+                            }
                         }
             }
         }
@@ -62,7 +65,7 @@ class FoldersAdapter() : RecyclerView.Adapter<FoldersAdapter.ViewHolder>() {
                         .subscribe { picNote2 ->
                             Glide.with(context)
                                     .asBitmap()
-                                    .load( if (picNote2[0].compressedImageUri == "") picNote2[0].imageUri else picNote2[0].compressedImageUri)
+                                    .load(if (picNote2[0].compressedImageUri == "") picNote2[0].imageUri else picNote2[0].compressedImageUri)
                                     .into(holder.img2)
                         }
             }
@@ -75,7 +78,7 @@ class FoldersAdapter() : RecyclerView.Adapter<FoldersAdapter.ViewHolder>() {
                         .subscribe { picNote3 ->
                             Glide.with(context)
                                     .asBitmap()
-                                    .load( if (picNote3[0].compressedImageUri == "") picNote3[0].imageUri else picNote3[0].compressedImageUri)
+                                    .load(if (picNote3[0].compressedImageUri == "") picNote3[0].imageUri else picNote3[0].compressedImageUri)
                                     .into(holder.img3)
                         }
             }
