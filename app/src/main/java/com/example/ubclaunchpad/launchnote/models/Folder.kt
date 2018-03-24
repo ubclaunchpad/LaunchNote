@@ -14,6 +14,10 @@ data class Folder(
     var id: Int = 0
     var name: String = ""
 
-    var subFolderIds: MutableList<Int> = mutableListOf()
+    var parentFolderId: Int = DEFAULT_FOLDERID
     var picNoteIds: MutableList<Int> = mutableListOf()
+
+    companion object {
+        const val DEFAULT_FOLDERID = 0
+    }
 }
