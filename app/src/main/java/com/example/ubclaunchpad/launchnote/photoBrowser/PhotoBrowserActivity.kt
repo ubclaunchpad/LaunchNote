@@ -34,14 +34,14 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
 
         // set up ViewPager
         // this lets us swipe between the three different ways of browsing photos:
-        // by LaunchNoteClass, by Project, or by All photos
+        // by Folder, or by All photos
         // each of them is represented by a fragment
         customPagerAdapter = CustomPagerAdapter(supportFragmentManager, this)
         toolbarFragment = supportFragmentManager.findFragmentById(R.id.photoBrowserToolbarFragment) as PhotoNavigatonToolbarFragment
 
         view_pager.adapter = customPagerAdapter
         // todo vpineda should we be reading the current item from the bundle rather than hardcoding it?
-        view_pager.currentItem = ALL_FRAGMENT
+        updateButtons(BROWSER.ALL)
         // add listener to view_pager that will update elements when user scrolls to new page
         view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
@@ -54,32 +54,20 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
 
             override fun onPageSelected(position: Int) {
                 // when new page is selected, update button
-                updateButtons(position)
+                updateButtons(BROWSER.fromOrdinal(position), updateViewPager = false)
             }
 
         })
-        updateButtons(ALL_FRAGMENT)
 
         // Watch for button clicks. When a button is clicked, go to the correct fragment
-        class_button.setOnClickListener {
-            view_pager.currentItem = CLASS_FRAGMENT
-            updateButtons(CLASS_FRAGMENT)
-
-        }
-        project_button.setOnClickListener {
-            view_pager.currentItem = PROJECT_FRAGMENT
-            updateButtons(PROJECT_FRAGMENT)
-        }
-        all_button.setOnClickListener {
-            view_pager.currentItem = ALL_FRAGMENT
-            updateButtons(ALL_FRAGMENT)
-        }
+        folder_button.setOnClickListener { updateButtons(BROWSER.FOLDER) }
+        all_button.setOnClickListener { updateButtons(BROWSER.ALL) }
 
         // Restore state of fragments
-        (0 until NUMBER_OF_FRAGMENTS)
+        BROWSER.values()
                 .map {
                     // todo vpineda generalize to the diff types of photo fragments
-                    supportFragmentManager.findFragmentByTag("android:switcher:${R.id.view_pager}:$it") as AllPhotosFragment?
+                    supportFragmentManager.findFragmentByTag("android:switcher:${R.id.view_pager}:${it.ordinal}") as AllPhotosFragment?
                 }
                 .forEach { f ->
                     f?.let {
@@ -114,7 +102,6 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
         }
     }
 
-
     override fun onResume() {
         super.onResume()
         bottomNavigation.menu.getItem(BROWSE_MENU_ITEM).isChecked = true
@@ -124,15 +111,14 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
         return R.layout.activity_photo_browser
     }
 
-    private fun updateButtons(fragmentId: Int) {
-        class_button.setTextColor(resources.getColor(R.color.darkGreyText))
-        project_button.setTextColor(resources.getColor(R.color.darkGreyText))
+    private fun updateButtons(fragmentId: BROWSER, updateViewPager: Boolean = true) {
+        if (updateViewPager) view_pager.currentItem = fragmentId.ordinal;
+        folder_button.setTextColor(resources.getColor(R.color.darkGreyText))
         all_button.setTextColor(resources.getColor(R.color.darkGreyText))
 
         when (fragmentId) {
-            CLASS_FRAGMENT -> class_button.setTextColor(resources.getColor(R.color.colorAccent))
-            PROJECT_FRAGMENT -> project_button.setTextColor(resources.getColor(R.color.colorAccent))
-            ALL_FRAGMENT -> all_button.setTextColor(resources.getColor(R.color.colorAccent))
+            BROWSER.FOLDER -> folder_button.setTextColor(resources.getColor(R.color.colorAccent))
+            BROWSER.ALL -> all_button.setTextColor(resources.getColor(R.color.colorAccent))
         }
     }
 
@@ -169,9 +155,12 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
     }
 
     companion object {
-        const val CLASS_FRAGMENT = 0
-        const val PROJECT_FRAGMENT = 1
-        const val ALL_FRAGMENT = 2
-        const val NUMBER_OF_FRAGMENTS = 3
+        enum class BROWSER {
+            FOLDER, ALL;
+
+            companion object {
+                fun fromOrdinal(ordinal: Int): BROWSER = BROWSER.values()[ordinal]
+            }
+        }
     }
 }

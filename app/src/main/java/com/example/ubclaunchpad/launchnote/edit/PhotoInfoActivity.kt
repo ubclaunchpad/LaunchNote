@@ -33,10 +33,8 @@ class PhotoInfoActivity : AppCompatActivity() {
         if(picNoteToEdit.description.isNotEmpty())
             description_input.setText(picNoteToEdit.description)
         // todo vpineda we need to create a dropdown for all of the classes or projects!
-        if(picNoteToEdit.classId != PicNote.DEFAULT_CLASSID)
-            class_input.setText(picNoteToEdit.classId.toString())
-        if(picNoteToEdit.projectId != PicNote.DEFAULT_PROJECTID)
-            project_input.setText(picNoteToEdit.projectId.toString())
+        if(picNoteToEdit.folderId != PicNote.DEFAULT_FOLDERID)
+            folder_input.setText(picNoteToEdit.folderId.toString())
     }
 
     @OnClick(R.id.save_button)
@@ -45,11 +43,8 @@ class PhotoInfoActivity : AppCompatActivity() {
         picNoteToEdit.title = title_input.text.toString()
         picNoteToEdit.description = description_input.text.toString()
         // todo vpineda we need to create a dropdown for all of the classes or projects!
-        if(class_input.text.isNotEmpty())
-            picNoteToEdit.classId = Integer.parseInt(class_input.text.toString())
-
-        if(project_input.text.isNotEmpty())
-            picNoteToEdit.projectId = Integer.parseInt(project_input.text.toString())
+        if(folder_input.text.isNotEmpty())
+            picNoteToEdit.folderId = Integer.parseInt(folder_input.text.toString())
 
         // insert image into database on a different thread
         LaunchNoteDatabase.getDatabase(this)?.let {
@@ -79,7 +74,7 @@ class PhotoInfoActivity : AppCompatActivity() {
     }
 
     companion object {
-        val REMOVE_IMAGES_IF_NO_CHANGE = "REMOVE_FROM_DB_IF_BACK"
-        val PIC_NOTE_ARG = "PICNOTE"
+        const val REMOVE_IMAGES_IF_NO_CHANGE = "REMOVE_FROM_DB_IF_BACK"
+        const val PIC_NOTE_ARG = "PICNOTE"
     }
 }

@@ -5,23 +5,20 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
 import android.content.Context
-import com.example.ubclaunchpad.launchnote.models.LaunchNoteClass
 import com.example.ubclaunchpad.launchnote.models.PicNote
-import com.example.ubclaunchpad.launchnote.models.Project
+import com.example.ubclaunchpad.launchnote.models.Folder
 
 
 /**
  * Database for PicNote
  */
-@Database(entities = arrayOf(PicNote::class, LaunchNoteClass::class, Project::class), version = 1)
+@Database(entities = arrayOf(PicNote::class, Folder::class), version = 1)
 @TypeConverters(Converters::class)
 abstract class LaunchNoteDatabase : RoomDatabase() {
 
     abstract fun picNoteDao(): PicNoteDao
 
-    abstract fun classDao(): ClassDao
-
-    abstract fun projectDao(): ProjectDao
+    abstract fun folderDao(): FolderDao
 
     // in Kotlin, there is no static keyword.
     // If you want something to be an instance of a class, put it in the companion object block
