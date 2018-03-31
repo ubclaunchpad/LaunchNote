@@ -17,7 +17,6 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.R
-import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.utils.PhotoUtils
 import io.reactivex.Observable
@@ -31,8 +30,8 @@ class GalleryActivity : BaseActivity() {
 
     lateinit var photoView: ImageView
     var photoBitmap: Bitmap? = null
-    var photoUri: Uri? = null
-    var picNoteToSave: PicNote? = null
+    private var picNoteToSave: PicNote? = null
+    private lateinit var photoUri: Uri
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +58,22 @@ class GalleryActivity : BaseActivity() {
         if (requestCode == RESULT_LOAD_IMG && resultCode == Activity.RESULT_OK && data != null) {
             // get Image from data
             photoUri = data.data
+
+            // compress image, then save it
+            Observable.just(requestCode)
+                    .observeOn(Schedulers.io())
+                    .flatMap({
+                        Observable.create<Unit> {
+                            picNoteToSave = PicNote(photoUri.toString(), photoUri.toString(),"", "")
+                            val compressedImageUri = PhotoUtils.compressImage(this, photoUri)
+                            picNoteToSave?.compressedImageUri = compressedImageUri.toString()
+                            it.onNext(Unit)
+                            it.onComplete()
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe()
+
             // load Bitmap using Glide
             Glide.with(this)
                     .asBitmap()
@@ -90,24 +105,14 @@ class GalleryActivity : BaseActivity() {
 
     @OnClick(R.id.buttonSavePicture)
     fun saveImageToDb(view: View) {
-        if (photoUri != null && photoBitmap != null) {
+        if (photoBitmap != null) {
             // TODO: parse out the description
             // passing in empty string for now
             // todo vpineda optimize this save
-            photoUri?.let {
-                Observable.just(
-                        {
-                            val compressedImageUri = PhotoUtils.compressImage(this, it)
-                            picNoteToSave?.compressedImageUri = compressedImageUri.toString()
-                        })
-                        .observeOn(Schedulers.io())
-                        .subscribe {
-                            val intent = Intent()
-                            intent.putExtra(BaseActivity.PIC_NOTE_KEY, picNoteToSave)
-                            setResult(Activity.RESULT_OK, intent)
-                            finish()
-                        }
-            }
+            val intent = Intent()
+            intent.putExtra(BaseActivity.PIC_NOTE_KEY, picNoteToSave)
+            setResult(Activity.RESULT_OK, intent)
+            finish()
         } else {
             Toast.makeText(this, "You haven't picked an image", Toast.LENGTH_LONG).show()
         }
