@@ -32,9 +32,7 @@ class FoldersFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
         initViews()
-
         loadFolders()
     }
 

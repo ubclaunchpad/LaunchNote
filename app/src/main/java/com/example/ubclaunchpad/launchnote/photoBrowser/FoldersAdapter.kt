@@ -57,6 +57,7 @@ class FoldersAdapter() : RecyclerView.Adapter<FoldersAdapter.ViewHolder>() {
                                                     0 -> holder.img1
                                                     1 -> holder.img2
                                                     2 -> holder.img3
+                                                    // shouldn't ever reach the else case since forEach is called on 0 to 2
                                                     else -> holder.img1
                                                 })
                                     }

@@ -56,7 +56,7 @@ class PhotoInfoActivity : AppCompatActivity() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe { loadedFolder ->
                         if (loadedFolder.size == 0) {
-                            // there isn't already a folder with that ID, create a new one
+                            // if there isn't already a folder with that ID, create a new one
                             folderToInsert.id = picNoteToEdit.folderId
                             // TODO: let users pick a name
                             folderToInsert.name = picNoteToEdit.folderId.toString()
@@ -72,7 +72,8 @@ class PhotoInfoActivity : AppCompatActivity() {
                             }
 
                         } else {
-                            // add picNoteToEdit's id to existing  folder's list of IDs
+                            // folder with that ID already exists
+                            // so add picNoteToEdit's id to existing folder's list of IDs
                             folderToInsert = loadedFolder[0]
                             if (!folderToInsert.picNoteIds.contains(picNoteToEdit.id)) {
                                 folderToInsert.picNoteIds.add(picNoteToEdit.id)
