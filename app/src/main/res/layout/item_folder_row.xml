@@ -20,7 +20,7 @@
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1:1"
-            tools:src="@drawable/defaultimg" />
+            tools:src="@drawable/googleg_standard_color_18" />
 
         <ImageView
             android:id="@+id/img2"
@@ -30,7 +30,7 @@
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1:1"
-            tools:src="@drawable/defaultimg" />
+            tools:src="@drawable/googleg_standard_color_18" />
 
 
         <ImageView
@@ -41,7 +41,7 @@
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1:1"
-            tools:src="@drawable/defaultimg" />
+            tools:src="@drawable/googleg_standard_color_18" />
     </LinearLayout>
 
     <TextView
