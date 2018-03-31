@@ -64,7 +64,7 @@ class GalleryActivity : BaseActivity() {
                     .observeOn(Schedulers.io())
                     .flatMap({
                         Observable.create<Unit> {
-                            picNoteToSave = PicNote(photoUri.toString(), photoUri.toString(),"", "")
+                            picNoteToSave = PicNote(PicNote.generateID(), photoUri.toString(), photoUri.toString(),"", "")
                             val compressedImageUri = PhotoUtils.compressImage(this, photoUri)
                             picNoteToSave?.compressedImageUri = compressedImageUri.toString()
                             it.onNext(Unit)

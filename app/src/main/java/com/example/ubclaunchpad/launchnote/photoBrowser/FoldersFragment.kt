@@ -57,9 +57,7 @@ class FoldersFragment : Fragment() {
                         // clear the currently saved folders
                         // and replace them with new ones from the database
                         folders.clear()
-                        for (next in loadedFolders) {
-                            folders.add(next)
-                        }
+                        folders += loadedFolders
                         adapter.notifyDataSetChanged()
                     }
         }

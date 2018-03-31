@@ -76,8 +76,9 @@ class TakePhotoActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 /* If the picture was taken and saved to internal storage successfully,
                 let's compress it and then save both URIs to the database
+                let's compress it and then save both URIs to the database
                  */
-                val pn = PicNote(currentImageUri.toString())
+                val pn = PicNote(PicNote.generateID(), currentImageUri.toString())
                 Observable.just(requestCode)
                         .observeOn(Schedulers.io())
                         .flatMap({

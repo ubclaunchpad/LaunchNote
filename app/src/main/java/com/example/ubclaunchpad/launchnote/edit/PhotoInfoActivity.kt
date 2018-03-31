@@ -47,18 +47,47 @@ class PhotoInfoActivity : AppCompatActivity() {
         if(folder_input.text.isNotEmpty()) {
             picNoteToEdit.folderId = Integer.parseInt(folder_input.text.toString())
 
-            // create new Folder
-            val folderToInsert = Folder("")
-            folderToInsert.id = picNoteToEdit.folderId
-            folderToInsert.picNoteIds.add(picNoteToEdit.id)
+            var folderToInsert = Folder()
 
-            // insert folder into database on a different thread
+            // create new Folder
             LaunchNoteDatabase.getDatabase(this)?.let {
-                Observable.fromCallable {
-                    it.folderDao().insert(folderToInsert) }
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe()
+            it.folderDao().findById(folder_input.text.toString())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { loadedFolder ->
+                        if (loadedFolder.size == 0) {
+                            // there isn't already a folder with that ID, create a new one
+                            folderToInsert.id = picNoteToEdit.folderId
+                            // TODO: let users pick a name
+                            folderToInsert.name = picNoteToEdit.folderId.toString()
+                            folderToInsert.picNoteIds.add(picNoteToEdit.id)
+
+                            // insert folder into database on a different thread
+                            LaunchNoteDatabase.getDatabase(this)?.let {
+                                Observable.fromCallable {
+                                    it.folderDao().insert(folderToInsert) }
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe()
+                            }
+
+                        } else {
+                            // add picNoteToEdit's id to existing  folder's list of IDs
+                            folderToInsert = loadedFolder[0]
+                            if (!folderToInsert.picNoteIds.contains(picNoteToEdit.id)) {
+                                folderToInsert.picNoteIds.add(picNoteToEdit.id)
+
+                                // insert folder into database on a different thread
+                                LaunchNoteDatabase.getDatabase(this)?.let {
+                                    Observable.fromCallable {
+                                        it.folderDao().insert(folderToInsert) }
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe()
+                                }
+                            }
+                        }
+                    }
             }
         }
 
