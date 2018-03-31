@@ -2,6 +2,7 @@ package com.example.ubclaunchpad.launchnote.scan
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.*
@@ -30,14 +31,10 @@ import android.hardware.camera2.CaptureRequest
 import android.os.Handler
 import android.view.Window
 import android.view.WindowManager
+import com.example.ubclaunchpad.launchnote.photoBrowser.PhotoBrowserActivity
 
 
 class ScanCameraActivity : AppCompatActivity() {
-
-    companion object {
-        const val TAG = "SimpleCamera"
-        const val MY_PERMISSIONS_REQUEST_CAMERA = 123
-    }
 
     private lateinit var mTextureView: TextureView
     private lateinit var mPreviewSize: Size
@@ -106,6 +103,8 @@ class ScanCameraActivity : AppCompatActivity() {
                     safeCameraOpen()
                 } else {
                     // permission denied
+                    val browserIntent = Intent(this, PhotoBrowserActivity::class.java)
+                    startActivity(browserIntent)
                 }
                 return
             }
@@ -129,32 +128,29 @@ class ScanCameraActivity : AppCompatActivity() {
         }
     }
 
+    // This is the callback function for openCamera. If the camera is successfully opened, the onOpened method
+    // will be called. The onOpened method will set the size of the image buffers, call
     private var mStateCallback: CameraDevice.StateCallback = object: CameraDevice.StateCallback() {
         override fun onOpened(camera: CameraDevice?) {
             Log.i(TAG, "onOpened")
             mCameraDevice = camera
-            val texture = mTextureView.surfaceTexture
-            if (texture == null) {
-                Log.e(TAG, "texture is null")
-                return
-            }
+            mTextureView.surfaceTexture?.let { texture ->
+                texture.setDefaultBufferSize(mPreviewSize.width, mPreviewSize.height)
+                val surface = Surface(texture)
 
-            texture.setDefaultBufferSize(mPreviewSize.width, mPreviewSize.height)
-            val surface = Surface(texture)
+                try {
+                    mPreviewBuilder = mCameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
+                } catch (e: CameraAccessException) {
+                    e.printStackTrace()
+                }
 
-            try {
-                mPreviewBuilder = mCameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
-            } catch (e: CameraAccessException) {
-                e.printStackTrace()
-            }
+                mPreviewBuilder.addTarget(surface)
 
-
-            mPreviewBuilder.addTarget(surface)
-
-            try {
-                mCameraDevice!!.createCaptureSession(arrayListOf(surface), mPreviewStateCallback, null)
-            } catch (e: CameraAccessException) {
-                e.printStackTrace()
+                try {
+                    mCameraDevice!!.createCaptureSession(arrayListOf(surface), mPreviewStateCallback, null)
+                } catch (e: CameraAccessException) {
+                    e.printStackTrace()
+                }
             }
 
         }
@@ -195,6 +191,11 @@ class ScanCameraActivity : AppCompatActivity() {
             // TODO Auto-generated method stub
             Log.e(TAG, "CameraCaptureSession Configure failed")
         }
+    }
+
+    companion object {
+        const val TAG = "SimpleCamera"
+        const val MY_PERMISSIONS_REQUEST_CAMERA = 123
     }
 }
 

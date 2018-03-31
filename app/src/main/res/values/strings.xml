@@ -6,7 +6,4 @@
     <string name="title_activity_photo_info">Info</string>
 
     <string name="title_activity_scan_camera">scanCameraActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="title_activity_test">test</string>
 </resources>
