@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">@android:color/holo_blue_light</color>
     <color name="selectedIconBackground">@android:color/black</color>
     <color name="darkGreyText">#FF303030</color>
     <color name="imageSelectionMask">#8f000000</color>
