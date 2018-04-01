@@ -37,7 +37,7 @@ class TakePhotoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(!intent.hasExtra(PHOTOFRAGMENTINIT)) {
+        if (!intent.hasExtra(PHOTOFRAGMENTINIT)) {
             takePhoto()
         }
         intent.putExtra(PHOTOFRAGMENTINIT, true)
@@ -59,7 +59,9 @@ class TakePhotoActivity : AppCompatActivity() {
             // File where the image goes
             var imageFile: File? = null
             try {
-                imageFile = PhotoUtils.createImageFile(this, true)
+                imageFile = PhotoUtils.createImageFile(this)
+                // save the uncompressed image
+                currentImagePath = imageFile.absolutePath
             } catch (e: IOException) {
                 Toast.makeText(this, "Cannot save file", Toast.LENGTH_LONG).show()
                 e.printStackTrace()
@@ -82,7 +84,7 @@ class TakePhotoActivity : AppCompatActivity() {
                 /* If the picture was taken and saved to internal storage successfully,
                 let's compress it and then save both URIs to the database
                  */
-                val pn =  PicNote(currentImageUri.toString())
+                val pn = PicNote(currentImageUri.toString())
                 Observable.just(requestCode)
                         .observeOn(Schedulers.io())
                         .flatMap({

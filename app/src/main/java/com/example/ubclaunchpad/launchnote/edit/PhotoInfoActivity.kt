@@ -18,6 +18,7 @@ import butterknife.ButterKnife
 import butterknife.OnClick
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
+import com.example.ubclaunchpad.launchnote.models.Folder
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -79,7 +80,7 @@ class PhotoInfoActivity : AppCompatActivity() {
         if(picNoteToEdit.description.isNotEmpty())
             description_input.setText(picNoteToEdit.description)
         // todo vpineda we need to create a dropdown for all of the classes or projects!
-        if(picNoteToEdit.folderId != PicNote.DEFAULT_FOLDERID)
+        if(picNoteToEdit.folderId != Folder.DEFAULT_FOLDERID)
             folder_input.setText(picNoteToEdit.folderId.toString())
     }
 

@@ -16,19 +16,34 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
-/**
- * Created by sherryuan on 2018-03-10.
- */
+
 object PhotoUtils {
+    /**
+     * This function gets called when we want to create a image file
+     * @param forCompressed normally if we create a file we want the currentImageReference to point to it
+     *                      but in the case of creating a compressed image we dont want that, furthermore
+     *                      we append cmp to the image URI
+     */
+    @Throws(IOException::class)
+    fun createImageFile(context: Context, forCompressed: Boolean = false): File {
+        // First, create file name
+        val timestamp = SimpleDateFormat(TakePhotoActivity.DATE_FORMAT).format(Date())
+        val compressExt = if (forCompressed) "_cmp" else ""
+        val fileName = TakePhotoActivity.JPEG + timestamp + compressExt
+        // Directory where the file will be stored (check file_paths.xml)
+        val dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        // Create file
+        return File.createTempFile(fileName, TakePhotoActivity.IMAGE_EXTENSION, dir)
+    }
 
-    fun compressImage(context: Context, currentImageUri: Uri): Uri {
+    fun compressImage(context: Context, photoUri: Uri): Uri {
         // Compress the images in such a way that we are able to expand them correctly later on
-        val maxSize  = maxOf(context.resources.displayMetrics.widthPixels, context.resources.displayMetrics.heightPixels) / AllPhotosFragment.NUM_COLUMNS_PORTRAIT
+        val maxSize = maxOf(context.resources.displayMetrics.widthPixels, context.resources.displayMetrics.heightPixels) / AllPhotosFragment.NUM_COLUMNS_PORTRAIT
         val compressedBmp = Glide.with(context)
                 .asBitmap()
-                .load(currentImageUri)
+                .load(photoUri)
                 .apply(RequestOptions.bitmapTransform(CenterInside()))
                 .apply(RequestOptions().override(maxSize)).submit().get()
         // Creates the temp file that we write to
@@ -46,27 +61,6 @@ object PhotoUtils {
             }
         }
         Log.d("TakePhotoActivity", "Finished compressing file")
-        return if(out == null) currentImageUri else FileProvider.getUriForFile(context, TakePhotoActivity.AUTHORITY, f)
+        return if (out == null) photoUri else FileProvider.getUriForFile(context, TakePhotoActivity.AUTHORITY, f)
     }
-
-    /**
-     * This function gets called when we want to create a image file
-     * @param forCompressed normally if we create a file we want the currentImageReference to point to it
-     *                      but in the case of creating a compressed image we dont want that, furthermore
-     *                      we append cmp to the image URI
-     */
-    @Throws(IOException::class)
-    fun createImageFile(context: Context,forCompressed: Boolean = false): File {
-        // First, create file name
-        val timestamp = SimpleDateFormat(TakePhotoActivity.DATE_FORMAT).format(Date())
-        val compressExt = if(forCompressed) "_cmp" else ""
-        val fileName = TakePhotoActivity.JPEG + timestamp + compressExt
-        // Directory where the file will be stored (check file_paths.xml)
-        val dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        // Create file
-        val image = File.createTempFile(fileName, TakePhotoActivity.IMAGE_EXTENSION, dir)
-
-        return image
-    }
-
 }
