@@ -3,6 +3,7 @@ package com.example.ubclaunchpad.launchnote.scan
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.*
 import android.os.Bundle
@@ -90,9 +91,29 @@ class ScanCameraActivity : AppCompatActivity() {
             val cameraId = manager.cameraIdList[0]
             val characteristics = manager.getCameraCharacteristics(cameraId)
             val map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
-            mPreviewSize = map.getOutputSizes(SurfaceTexture::class.java)[0]
+            mPreviewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture::class.java), Resources.getSystem().displayMetrics.widthPixels, Resources.getSystem().displayMetrics.heightPixels)
             manager.openCamera(cameraId, mStateCallback, null)
         }
+    }
+
+    /* ***************************************
+    * Title: "The least you can do with camera2 API"
+    * Author: Dziubek, M.
+    * Date: 2017
+    * Availability: https://android.jlelse.eu/the-least-you-can-do-with-camera2-api-2971c8c81b8b
+    ****************************************** */
+    private fun chooseOptimalSize(outputSizes: Array<Size>, width: Int, height: Int): Size {
+        val preferredRatio = height / width.toDouble()
+        var currentOptimalSize = outputSizes[0]
+        var currentOptimalRatio = currentOptimalSize.width / currentOptimalSize.height.toDouble()
+        for (currentSize in outputSizes) {
+            val currentRatio = currentSize.width / currentSize.height.toDouble()
+            if (Math.abs(preferredRatio - currentRatio) < Math.abs(preferredRatio - currentOptimalRatio)) {
+                currentOptimalSize = currentSize
+                currentOptimalRatio = currentRatio
+            }
+        }
+        return currentOptimalSize
     }
 
     // Called after requesting permission
