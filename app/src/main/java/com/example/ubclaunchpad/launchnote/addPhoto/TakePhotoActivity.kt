@@ -60,6 +60,7 @@ class TakePhotoActivity : AppCompatActivity() {
             // If the image file was created with no problems ...
             if (imageFile != null) {
                 // Get URI from file and pass it as an extra to the intent, then start intent
+                currentImageFile = imageFile
                 val imageURI = FileProvider.getUriForFile(this, AUTHORITY, imageFile)
                 currentImageUri = imageURI
                 takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageURI)
@@ -100,9 +101,6 @@ class TakePhotoActivity : AppCompatActivity() {
                  */
                 Log.d("TakePhotoActivity", "Result canceled deleting temp image")
                 currentImageFile.delete()
-                /* Should something currentImagePath and currentImageUri be nulled
-                 just in case???
-                 */
                 setResult(Activity.RESULT_CANCELED)
                 finish()
             }
