@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
@@ -27,9 +28,7 @@ import java.io.IOException
 
 class TakePhotoActivity : AppCompatActivity() {
 
-    private lateinit var currentImagePath: String
-    private lateinit var currentImageFile: File
-    private lateinit var currentImageUri: Uri
+    private var currentImageUri: Uri? = null
 
     fun takePhoto(view: View) {
         takePhoto()
@@ -41,6 +40,14 @@ class TakePhotoActivity : AppCompatActivity() {
             takePhoto()
         }
         intent.putExtra(PHOTOFRAGMENTINIT, true)
+        savedInstanceState?.let {
+            it.getString(URI_KEY)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        outState?.putString(URI_KEY, currentImageUri.toString())
     }
 
     private fun takePhoto() {
@@ -53,8 +60,6 @@ class TakePhotoActivity : AppCompatActivity() {
             try {
                 imageFile = PhotoUtils.createImageFile(this)
                 // save the uncompressed image
-                currentImagePath = imageFile.absolutePath
-                currentImageFile = imageFile
             } catch (e: IOException) {
                 Toast.makeText(this, "Cannot save file", Toast.LENGTH_LONG).show()
                 e.printStackTrace()
@@ -63,7 +68,6 @@ class TakePhotoActivity : AppCompatActivity() {
             // If the image file was created with no problems ...
             if (imageFile != null) {
                 // Get URI from file and pass it as an extra to the intent, then start intent
-                currentImageFile = imageFile
                 val imageURI = FileProvider.getUriForFile(this, AUTHORITY, imageFile)
                 currentImageUri = imageURI
                 takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageURI)
@@ -83,7 +87,7 @@ class TakePhotoActivity : AppCompatActivity() {
                         .observeOn(Schedulers.io())
                         .flatMap({
                             Observable.create<Unit> {
-                                val compressedImageUri = PhotoUtils.compressImage(this, currentImageUri)
+                                val compressedImageUri = PhotoUtils.compressImage(this, currentImageUri!!)
                                 pn.compressedImageUri = compressedImageUri.toString()
                                 it.onNext(Unit)
                                 it.onComplete()
@@ -103,7 +107,9 @@ class TakePhotoActivity : AppCompatActivity() {
                  the file that had been created (where the picture was supposed to go)
                  */
                 Log.d("TakePhotoActivity", "Result canceled deleting temp image")
-                currentImageFile.delete()
+                currentImageUri?.let {
+                    File(it.toString()).delete()
+                }
                 setResult(Activity.RESULT_CANCELED)
                 finish()
             }
@@ -113,12 +119,7 @@ class TakePhotoActivity : AppCompatActivity() {
     companion object {
         internal const val PHOTOFRAGMENTINIT = "PHOTOFRAGMENTINIT"
         const val TAKE_PHOTO_REQUEST_CODE = 45912
-
-
-        internal const val DATE_FORMAT = "yyyyMMdd_HHmmss"
         internal const val AUTHORITY = "com.example.ubclaunchpad.launchnote.FileProvider"
-        internal const val JPEG = "JPEG_"
-        internal const val IMAGE_EXTENSION = ".jpg"
         const val URI_KEY = "uri"
     }
 

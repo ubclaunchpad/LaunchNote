@@ -23,6 +23,20 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="infoTitleSettings">
+        <item name="android:fontFamily">@font/proxima_nova_semibold</item>
+        <item name="android:textColor">@color/greyTitle</item>
+    </style>
+
+    <style name="infoEditFields">
+        <item name="android:fontFamily">@font/proxima_nova_thin</item>
+        <item name="android:textColor">@color/greyTitle</item>
+    </style>
+
+    <style name="infoButtonSave">
+        <item name="android:textColor">@color/save_color_blue</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
