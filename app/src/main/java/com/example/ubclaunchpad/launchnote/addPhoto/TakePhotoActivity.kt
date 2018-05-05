@@ -119,7 +119,10 @@ class TakePhotoActivity : AppCompatActivity() {
     companion object {
         internal const val PHOTOFRAGMENTINIT = "PHOTOFRAGMENTINIT"
         const val TAKE_PHOTO_REQUEST_CODE = 45912
+        internal const val DATE_FORMAT = "yyyyMMdd_HHmmss"
         internal const val AUTHORITY = "com.example.ubclaunchpad.launchnote.FileProvider"
+        internal const val JPEG = "JPEG_"
+        internal const val IMAGE_EXTENSION = ".jpg"
         const val URI_KEY = "uri"
     }
 
