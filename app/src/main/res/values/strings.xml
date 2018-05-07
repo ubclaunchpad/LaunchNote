@@ -4,5 +4,6 @@
     <string name="go_back_arrow">Go Back</string>
     <string name="toolbar_edit">Edit</string>
     <string name="title_activity_photo_info">Info</string>
+    <string name="title_activity_scan_camera">scanCameraActivity</string>
     <string name="info_title_pannel">INFO</string>
 </resources>
