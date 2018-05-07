@@ -1,22 +1,16 @@
 package com.example.ubclaunchpad.launchnote.photoBrowser
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.PorterDuff
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.example.ubclaunchpad.launchnote.R
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.models.Folder
-import com.example.ubclaunchpad.launchnote.models.PicNote
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -42,7 +36,7 @@ class FoldersAdapter() : RecyclerView.Adapter<FoldersAdapter.ViewHolder>() {
         val folder = folders[position]
 
         // load first 3 photos in the folder
-        (0..2).filter { folder.picNoteIds.size > it }
+        (0..minOf(2,folder.picNoteIds.size)).filter { folder.picNoteIds.size > it }
                 .forEach { i ->
                     LaunchNoteDatabase.getDatabase(context)?.let {
                         it.picNoteDao().findById(folder.picNoteIds[i])
