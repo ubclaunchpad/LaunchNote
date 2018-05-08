@@ -28,7 +28,6 @@ import java.io.IOException
 
 class TakePhotoActivity : AppCompatActivity() {
 
-    private lateinit var currentImagePath: String
     private var currentImageUri: Uri? = null
 
     fun takePhoto(view: View) {
@@ -61,7 +60,6 @@ class TakePhotoActivity : AppCompatActivity() {
             try {
                 imageFile = PhotoUtils.createImageFile(this)
                 // save the uncompressed image
-                currentImagePath = imageFile.absolutePath
             } catch (e: IOException) {
                 Toast.makeText(this, "Cannot save file", Toast.LENGTH_LONG).show()
                 e.printStackTrace()
@@ -113,9 +111,6 @@ class TakePhotoActivity : AppCompatActivity() {
                 currentImageUri?.let {
                     File(it.toString()).delete()
                 }
-                /* Should something currentImagePath and currentImageUri be nulled
-                 just in case???
-                 */
                 setResult(Activity.RESULT_CANCELED)
                 finish()
             }
@@ -125,8 +120,6 @@ class TakePhotoActivity : AppCompatActivity() {
     companion object {
         internal const val PHOTOFRAGMENTINIT = "PHOTOFRAGMENTINIT"
         const val TAKE_PHOTO_REQUEST_CODE = 45912
-
-
         internal const val DATE_FORMAT = "yyyyMMdd_HHmmss"
         internal const val AUTHORITY = "com.example.ubclaunchpad.launchnote.FileProvider"
         internal const val JPEG = "JPEG_"
