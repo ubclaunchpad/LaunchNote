@@ -35,8 +35,15 @@ class FoldersAdapter() : RecyclerView.Adapter<FoldersAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val folder = folders[position]
 
+        // if there are fewer than 3 images, set the remaining cells to transparent
+        if (folder.picNoteIds.size < 3) {
+            holder.img3.setImageResource(android.R.color.transparent)
+        }
+        if (folder.picNoteIds.size < 2) {
+            holder.img2.setImageResource(android.R.color.transparent)
+        }
         // load first 3 photos in the folder
-        (0..minOf(2,folder.picNoteIds.size)).filter { folder.picNoteIds.size > it }
+        (0..minOf(2, folder.picNoteIds.size)).filter { folder.picNoteIds.size > it }
                 .forEach { i ->
                     LaunchNoteDatabase.getDatabase(context)?.let {
                         it.picNoteDao().findById(folder.picNoteIds[i])
@@ -51,7 +58,7 @@ class FoldersAdapter() : RecyclerView.Adapter<FoldersAdapter.ViewHolder>() {
                                                     0 -> holder.img1
                                                     1 -> holder.img2
                                                     2 -> holder.img3
-                                                    // shouldn't ever reach the else case since forEach is called on 0 to 2
+                                                // shouldn't ever reach the else case since forEach is called on 0 to 2
                                                     else -> holder.img1
                                                 })
                                     }

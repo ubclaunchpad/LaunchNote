@@ -100,7 +100,7 @@ class PhotoInfoActivity : AppCompatActivity() {
 
             // create new Folder
             LaunchNoteDatabase.getDatabase(this)?.let {
-                it.folderDao().findById(folder_input.text.toString())
+                it.folderDao().findById(folder_input.text.toString()).firstElement()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe { loadedFolder ->

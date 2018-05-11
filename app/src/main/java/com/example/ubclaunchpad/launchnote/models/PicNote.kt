@@ -5,7 +5,11 @@ import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 import android.content.Context
 import android.graphics.Bitmap
+import com.bumptech.glide.Glide
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.IOException
 import java.io.Serializable
@@ -48,6 +52,22 @@ data class PicNote(
             }
 
             LaunchNoteDatabase.getDatabase(context)?.picNoteDao()?.delete(pn)
+            // remove PicNote from folder
+            LaunchNoteDatabase.getDatabase(context)?.let { db ->
+                db.folderDao().loadAll().firstElement()
+                        .subscribe {
+                            it.forEach { folder ->
+                                if (folder.picNoteIds.contains(pn.id)) {
+                                    folder.picNoteIds.remove(pn.id)
+                                    if (folder.picNoteIds.isEmpty()) {
+                                        db.folderDao().delete(folder)
+                                    } else {
+                                        db.folderDao().insert(folder)
+                                    }
+                                }
+                            }
+                        }
+            }
             return success
         }
 
