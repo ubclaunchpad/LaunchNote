@@ -5,11 +5,7 @@ import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 import android.content.Context
 import android.graphics.Bitmap
-import com.bumptech.glide.Glide
 import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.io.IOException
 import java.io.Serializable
