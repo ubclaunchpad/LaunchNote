@@ -2,28 +2,26 @@ package com.example.ubclaunchpad.launchnote.addPhoto
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.provider.MediaStore
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterInside
-import com.bumptech.glide.request.RequestOptions
 import com.example.ubclaunchpad.launchnote.BaseActivity
 import com.example.ubclaunchpad.launchnote.models.PicNote
-import com.example.ubclaunchpad.launchnote.photoBrowser.AllPhotosFragment
 import com.example.ubclaunchpad.launchnote.utils.PhotoUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 
 class TakePhotoActivity : AppCompatActivity() {
@@ -36,12 +34,32 @@ class TakePhotoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (!intent.hasExtra(PHOTOFRAGMENTINIT)) {
+        if (!intent.hasExtra(PHOTOFRAGMENTINIT) && hasPermission()) {
+            // if the app doesn't have permission it will ask for it and then call take photo
             takePhoto()
         }
         intent.putExtra(PHOTOFRAGMENTINIT, true)
         savedInstanceState?.let {
             it.getString(URI_KEY)
+        }
+    }
+
+    private fun hasPermission(): Boolean {
+        val reqPermission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+        if(reqPermission) {
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA), PERMISSION_REQUEST_CODE)
+        }
+        return !reqPermission
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode == PERMISSION_REQUEST_CODE) {
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                takePhoto()
+            } else {
+                finish()
+            }
         }
     }
 
@@ -118,11 +136,12 @@ class TakePhotoActivity : AppCompatActivity() {
 
     companion object {
         internal const val PHOTOFRAGMENTINIT = "PHOTOFRAGMENTINIT"
-        const val TAKE_PHOTO_REQUEST_CODE = 45912
+        const val TAKE_PHOTO_REQUEST_CODE = 2
         internal const val DATE_FORMAT = "yyyyMMdd_HHmmss"
         internal const val AUTHORITY = "com.example.ubclaunchpad.launchnote.FileProvider"
         internal const val JPEG = "JPEG_"
         internal const val IMAGE_EXTENSION = ".jpg"
+        internal const val PERMISSION_REQUEST_CODE = 3
         const val URI_KEY = "uri"
     }
 
