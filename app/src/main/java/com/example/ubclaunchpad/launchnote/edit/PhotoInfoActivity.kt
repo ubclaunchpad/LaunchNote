@@ -75,12 +75,12 @@ class PhotoInfoActivity : AppCompatActivity() {
             finish()
         }
 
-        if(picNoteToEdit.title.isNotEmpty())
+        if (picNoteToEdit.title.isNotEmpty())
             title_input.setText(picNoteToEdit.title)
-        if(picNoteToEdit.description.isNotEmpty())
+        if (picNoteToEdit.description.isNotEmpty())
             description_input.setText(picNoteToEdit.description)
         // todo vpineda we need to create a dropdown for all of the classes or projects!
-        if(picNoteToEdit.folderId != Folder.DEFAULT_FOLDERID)
+        if (picNoteToEdit.folderId != Folder.DEFAULT_FOLDERID)
             folder_input.setText(picNoteToEdit.folderId.toString())
     }
 
@@ -95,13 +95,26 @@ class PhotoInfoActivity : AppCompatActivity() {
         picNoteToEdit.title = title_input.text.toString()
         picNoteToEdit.description = description_input.text.toString()
         // todo vpineda we need to create a dropdown for all of the classes or projects!
-        if(folder_input.text.isNotEmpty())
+        if (folder_input.text.isNotEmpty()) {
             picNoteToEdit.folderId = Integer.parseInt(folder_input.text.toString())
+
+            // create new Folder
+            LaunchNoteDatabase.getDatabase(this)?.let {
+                it.folderDao().findById(folder_input.text.toString()).firstElement()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { loadedFolder ->
+                            // add picNoteToEdit to the folder with matching folderId
+                            addPicNoteToFolder(loadedFolder)
+                        }
+            }
+        }
 
         // insert image into database on a different thread
         LaunchNoteDatabase.getDatabase(this)?.let {
             Observable.fromCallable {
-                it.picNoteDao().insert(picNoteToEdit) }
+                it.picNoteDao().insert(picNoteToEdit)
+            }
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
@@ -113,7 +126,7 @@ class PhotoInfoActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        if(removeIfNoSave) {
+        if (removeIfNoSave) {
             LaunchNoteDatabase.getDatabase(this)?.let {
                 Observable.fromCallable {
                     PicNote.deleteFromDb(this, picNoteToEdit)
@@ -125,8 +138,51 @@ class PhotoInfoActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    // add picNoteToEdit to the loadedFolder
+    // if folder doesn't already exist in the database, create a new one
+    private fun addPicNoteToFolder(loadedFolder: List<Folder>) {
+
+        var folderToInsert = Folder()
+
+        if (loadedFolder.isEmpty()) {
+            // if there isn't already a folder with that ID, create a new one
+            folderToInsert.id = picNoteToEdit.folderId
+            // TODO: let users pick a name
+            folderToInsert.name = picNoteToEdit.folderId.toString()
+            folderToInsert.picNoteIds.add(picNoteToEdit.id)
+
+            // insert folder into database on a different thread
+            LaunchNoteDatabase.getDatabase(this)?.let {
+                Observable.fromCallable {
+                    it.folderDao().insert(folderToInsert)
+                }
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe()
+            }
+
+        } else {
+            // folder with that ID already exists
+            // so add picNoteToEdit's id to existing folder's list of IDs
+            folderToInsert = loadedFolder[0]
+            if (!folderToInsert.picNoteIds.contains(picNoteToEdit.id)) {
+                folderToInsert.picNoteIds.add(picNoteToEdit.id)
+
+                // insert folder into database on a different thread
+                LaunchNoteDatabase.getDatabase(this)?.let {
+                    Observable.fromCallable {
+                        it.folderDao().insert(folderToInsert)
+                    }
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe()
+                }
+            }
+        }
+    }
+
     class ClassViewAdapter(private val myDataset: Array<ClassButtonModel>) :
-            RecyclerView.Adapter<ClassViewAdapter.ViewHolder>(){
+            RecyclerView.Adapter<ClassViewAdapter.ViewHolder>() {
 
         // Provide a reference to the views for each data item
         // Complex data items may need more than one view per item, and
@@ -167,8 +223,7 @@ class PhotoInfoActivity : AppCompatActivity() {
     data class ClassButtonModel(val name: String, var active: Boolean = false) : Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readString(),
-                parcel.readByte() != 0.toByte()) {
-        }
+                parcel.readByte() != 0.toByte())
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeString(name)

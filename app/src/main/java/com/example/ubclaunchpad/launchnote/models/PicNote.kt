@@ -9,19 +9,19 @@ import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import java.io.File
 import java.io.IOException
 import java.io.Serializable
+import java.util.*
 
 /**
  * Model class for representing one photo
  */
 @Entity
 data class PicNote(
+        @PrimaryKey
+        var id: Int = 0,
         var imageUri: String = "",
         var compressedImageUri: String = "",
         var title: String = "",
         var description: String = "",
-
-        @PrimaryKey(autoGenerate = true)
-        var id: Int = 0,
         @Ignore
         var image: Bitmap? = null
 ) : Serializable {
@@ -48,7 +48,25 @@ data class PicNote(
             }
 
             LaunchNoteDatabase.getDatabase(context)?.picNoteDao()?.delete(pn)
+            // remove PicNote from folder
+            LaunchNoteDatabase.getDatabase(context)?.let { db ->
+                db.folderDao().loadAll().firstElement()
+                        .subscribe {
+                            it.forEach { folder ->
+                                if (folder.picNoteIds.contains(pn.id)) {
+                                    folder.picNoteIds.remove(pn.id)
+                                    if (folder.picNoteIds.isEmpty()) {
+                                        db.folderDao().delete(folder)
+                                    } else {
+                                        db.folderDao().insert(folder)
+                                    }
+                                }
+                            }
+                        }
+            }
             return success
         }
+
+        fun generateID(): Int = Random().nextInt()
     }
 }
