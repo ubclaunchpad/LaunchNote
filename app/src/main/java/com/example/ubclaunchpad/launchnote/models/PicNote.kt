@@ -47,7 +47,6 @@ data class PicNote(
                 success = false
             }
 
-            LaunchNoteDatabase.getDatabase(context)?.picNoteDao()?.delete(pn)
             // remove PicNote from folder
             LaunchNoteDatabase.getDatabase(context)?.let { db ->
                 db.folderDao().loadAll().firstElement()
@@ -64,6 +63,8 @@ data class PicNote(
                             }
                         }
             }
+            LaunchNoteDatabase.getDatabase(context)?.picNoteDao()?.delete(pn)
+
             return success
         }
 

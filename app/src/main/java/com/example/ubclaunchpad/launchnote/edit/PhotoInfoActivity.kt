@@ -1,6 +1,5 @@
 package com.example.ubclaunchpad.launchnote.edit
 
-import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcel
@@ -9,7 +8,6 @@ import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,11 +33,7 @@ class PhotoInfoActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
-
-    private var classButtons = arrayOf("CPSC 213", "CPSC 313", "CPSC 406",
-            "CPSC 213", "CPSC 313", "CPSC 406", "CPSC 213",
-            "CPSC 313", "CPSC 406", "CPSC 213", "CPSC 313",
-            "CPSC 406", "CPSC 213", "CPSC 313", "CPSC 406").map { ClassButtonModel(it) }.toTypedArray()
+    private val classButtons : MutableList<ClassButtonModel> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,13 +41,39 @@ class PhotoInfoActivity : AppCompatActivity() {
         ButterKnife.bind(this)
 
         savedInstanceState?.let {
-            classButtons = it.getParcelableArray(LIST_OF_CLASSES_KEY) as Array<ClassButtonModel>
+            classButtons.addAll(it.getParcelableArray(LIST_OF_CLASSES_KEY) as Array<ClassButtonModel>)
+        } ?: run {
+            grabButtonsFromDb( {viewAdapter.notifyDataSetChanged()})
         }
 
         picNoteToEdit = intent.extras.getSerializable(PIC_NOTE_ARG) as PicNote
         removeIfNoSave = intent.extras.containsKey(REMOVE_IMAGES_IF_NO_CHANGE) &&
                 intent.extras.getBoolean(REMOVE_IMAGES_IF_NO_CHANGE)
 
+        setTextFields()
+        setFolderRecyclerView()
+        setListeners()
+    }
+
+    private fun grabButtonsFromDb(whenDone: () -> Unit) {
+        LaunchNoteDatabase.getDatabase(this)?.let {
+            it.folderDao().loadAll().map({
+                it.map { ClassButtonModel(it.name, it.id, picNoteToEdit.folderId == it.id) }
+            }).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        classButtons.addAll(it)
+                        whenDone()
+                    }
+        }
+    }
+
+    private fun setListeners() {
+        findViewById<ImageButton>(R.id.edit_view_back_button).setOnClickListener {
+            finish()
+        }
+    }
+
+    private fun setFolderRecyclerView() {
         viewManager = GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false)
         viewAdapter = ClassViewAdapter(classButtons)
 
@@ -70,11 +90,9 @@ class PhotoInfoActivity : AppCompatActivity() {
         imageHolder = findViewById<ImageView>(R.id.info_panel_image_view).apply {
             setImageURI(Uri.parse(picNoteToEdit.compressedImageUri))
         }
+    }
 
-        findViewById<ImageButton>(R.id.edit_view_back_button).setOnClickListener {
-            finish()
-        }
-
+    private fun setTextFields() {
         if (picNoteToEdit.title.isNotEmpty())
             title_input.setText(picNoteToEdit.title)
         if (picNoteToEdit.description.isNotEmpty())
@@ -86,28 +104,29 @@ class PhotoInfoActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
         super.onSaveInstanceState(outState, outPersistentState)
-        outState?.putParcelableArray(LIST_OF_CLASSES_KEY, classButtons)
+        outState?.putParcelableArray(LIST_OF_CLASSES_KEY, classButtons.toTypedArray())
     }
 
     @OnClick(R.id.save_button)
     fun onSaveButtonPressed(view: View) {
-
         picNoteToEdit.title = title_input.text.toString()
         picNoteToEdit.description = description_input.text.toString()
-        // todo vpineda we need to create a dropdown for all of the classes or projects!
+        // todo vpineda remove all of the first clause, create menu to add new folders
         if (folder_input.text.isNotEmpty()) {
             picNoteToEdit.folderId = Integer.parseInt(folder_input.text.toString())
+        } else if (classButtons.any { it.active }) {
+            picNoteToEdit.folderId = classButtons.first { it.active }.id
+        }
 
-            // create new Folder
-            LaunchNoteDatabase.getDatabase(this)?.let {
-                it.folderDao().findById(folder_input.text.toString()).firstElement()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe { loadedFolder ->
-                            // add picNoteToEdit to the folder with matching folderId
-                            addPicNoteToFolder(loadedFolder)
-                        }
-            }
+        // update folder or create folder for picnote
+        LaunchNoteDatabase.getDatabase(this)?.let {
+            it.folderDao().findById(picNoteToEdit.folderId.toString()).firstElement()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { loadedFolder ->
+                        // add picNoteToEdit to the folder with matching folderId
+                        addPicNoteToFolder(loadedFolder)
+                    }
         }
 
         // insert image into database on a different thread
@@ -140,6 +159,7 @@ class PhotoInfoActivity : AppCompatActivity() {
 
     // add picNoteToEdit to the loadedFolder
     // if folder doesn't already exist in the database, create a new one
+    // todo vpineda move this function to the model
     private fun addPicNoteToFolder(loadedFolder: List<Folder>) {
 
         var folderToInsert = Folder()
@@ -181,7 +201,7 @@ class PhotoInfoActivity : AppCompatActivity() {
         }
     }
 
-    class ClassViewAdapter(private val myDataset: Array<ClassButtonModel>) :
+    class ClassViewAdapter(private val myDataset: List<ClassButtonModel>) :
             RecyclerView.Adapter<ClassViewAdapter.ViewHolder>() {
 
         // Provide a reference to the views for each data item
@@ -220,13 +240,15 @@ class PhotoInfoActivity : AppCompatActivity() {
         override fun getItemCount() = myDataset.size
     }
 
-    data class ClassButtonModel(val name: String, var active: Boolean = false) : Parcelable {
+    data class ClassButtonModel(val name: String, val id: Int, var active: Boolean = false) : Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readString(),
+                parcel.readInt(),
                 parcel.readByte() != 0.toByte())
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeString(name)
+            parcel.writeInt(id)
             parcel.writeByte(if (active) 1 else 0)
         }
 
