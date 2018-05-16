@@ -43,8 +43,7 @@ class FoldersAdapter() : RecyclerView.Adapter<FoldersAdapter.ViewHolder>() {
             holder.img2.setImageResource(android.R.color.transparent)
         }
         // load first 3 photos in the folder
-        (0..minOf(2, folder.picNoteIds.size)).filter { folder.picNoteIds.size > it }
-                .forEach { i ->
+        (0..minOf(2, maxOf(folder.picNoteIds.size - 1, 0))).forEach { i ->
                     LaunchNoteDatabase.getDatabase(context)?.let {
                         it.picNoteDao().findById(folder.picNoteIds[i])
                                 .subscribeOn(Schedulers.io())
@@ -59,7 +58,7 @@ class FoldersAdapter() : RecyclerView.Adapter<FoldersAdapter.ViewHolder>() {
                                                     1 -> holder.img2
                                                     2 -> holder.img3
                                                     // shouldn't ever reach the else case since forEach is called on 0 to 2
-                                                    else -> holder.img1
+                                                    else -> throw RuntimeException("Not expecting more than 3 images for PicNote")
                                                 })
                                     }
                                 }

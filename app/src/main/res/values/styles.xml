@@ -6,12 +6,17 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/proxima_nova_alt_regular</item>
     </style>
 
+    <style name="semiBoldTextTab" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:fontFamily">@font/proxima_nova_semibold</item>
+    </style>
 
     <style name="AppBarActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/proxima_nova_alt_regular</item>
     </style>
 
     <style name="toolbarTextStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title" />
@@ -21,6 +26,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/proxima_nova_alt_regular</item>
     </style>
 
     <style name="infoTitleSettings">
@@ -51,6 +57,7 @@
 
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
+        <item name="android:fontFamily">@font/proxima_nova_alt_regular</item>
     </style>
 
 </resources>

@@ -2,8 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:id="@+id/images"
@@ -45,17 +44,24 @@
             app:layout_constraintDimensionRatio="1:1"
             tools:src="@drawable/googleg_standard_color_18" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/folder_name"
+    
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="47dp"
+        android:gravity="center"
         android:background="@drawable/border_white"
-        android:padding="5dp"
-        android:textColor="#95989A"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/images"
-        tools:text="folder name" />
+        app:layout_constraintTop_toBottomOf="@id/images">
+
+        <TextView
+            android:id="@+id/folder_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#95989A"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="folder name" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

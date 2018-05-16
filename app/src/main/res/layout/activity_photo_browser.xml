@@ -24,14 +24,14 @@
 
         <Button
             android:id="@+id/folder_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            style="@style/semiBoldTextTab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="folder" />
 
         <Button
             android:id="@+id/all_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
+            style="@style/semiBoldTextTab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="all" />
