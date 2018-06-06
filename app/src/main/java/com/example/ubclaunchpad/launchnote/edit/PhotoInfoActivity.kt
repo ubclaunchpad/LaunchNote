@@ -27,7 +27,6 @@ class PhotoInfoActivity : AppCompatActivity() {
 
     private lateinit var picNoteToEdit: PicNote
     private var removeIfNoSave: Boolean = false
-    // todo vpineda this should be a set of something else
 
     private lateinit var imageHolder: ImageView
     private lateinit var recyclerView: RecyclerView
@@ -57,8 +56,8 @@ class PhotoInfoActivity : AppCompatActivity() {
 
     private fun grabButtonsFromDb(whenDone: () -> Unit) {
         LaunchNoteDatabase.getDatabase(this)?.let {
-            it.folderDao().loadAll().map({
-                it.map { ClassButtonModel(it.name, it.id, picNoteToEdit.folderId == it.id) }
+            it.folderDao().loadAll().map({ folders ->
+                folders.map { ClassButtonModel(it.name, it.id, picNoteToEdit.folderId == it.id) }
             }).observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
                         classButtons.addAll(it)
@@ -97,7 +96,6 @@ class PhotoInfoActivity : AppCompatActivity() {
             title_input.setText(picNoteToEdit.title)
         if (picNoteToEdit.description.isNotEmpty())
             description_input.setText(picNoteToEdit.description)
-        // todo vpineda we need to create a dropdown for all of the classes or projects!
         if (picNoteToEdit.folderId != Folder.DEFAULT_FOLDERID)
             folder_input.setText(picNoteToEdit.folderId.toString())
     }
@@ -117,16 +115,17 @@ class PhotoInfoActivity : AppCompatActivity() {
         } else if (classButtons.any { it.active }) {
             picNoteToEdit.folderId = classButtons.first { it.active }.id
         }
-
-        // update folder or create folder for picnote
-        LaunchNoteDatabase.getDatabase(this)?.let {
-            it.folderDao().findById(picNoteToEdit.folderId.toString()).firstElement()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { loadedFolder ->
-                        // add picNoteToEdit to the folder with matching folderId
-                        addPicNoteToFolder(loadedFolder)
-                    }
+        if (picNoteToEdit.folderId != Folder.DEFAULT_FOLDERID) {
+            // update folder or create folder for picnote if there int a folder
+            LaunchNoteDatabase.getDatabase(this)?.let {
+                it.folderDao().findById(picNoteToEdit.folderId.toString()).firstElement()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe { loadedFolder ->
+                            // add picNoteToEdit to the folder with matching folderId
+                            addPicNoteToFolder(loadedFolder)
+                        }
+            }
         }
 
         // insert image into database on a different thread
