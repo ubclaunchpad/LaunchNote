@@ -2,11 +2,16 @@ package com.example.ubclaunchpad.launchnote.photoBrowser
 
 import android.R.attr.uiOptions
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -18,6 +23,7 @@ import com.example.ubclaunchpad.launchnote.database.LaunchNoteDatabase
 import com.example.ubclaunchpad.launchnote.edit.PhotoInfoActivity
 import com.example.ubclaunchpad.launchnote.models.PicNote
 import com.example.ubclaunchpad.launchnote.toolbar.PhotoNavigatonToolbarFragment
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -79,6 +85,53 @@ class ExpandPhotoActivity : AppCompatActivity(), PhotoNavigatonToolbarFragment.O
             }
             R.id.edit_toolbar_delete_btn -> {
                 onDeletePressed()
+            }
+            R.id.edit_toolbar_save_btn -> {
+               saveSelection()
+            }
+        }
+    }
+
+    private fun saveSelection() {
+        // get the id of the current item displayed in the ViewPager and delete it
+        LaunchNoteDatabase
+                .getDatabase(this)
+                ?.picNoteDao()
+                ?.findById(picNotes[viewPager.currentItem].id)
+                ?.map { pn ->
+                    pn.forEach {
+                        Log.i("SAV", "saving: " + pn)
+                        if (ContextCompat.checkSelfPermission(this,
+                                android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
+                            var bitmap: Bitmap;
+                            bitmap = Glide.with(this)
+                                    .asBitmap()
+                                    .load(pn[0].imageUri)
+                                    .submit()
+                                    .get();
+
+                            Log.i("SAV", "BITMAP" + bitmap)
+                            MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "yourTitle", "yourDescription");
+
+                        } else {
+                            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 1);
+
+                        }
+                    }
+
+                }?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe()
+        // exit full screen
+        onBackPressed()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            if(requestCode ==1){
+                saveSelection();
+
             }
         }
     }
