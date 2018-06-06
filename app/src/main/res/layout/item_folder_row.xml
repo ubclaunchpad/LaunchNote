@@ -2,6 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_marginTop="11dp"
+    android:layout_marginBottom="11dp"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -9,14 +11,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="@drawable/border_grey"
+        android:background="@drawable/border_grey_sides_except_bottom"
         android:orientation="horizontal"
+        android:paddingStart="1dp"
+        android:paddingTop="1dp"
+        android:paddingEnd="1dp"
         android:weightSum="3">
 
         <ImageView
             android:id="@+id/img1"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="106dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
@@ -26,7 +31,7 @@
         <ImageView
             android:id="@+id/img2"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="106dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
@@ -37,7 +42,7 @@
         <ImageView
             android:id="@+id/img3"
             android:layout_width="0dp"
-            android:layout_height="100dp"
+            android:layout_height="106dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
