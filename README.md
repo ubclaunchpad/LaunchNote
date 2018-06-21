@@ -5,7 +5,7 @@ It's hard for students to keep track of all their materials for one course. Laun
 
 ## Designs
 
-https://github.com/ubclaunchpad/design/issues/2
+https://drive.google.com/drive/folders/0B_vHt-RMbJoVd1lhNE0xdjYzTWs
 
 ## What we'll use/learn
 * Databases (Room)
