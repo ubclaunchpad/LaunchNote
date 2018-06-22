@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/add_menu_item"
+        android:icon="@drawable/add_18dp"
         android:enabled="true"
-        android:title="add"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/scan_menu_item"
         android:enabled="true"
-        android:title="scan"
+        android:icon="@android:drawable/ic_menu_camera"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/browse_menu_item"
         android:enabled="true"
-        android:title="browse"
+        android:icon="@drawable/apps_18dp"
         app:showAsAction="ifRoom" />
 </menu>
