@@ -67,7 +67,14 @@ class PhotoBrowserActivity : BaseActivity(), AllPhotosFragment.OnEditPhotoMode, 
         BROWSER.values()
                 .map {
                     // todo vpineda generalize to the diff types of photo fragments
-                    supportFragmentManager.findFragmentByTag("android:switcher:${R.id.view_pager}:${it.ordinal}") as AllPhotosFragment?
+                    // todo vpineda find a smart way of setting this listener seems like we break this code a lot
+                    when(it) {
+                        BROWSER.ALL -> {
+                            supportFragmentManager.findFragmentByTag("android:switcher:${R.id.view_pager}:${it.ordinal}") as AllPhotosFragment?
+                        }
+                        else -> null
+                    }
+
                 }
                 .forEach { f ->
                     f?.let {
